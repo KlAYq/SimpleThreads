@@ -13,19 +13,19 @@ header {
 
 aside {
     position: fixed;
-    left: 0;
     top: 0;
+    left: 0;
+    z-index: 1;
 
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     justify-content: space-between;
 
-    height: 100%;
     width: 76px;
+    height: 100%;
     min-height: 480px;
 
-    z-index: 1;
     background-color: rgba(250, 250, 250, 1);
 }
 
@@ -36,10 +36,11 @@ aside {
 }
 
 .sidebar-icon {
-    box-sizing: border-box;
     width: 60px;
     height: 60px;
+
     padding: 1rem;
+    box-sizing: border-box;
     background-color: rgba(250, 250, 250, 1);
 }
 
@@ -53,14 +54,15 @@ aside {
     align-content: center;
     justify-content: center;
 
-    padding: 0px 20px;
     width: 100%;
+
+    padding: 0px 20px;
     box-sizing: border-box;
 }
 
 .transform-container {
-    min-height: 100vh;
     display: flex;
+    min-height: 100vh;
 }
 
 .inner-container {
@@ -69,21 +71,19 @@ aside {
 
     width: 640px;
     max-width: 640px;
-    flex-grow: 1;
-    container-type: inline-size;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
-    min-height: 60px;
-     
     position: sticky;
     top: 0; 
     z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 100%;
+    min-height: 60px;
 
     background-color: rgba(250, 250, 250, 1);
 }
@@ -94,10 +94,9 @@ aside {
 
     width: 100%;
     min-height: 100%;
-    border: solid 0.5px purple;
-
-    overscroll-behavior-y: auto;
+    
     box-sizing: border-box;
+    border: solid 0.5px purple;
 
     background-color: rgba(255, 255, 255, 1);
 }
@@ -110,31 +109,25 @@ aside {
 }
 
 .left-corner {
-    display: block;
-
-    height: 36px;
-    width: 36px;
-
+    position: absolute;
     top: 48px;
     left: -12px;
     z-index: 1;
 
-    position: absolute;
-
+    width: 36px;
+    height: 36px;
     overflow: hidden;
+
     background-color: rgba(250, 250, 250, 1);
 }
 
 .inner-left {
-    display: block;
-
-    height: 48px;
-    width: 48px;
-
+    position: absolute;
     top: 12px;
     left: 12px;
-
-    position: absolute;
+    
+    width: 48px;
+    height: 48px;
 
     border: 0.5px solid purple;
     border-radius: 24px 0px 0px 0px;
@@ -143,59 +136,49 @@ aside {
 }
 
 .center-bar {
-    display: block;
-
-    height: 12px;
-    width: calc(100% - 46px);
-
+    position: absolute;
     top: 48px;
     left: 24px;
-    
-    position: absolute;
     z-index: 1;
-    overflow: hidden;
-    box-sizing: content-box;
-    background-color: rgba(250, 250, 250, 1);
 
+    width: calc(100% - 46px);
+    height: 12px;
+    overflow: hidden;
+    
     border-bottom: solid 0.5px purple;
+    box-sizing: content-box;
+    
+    background-color: rgba(250, 250, 250, 1);
 }
 
 .inner-center {
-    display: block;
+    position: absolute;
+    top: 100%;
 
     width: 100%;
     height: 100%;
-
-    top: 100%;
-
-    position: absolute;
 }
 
 .right-corner {
-    display: block;
-
-    height: 36px;
-    width: 36px;
-
+    position: absolute;
     top: 48px;
     right: -12px;
     z-index: 1;
 
-    position: absolute;
+    width: 36px;
+    height: 36px;
     overflow: hidden;
+
     background-color: rgba(250, 250, 250, 1);
 }
 
 .inner-right {
-    display: block;
-
-    height: 48px;
-    width: 48px;
-
+    position: absolute;
     top: 12px;
     right: 12px;
 
-    position: absolute;
+    width: 48px;
+    height: 48px;
 
     border: 0.5px solid purple;
     border-radius: 0px 24px 0px 0px;
@@ -204,11 +187,13 @@ aside {
 }
 
 .post {
+    position: relative;
+    z-index: 0;
+
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    position: relative;
-    z-index: 0;
+    
     padding: 12px 24px;
     border-top: 0.5px solid purple;
 }
@@ -223,17 +208,19 @@ aside {
 }
 
 .user-avatar {
+    position: relative;
+
     padding: 4px 0px 0px 0px;
     grid-row: 1 / span 2;
-    position: relative;
 }
 
 .image {
-    height: 36px;
     width: 36px;
+    height: 36px;
 
-    border-radius: 18px;
     border: 0.5px solid black;
+    border-radius: 18px;
+
     background-color: rgba(239, 239, 239, 1);
 }
 
@@ -263,22 +250,25 @@ img {
     max-width: 100%;
     max-height: 100%;
     object-fit: cover;
+    object-position: top left;
     box-sizing: border-box;
     border-radius: 8px;
     overflow: clip;
 }
 
 .media {
+    z-index: 0;
+
+    display: inline-flex;
+    align-items: stretch;
+
     min-width: 0px;
     min-height: 0px;
     max-height: 430px;
-    box-sizing: border-box;
+
     border: 0.5px solid black;
     border-radius: 8px;
-    align-items: stretch;
-    display: inline-flex;
-    z-index: 0;
-
+    box-sizing: border-box;
 }
 
 @media (min-width: 700px) and (max-width: 955px) {
@@ -299,16 +289,19 @@ img {
     }
 
     header {
-        width: 100%;
-        height: 74px;
+        position: fixed;
         top: 0px;
         left: 0px;
-        position: fixed;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
         z-index: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        height: 74px;
+
         background-color: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(28.5px);
     }
@@ -318,25 +311,29 @@ img {
     }
 
     .bottom-navbar {
-        margin: auto;
-        height: 68px;
-        display: grid;
-        grid-template-columns: repeat(5, 20%);
-        grid-template-rows: 1fr;
         position: fixed;
         bottom: 0px;
-        right: 0px;
         left: 0px;
+        right: 0px;
         z-index: 1;
+
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-template-columns: repeat(5, 20%);
         align-items: center;
+
+        margin: auto;
+        height: 68px;
+
         background-color: rgba(250, 250, 250, 1);
     }
 
     .bottom-navbar-icon {
-        height: 100%;
         position: relative;
-        align-content: center;
         text-align: center;
+        align-content: center;
+        
+        height: 100%;
     }
     
     .transform-container {
