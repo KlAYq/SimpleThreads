@@ -55,6 +55,7 @@ aside {
     justify-content: center;
 
     width: 100%;
+    overscroll-behavior-y: auto;
 
     padding: 0px 20px;
     box-sizing: border-box;
@@ -117,8 +118,6 @@ aside {
     width: 36px;
     height: 36px;
     overflow: hidden;
-
-    background-color: rgba(250, 250, 250, 1);
 }
 
 .inner-left {
@@ -132,7 +131,7 @@ aside {
     border: 0.5px solid purple;
     border-radius: 24px 0px 0px 0px;
 
-    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 48px rgba(250, 250, 250, 1);
 }
 
 .center-bar {
@@ -151,13 +150,13 @@ aside {
     background-color: rgba(250, 250, 250, 1);
 }
 
-.inner-center {
+/* .inner-center {
     position: absolute;
     top: 100%;
 
     width: 100%;
     height: 100%;
-}
+} */
 
 .right-corner {
     position: absolute;
@@ -168,8 +167,6 @@ aside {
     width: 36px;
     height: 36px;
     overflow: hidden;
-
-    background-color: rgba(250, 250, 250, 1);
 }
 
 .inner-right {
@@ -181,9 +178,9 @@ aside {
     height: 48px;
 
     border: 0.5px solid purple;
-    border-radius: 0px 24px 0px 0px;
+    border-radius: 24px;
 
-    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 48px rgba(250, 250, 250, 1);
 }
 
 .post {
@@ -194,7 +191,7 @@ aside {
     flex-direction: column;
     box-sizing: border-box;
     
-    padding: 12px 24px;
+    padding: 12px 0px;
     border-top: 0.5px solid purple;
 }
 
@@ -332,7 +329,7 @@ img {
         position: relative;
         text-align: center;
         align-content: center;
-        
+
         height: 100%;
     }
     
