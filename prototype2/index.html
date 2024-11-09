@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    
     <title>sus Threads</title>
 </head>
 <body>
     <div class="outer-outer-container">
+        <!-- The Fullscreen image background for when click into image to enlarge -->
+        <div id="fullscreen-bg" class="fullscreen-bg">
+            <div class="fullscreen-content">
+                <img id="fullscreen-image" src="" alt="Enlarged Image" class="fullscreen-image">
+                <button id="close-btn" class="close-btn">✖</button>
+            </div>
+        </div>
+        
         <!-- Header này chỉ hiện khi screen thu hẹp -->
         <header>
             <div class="header-icon">Logo</div>
@@ -51,36 +60,103 @@
                         <div class="inner-feed-slider">
                             <!-- Post 1 -->
                             <div class="post">
-                                <div class="post-layout">
-                                    <div class="user-avatar">
-                                        <div class="image">A</div>
+                                <div class="post-header">
+                                    <img src="res/avatar.png" alt="Avatar" class="avatar">
+                                    <div class="post-info">
+                                        <span class="username">Username</span>
+                                        <span class="timestamp">5m ago</span>   
                                     </div>
-                                    <div class="user-name">theswordlovingguy</div>
-                                    <div class="post-content">
-                                        <div class="caption">no cap</div>
-                                        <div class="media-container">
-                                            <div class="media">
-                                                <img src="sample01.jpg" alt="">
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div class="post-description">
+                                    This is the post description.
+                                </div>
+                                <div class="post-images">
+                                    <img src="res/temp.png" draggable="false" alt="Image 1" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 2" class="post-image">
+                                </div>
+                                <div class="post-actions">
+                                    <span class="action like">
+                                        <img src="res/love-icon.png" style="width: 20px; height: 20px;" alt="Image 1">
+                                        1221244
+                                    </span>
                                 </div>
                             </div>
                             <!-- Post 2 -->
                             <div class="post">
-                                <div class="post-layout">
-                                    <div class="user-avatar">
-                                        <div class="image">B</div>
+                                <div class="post-header">
+                                    <img src="res/avatar.png" alt="Avatar" class="avatar">
+                                    <div class="post-info">
+                                        <span class="username">Username</span>
+                                        <span class="timestamp">5m ago</span>
                                     </div>
-                                    <div class="user-name">anonymous</div>
-                                    <div class="post-content">
-                                        <div class="caption">cap</div>
-                                        <div class="media-container">
-                                            <div class="media">
-                                                <img src="sample02.jpg" alt="">
-                                            </div>
-                                        </div>
+                                </div>
+                                <div class="post-description">
+                                    This is the post description.
+                                </div>
+                                <div class="post-images">
+                                    <img src="res/temp.png" draggable="false" alt="Image 1" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 2" class="post-image">
+                                    <img src="res/sample01.jpg" draggable="false" alt="Image 3" class="post-image">
+                                    <img src="res/sample02.jpg" draggable="false" alt="Image 4" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 5" class="post-image">
+                                </div>
+                                <div class="post-actions">
+                                    <span class="action like">
+                                        <img src="res/love-icon.png" style="width: 20px; height: 20px;" alt="Image 1" draggable="false">
+                                        12
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="post">
+                                <div class="post-header">
+                                    <img src="res/avatar.png" alt="Avatar" class="avatar">
+                                    <div class="post-info">
+                                        <span class="username">Username</span>
+                                        <span class="timestamp">5m ago</span>
                                     </div>
+                                </div>
+                                <div class="post-description">
+                                    This is the post description.
+                                </div>
+                                <div class="post-images">
+                                    <img src="res/temp.png" draggable="false" alt="Image 1" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 2" class="post-image">
+                                    <img src="res/sample01.jpg" draggable="false" alt="Image 3" class="post-image">
+                                    <img src="res/sample02.jpg" draggable="false" alt="Image 4" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 5" class="post-image">
+                                </div>
+                                <div class="post-actions">
+                                    <span class="action like">
+                                        <img src="res/love-icon.png" style="width: 20px; height: 20px;" alt="Image 1" draggable="false">
+                                        12
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="post">
+                                <div class="post-header">
+                                    <img src="res/avatar.png" alt="Avatar" class="avatar">
+                                    <div class="post-info">
+                                        <span class="username">Username</span>
+                                        <span class="timestamp">5m ago</span>
+                                    </div>
+                                </div>
+                                <div class="post-description">
+                                    This is the post description.
+                                </div>
+                                <div class="post-images">
+                                    <img src="res/temp.png" draggable="false" alt="Image 1" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 2" class="post-image">
+                                    <img src="res/sample01.jpg" draggable="false" alt="Image 3" class="post-image">
+                                    <img src="res/sample02.jpg" draggable="false" alt="Image 4" class="post-image">
+                                    <img src="res/temp.png" draggable="false" alt="Image 5" class="post-image">
+                                </div>
+                                <div class="post-actions">
+                                    <span class="action like">
+                                        <img src="res/love-icon.png" style="width: 20px; height: 20px;" alt="Image 1" draggable="false">
+                                        12
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -97,5 +173,6 @@
             <div class="bottom-navbar-icon">P</div>
         </nav>
     </div>
+    <script src="imageSlide.js"></script>
 </body>
 </html>
