@@ -55,7 +55,6 @@ aside {
     justify-content: center;
 
     width: 100%;
-    overscroll-behavior-y: auto;
 
     padding: 0px 20px;
     box-sizing: border-box;
@@ -191,7 +190,7 @@ aside {
     flex-direction: column;
     box-sizing: border-box;
     
-    padding: 12px 0px;
+    padding: 12px 24px;
     border-top: 0.5px solid purple;
 }
 
