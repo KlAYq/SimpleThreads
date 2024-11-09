@@ -14,7 +14,7 @@ aside {
     justify-content: space-between;
 
     height: 100%;
-    min-width: 60px;
+    width: 76px;
     min-height: 480px;
 
     /* 
@@ -45,19 +45,29 @@ aside {
     align-content: center;
     justify-content: center;
 
+    padding: 0px 20px;
     width: 100%;
-    /* 
     box-sizing: border-box;
-    padding-left: 20px;
-    padding-right: 20px;
-    */
+}
+
+.transform-container {
+    min-height: 100vh;
+    display: flex;
+}
+
+@media (min-width: 700px) and (max-width: 955px) {
+    .transform-container {
+        max-width: calc(100% - 1.5* 76px - 77px);
+    }
 }
 
 .inner-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-width: 640px;
+
+    width: 640px;
+    max-width: 640px;
+    flex-grow: 1;
     container-type: inline-size;
 }
 
@@ -79,6 +89,7 @@ aside {
 .outer-feed-slider {
     display: flex;
     flex-direction: column;
+    flex-shrink: 1;
 
     width: 100%;
     min-height: 100%;
