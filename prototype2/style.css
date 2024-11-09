@@ -258,6 +258,10 @@ aside {
         align-content: center;
         text-align: center;
     }
+    
+    .transform-container {
+        width: 100%;
+    }
 
     .outer-feed-slider {
         border: none;
