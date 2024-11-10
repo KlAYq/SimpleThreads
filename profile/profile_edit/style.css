@@ -60,7 +60,7 @@ main {
   width: 650px;
   z-index: -1;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-rows: 1fr 1fr;
   margin-top: 2em;
   margin-bottom: 2em;
 }
@@ -80,10 +80,6 @@ main {
 .profile-bio {
   text-align: justify;
   text-justify: inter-word;
-}
-
-.profile-image {
-  margin-right: 20px;
 }
 
 .avatar {
