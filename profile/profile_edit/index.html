@@ -12,41 +12,25 @@
     <div class="post-header">EditProfile</div>
   </header>
   <main>
-    <form action="#">
+    <form action="#" id="profile-form">
       <div class="profile">
-      <div class="profile-image">
-        <img src="../../res/avatar.png" alt="Avatar" class="avatar">
-<!--        <label for="avatar">Select a file:</label>-->
-<!--        <input type="image" name="avatar" src="../../prototype2/res/avatar.png" alt="Image" class="avatar">-->
-        <input type="file" name="avatar" id="avatar" accept="image/*">
-<!--        <button id="image_alt"></button>-->
-      </div>
-      <div class="profile-details">
-<!--        <div class="profile-name">Red Sus</div>-->
-        <label for="profile-name">Profile Name</label>
-        <input type="text" placeholder="Profile Name" name="profile-name" id="profile-name" value="Red Sus">
 
-        <label for="profile-bio">Profile Bio</label>
-        <input type="text" placeholder="Profile Bio" name="profile-bio" id="profile-bio" value="Kira">
-<!--        <div class="profile-bio">-->
-<!--          My name is Yoshikage Kira.-->
-<!--          I'm 33 years old.-->
-<!--          <br>-->
-<!--          My house is in the northeast section of Morioh, where all the villas are, and I am not married.-->
-<!--          I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest.-->
-<!--          I don't smoke, but I occasionally drink.-->
-<!--          I'm in bed by 11 PM, and make sure I get eight hours of sleep, no matter what.-->
-<!--          After having a glass of warm milk and doing about twenty minutes of stretches before going to bed, I usually have no problems sleeping until morning.-->
-<!--          Just like a baby, I wake up without any fatigue or stress in the morning.-->
-<!--          I was told there were no issues at my last check-up.-->
-<!--          <br>-->
-<!--          I'm trying to explain that I'm a person who wishes to live a very quiet life.-->
-<!--          I take care not to trouble myself with any enemies, like winning and losing, that would cause me to lose sleep at night.-->
-<!--          That is how I deal with society, and I know that is what brings me happiness.-->
-<!--          Although, if I were to fight I wouldn't lose to anyone.-->
-<!--        </div>-->
+        <div class="profile-image">
+          <img src="../../res/avatar.png" alt="Avatar" class="avatar">
+          <input type="file" name="avatar" id="avatar" accept="image/*" class="avatar-input">
+        </div>
+
+        <div class="profile-details">
+          <label for="profile-name">Profile Name</label>
+          <input type="text" placeholder="Profile Name" name="profile-name" id="profile-name" value="Red Sus" class="name-input">
+
+          <label for="profile-bio">Profile Bio</label>
+          <textarea name="profile-bio" id="profile-bio" class="bio-input" maxlength="300" form="profile-form" rows="10" cols="50"></textarea>
+        </div>
       </div>
-    </div>
+      <div class="button-container">
+        <button type="submit" id="profile-submit">Submit</button>
+      </div>
     </form>
   </main>
 </body>

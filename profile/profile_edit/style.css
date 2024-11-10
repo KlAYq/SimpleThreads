@@ -34,23 +34,6 @@ main {
   border: 1px solid;
 }
 
-.feed-container {
-  width: 650px;
-  left: calc(100px + (100% - 100px - 650px) / 2);
-  z-index: -1;
-}
-
-
-.threads{
-  width: 100%;
-  padding: 1rem;
-  background-color: #f0f0f0;
-  border-radius: 30px;
-  box-sizing: border-box;
-  border: 1px solid;
-  z-index: -1;
-}
-
 .profile {
   border-radius: 30px;
   padding: 1rem;
@@ -59,27 +42,20 @@ main {
   border: 1px solid;
   width: 650px;
   z-index: -1;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   margin-top: 2em;
   margin-bottom: 2em;
 }
 
 .profile-details {
-  display: grid;
-  grid-template-rows: auto auto;
+  display: flex;
+  flex-direction: column;
   /*width: ;*/
 }
 
-.profile-name {
-  font-weight: bold;
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.profile-bio {
-  text-align: justify;
-  text-justify: inter-word;
+.profile-image {
+  margin-bottom: 1em;
 }
 
 .avatar {
@@ -90,11 +66,39 @@ main {
   margin-right: 10px;
 }
 
-
-.post {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background-color: #ffffff;
-  border-radius: 20px;
-  height: 500px;
+label {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
 }
+
+.name-input {
+  height: 2rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.bio-input {
+  resize: none;
+  min-height: 2rem;
+  max-height: 30rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.button-container{
+  position: relative;
+  width: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button#profile-submit{
+  width: 8em;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+
+
