@@ -1,80 +1,25 @@
-body{
-  margin: 0 0;
-  overflow-x: hidden;
-}
-
-header{
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: transparent;
-  text-align: center;
-  width: 100%;
-  height: 80px;
-  border: 1px solid green;
-}
-
-main {
-  position: relative;
-  margin-top: 80px;
-  display: flex;
-  flex-direction: column;
-  left: calc(100px + (100% - 100px - 650px) / 2);
-}
-
-.logo{
-  float:left;
-  width: 100px;
-  height: 100%;
-  border: 1px solid;
-}
-
-.post-header{
-  height: 100%;
-  border: 1px solid;
-}
-
-.feed-container {
-  width: 650px;
-  left: calc(100px + (100% - 100px - 650px) / 2);
-  z-index: -1;
-}
-
-
-.threads{
-  width: 100%;
-  padding: 1rem;
-  background-color: #f0f0f0;
-  border-radius: 30px;
-  box-sizing: border-box;
-  border: 1px solid;
-  z-index: -1;
-}
-
 .profile {
-  border-radius: 30px;
   padding: 1rem;
-  background-color: #f0f0f0;
-  box-sizing: border-box;
-  border: 1px solid;
-  width: 650px;
-  z-index: -1;
-  display: grid;
-  grid-template-columns: auto auto;
-  margin-top: 2em;
-  margin-bottom: 2em;
 }
 
 .profile-details {
+  margin-top: 1.5rem;
+  margin-left: 1.5rem;
+  clear: left;
   display: grid;
   grid-template-rows: auto auto;
-  /*width: ;*/
 }
 
 .profile-name {
   font-weight: bold;
   font-size: 2rem;
-  margin-bottom: 1rem;
+}
+
+.profile-alias {
+  font-weight: lighter;
+  font-size: 1rem;
+  font-style: italic;
+  padding-bottom: 1rem;
 }
 
 .profile-bio {
@@ -83,22 +28,11 @@ main {
 }
 
 .profile-image {
-  margin-right: 20px;
+  margin: 1em 1em 1em 0;
+  float: right;
+  img {
+    height: 6em;
+    width: 6em;
+  }
 }
 
-.avatar {
-  user-select: none;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-
-.post {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background-color: #ffffff;
-  border-radius: 20px;
-  height: 500px;
-}

@@ -11,13 +11,13 @@
 
 .sidebar-button-glow {
     height: calc(100% - 12px);
-    
+
     margin: 6px 0px;
     border-radius: 12px;
-    
+
     opacity: 0;
     background-color: rgba(0, 0, 0, 0.04);
-    
+
     transition-property: opacity, transform;
     transition-timing-function: ease-out;
     transform: scale(0.85);
@@ -78,7 +78,6 @@
     }
 }
 
- POST
 .posts {
     position: absolute;
     width: 100%;
@@ -136,7 +135,7 @@
 .post-images {
     user-select: none;
     display: flex;
-    overflow: hidden; 
+    overflow: hidden;
     gap: 4px;
     padding-right: 20px;
 }
@@ -167,10 +166,10 @@
 .action {
     user-select: none;
     display: inline-flex;
-    align-items: center; 
+    align-items: center;
     border-radius: 20px;
-    transition: background-color 0.3s, color 0.3s; 
-    padding: 5px; 
+    transition: background-color 0.3s, color 0.3s;
+    padding: 5px;
 }
 
 .action img {
@@ -182,7 +181,7 @@
     border-radius: 20px;
 }
 .fullscreen-bg {
-    display: none; 
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
