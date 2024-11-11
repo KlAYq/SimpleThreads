@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Simple Threads</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=1, user-scalable=yes"/>
+        <!-- Bootstrap CSS v5.2.1 -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="new-style.css">
+    </head>
+
+    <body>
+        <!-- Mobile header -->
+        <header class="position-fixed top-0 start-0 z-1 d-sm-none d-flex flex-column justify-content-center align-items-center w-100" style="height: 74px;" id="mobile-header">
+            <div class="" style="width: 32px; height: 32px;">Logo</div>
+            <div class="btn btn-light position-absolute" style="top: 19px;right: 19px;" id="login-button">Log in</div>
+        </header>
+        <!-- sidebar desktop -->
+        <aside class="d-sm-flex d-none flex-column justify-content-between align-items-center position-fixed top-0 start-0 z-1 bg" style="width: 76px; height: 100%; min-height: 480px;">
+            <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">Logo</div>
+            <div class="d-flex flex-column justify-content-between">
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">H
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">S
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">A
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">L
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">P
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+            </div>
+            <div class="d-flex flex-column justify-content-between">
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">P
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+                <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">U
+                    <div class="sidebar-button-glow position-absolute w-100"></div>
+                </div>
+            </div>
+        </aside>
+        <main>
+            <div class="btn btn-light position-absolute d-none d-sm-block" style="top: 24px; right: 24px;">Log in</div>
+            <!-- outer-container -->
+            <div class="container-fluid d-flex align-content-center justify-content-center m-0 bg-light-subtle" style="padding: 0px 20px; box-sizing: border-box;" id="outer-container">
+                <!-- transform container -->
+                <div class="d-flex min-vh-100" id="transform-container">
+                    <!-- inner container -->
+                    <div class="d-flex flex-column w-100" style="max-width: 640px;">
+                        <!-- desktop header -->
+                        <div class="position-sticky top-0 z-1 d-none d-sm-flex align-items-center justify-content-center w-100 bg-light-subtle" style="min-height: 60px; box-shadow: 0 0 0 1px var(--bg-light-subtle);">Home
+                            <!-- left corner -->
+                            <div class="position-absolute z-1 overflow-hidden" style="top: 48px; left: -12px; width: 36px; height: 36px;">
+                                <!-- inner left corner -->
+                                <div class="inner-left position-absolute" style="top: 12px; left: 12px; width: 48px; height: 48px;"></div>
+                            </div>
+                            <!-- center bar -->
+                            <div class="center-bar position-absolute z-1 overflow-hidden bg-light-subtle" style="top: 48px; left: 24px; width: calc(100% - 46px); height: 12px;"></div>
+                            <!-- right corner -->
+                            <div class="position-absolute z-1 overflow-hidden" style="top: 48px; right: -12px; width: 36px; height: 36px;">
+                                <!-- inner right corner -->
+                                <div class="inner-right position-absolute" style="top: 12px; right: 12px; width: 48px; height: 48px;"></div>
+                            </div>
+                        </div>
+                        <!-- outer feed slider -->
+                        <div class="d-flex flex-column w-100 bg-white" style="min-height: 100%;" id="outer-feed-slider">
+                            <!-- inner feed slider -->
+                            <div class="d-flex flex-column" style="border-radius: 12px 12px 0 0;">
+                                <!-- post -->
+                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus, nisi explicabo commodi necessitatibus vitae quam pariatur doloremque eius esse ducimus nam voluptas aperiam inventore iusto voluptatibus veritatis, fugit laboriosam autem maxime sequi iure corrupti? Quibusdam praesentium hic esse repudiandae blanditiis tempore quia aut culpa debitis harum necessitatibus, nesciunt modi perferendis quam accusantium totam, eum velit vero iusto quos est ea doloribus placeat nihil. Impedit deserunt perspiciatis fugiat consequuntur commodi possimus, amet illum officia odit, magnam placeat enim, aliquam delectus minima! Adipisci architecto sit officia asperiores quas tempore, maiores consequuntur, suscipit quidem neque quod explicabo eos quos iste corrupti eum sequi id dignissimos reprehenderit voluptatum dicta! Ducimus, explicabo voluptatem. Repellendus, molestias tempora fuga veritatis ipsam sint inventore est consectetur quos magni labore numquam sit dignissimos dicta atque, quod cum nostrum? Necessitatibus voluptatum quasi itaque totam nisi, dicta suscipit iure omnis veniam illo quas repudiandae, possimus doloribus saepe cum accusantium. Soluta natus facere amet explicabo illo eum. Laboriosam corporis accusamus ad. Tenetur dolorum fugiat ut atque saepe recusandae inventore illum minima itaque possimus, voluptates velit nemo delectus eos libero omnis sint similique placeat minus cumque repellat ea! Sit impedit incidunt nulla. Enim delectus vel voluptates dolores consequatur? Soluta amet quidem fugiat minima.
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <nav class="position-fixed bottom-0 start-0 end-0 z-1 d-sm-none d-flex row bottom-navbar m-auto bg-light" style="height: 68px;">
+            <div class="col h-100">H</div>
+            <div class="col h-100">S</div>
+            <div class="col h-100">A</div>
+            <div class="col h-100">L</div>
+            <div class="col h-100">P</div>
+        </nav>
+        <footer>
+            <!-- place footer here -->
+        </footer>
+        <!-- Bootstrap JavaScript Libraries -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"
+        ></script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
