@@ -34,13 +34,13 @@ document.querySelectorAll('.post-images').forEach(postImages => {
 
     if (!isOverflowing) {
         postImages.style.cursor = 'pointer';
-        postImages.addEventListener('mousedown', (e) => {
+        postImages.addEventListener('pointerdown', (e) => {
             if (e.target.classList.contains('post-image')) {
                 activeImage = e.target;
                 activeImage.style.transform = 'scale(0.95)';  // Shrink the image slightly on drag
             }
         }); 
-        postImages.addEventListener('mouseup', (e) => {
+        postImages.addEventListener('pointerup', (e) => {
             if (activeImage) {
                 activeImage.style.transform = 'scale(1)';  // Reset image size
                 activeImage = null;
@@ -54,7 +54,7 @@ document.querySelectorAll('.post-images').forEach(postImages => {
         });
     } else {
         // On mousedown event: Store the initial cursor position
-        postImages.addEventListener('mousedown', (e) => {
+        postImages.addEventListener('pointerdown', (e) => {
             isDragging = true;
             cursorDown = { x: e.pageX, y: e.pageY };  
             startX = e.pageX - postImages.offsetLeft;
@@ -68,17 +68,20 @@ document.querySelectorAll('.post-images').forEach(postImages => {
         }); 
 
         // On mousemove event: Handle dragging
-        postImages.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;  // Only allow dragging if isDragging is true
+        postImages.addEventListener('pointermove', (e) => {
+             e.preventDefault();
+            if (!isDragging) {
+                console.log("pointer move but not dragging so return!");
+                return;  // Only allow dragging if isDragging is true
+            }
 
             const x = e.pageX - postImages.offsetLeft;
             const walk = x - startX;
-          
             postImages.scrollLeft = scrollLeft - walk;
         });
 
         // on mouseup event: Check if mouse position is the same as cursorDown (confirm it is a click)
-        postImages.addEventListener('mouseup', (e) => {
+        postImages.addEventListener('pointerup', (e) => {
             mouseUpPosition = { x: e.pageX, y: e.pageY };  // Store the position on mouse up
 
             if (cursorDown.x === mouseUpPosition.x && cursorDown.y === mouseUpPosition.y) {
@@ -95,7 +98,8 @@ document.querySelectorAll('.post-images').forEach(postImages => {
         });
 
         // On mouseleave event: Reset dragging state if the mouse leaves the area
-        postImages.addEventListener('mouseleave', () => {
+        postImages.addEventListener('pointerleave', () => {
+            console.log("pointer leave!");
             if (isDragging) {
                 isDragging = false;  
                 postImages.style.cursor = 'grab';
@@ -103,6 +107,29 @@ document.querySelectorAll('.post-images').forEach(postImages => {
                     activeImage.style.transform = 'scale(1)';  // Reset image size
                     activeImage = null;
                 }
+            }
+        });
+
+        // Handle touch events for mobile
+        postImages.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            touchStartX = e.touches[0].pageX - postImages.offsetLeft;
+            scrollLeft = postImages.scrollLeft;
+        });
+
+        postImages.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const x = e.touches[0].pageX - postImages.offsetLeft;
+            const walk = x - touchStartX;
+            postImages.scrollLeft = scrollLeft - walk;
+            e.preventDefault(); // Prevent page scrolling while dragging
+        });
+
+        postImages.addEventListener('touchend', () => {
+            isDragging = false;
+            if (activeImage) {
+                activeImage.style.transform = 'scale(1)';
+                activeImage = null;
             }
         });
     }

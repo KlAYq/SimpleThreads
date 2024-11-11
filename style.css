@@ -314,7 +314,7 @@ aside {
     color: gray;
 }
 
-.action.like {
+.action {
     user-select: none;
     display: inline-flex;
     align-items: center; 
@@ -323,11 +323,11 @@ aside {
     padding: 5px; 
 }
 
-.action.like img {
+.action img {
     margin-right: 5px;
 }
 
-.action.like:hover {
+.action:hover {
     background-color: #f0f0f0;
     border-radius: 20px;
 }
