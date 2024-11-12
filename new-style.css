@@ -46,8 +46,9 @@
     border: solid 0.5px purple;
 }
 
-@media (min-width: 576px) and (max-width: 991.98px) {
+@media (min-width: 576px) and (max-width: 1399.98px) {
     #transform-container {
+        width: 640px;
         max-width: calc(100% - 1.5 * 76px - 77px);
     }
 }
@@ -180,6 +181,7 @@
     background-color: #f0f0f0;
     border-radius: 20px;
 }
+
 .fullscreen-bg {
     display: none;
     position: fixed;
