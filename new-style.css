@@ -46,7 +46,7 @@
     border: solid 0.5px purple;
 }
 
-@media (min-width: 576px) and (max-width: 1399.98px) {
+@media (min-width: 576px) /*and (max-width: 1399.98px)*/ {
     #transform-container {
         width: 640px;
         max-width: calc(100% - 1.5 * 76px - 77px);
@@ -95,8 +95,7 @@
     border-radius: 10px;
     width: calc(100% - 20px);
     box-sizing: border-box;
-    margin-left: 20px;
-    margin-top: 20px;
+    margin: 12px auto;
 }
 
 .post-header {
