@@ -1,6 +1,6 @@
 const postContentDiv = document.querySelector(".post");
 function redirectToPost(postId) {
-    const excludedClasses = ['avatar', 'post-image', 'post-images', 'username', 'post-actions', 'action', 'like', 'comment'];
+    const excludedClasses = ['avatar', 'post-image', 'post-images', 'username', 'post-actions', 'action', 'like'];
 
     // Check if the target element or any of its parents have one of the excluded classes
     let target = event.target;
@@ -16,6 +16,13 @@ function redirectToPost(postId) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    const backButton = document.getElementById('backButton');
+
+    // Check if we are on a post page (assuming the URL contains 'post' or 'id' parameter)
+
+    backButton.classList.remove('d-none'); // Show the back button
+    
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');

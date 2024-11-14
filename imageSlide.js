@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Function to open the image in fullscreen
         const openImage = (src) => {
             fullscreenImage.src = src;
+            fullscreenImage.style.height = "111vh";
             fullscreenBg.style.display = 'flex';  // Show the black bg
         };
     
@@ -131,5 +132,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    });
+    
+});
+
+// Adjust images so that its has the same height as the max height of those images
+window.addEventListener('load', () => {
+    // Get all posts on the page
+    const posts = document.querySelectorAll('.post');
+
+    posts.forEach(post => {
+        const images = post.querySelectorAll('.post-image');
+        const postImagesContainer = post.querySelector('.post-images');
+        
+        // Find the tallest image in the current post
+        let maxHeight = 0;
+        images.forEach(image => {
+            // Make sure the image is loaded before measuring
+
+                maxHeight = Math.max(maxHeight, image.naturalHeight);
+                
+                // After all images are loaded, set the container's height to match the tallest image
+                postImagesContainer.style.height = `${maxHeight}px`;
+           
+        });
+    });
+});
+
+// Function to handle liking a post
+document.querySelectorAll('.like').forEach(likeAction => {
+    const likeIcon = likeAction.querySelector('.like-icon');
+    const likeCount = likeAction.querySelector('.like-count');
+    
+    let isLiked = false; // Track like status for each post
+    // Add event listener to each like button
+    likeAction.addEventListener('click', () => {
+        // Toggle like state
+        if (isLiked) {
+            likeIcon.classList.remove('bi-heart-fill');
+            likeIcon.classList.add('bi-heart');
+            likeCount.textContent = parseInt(likeCount.textContent) - 1;
+        } else {
+            likeIcon.classList.remove('bi-heart');
+            likeIcon.classList.add('bi-heart-fill');
+            likeCount.textContent = parseInt(likeCount.textContent) + 1;
+        }
+
+        isLiked = !isLiked;
     });
 });
