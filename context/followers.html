@@ -105,7 +105,7 @@
                   <img src="/res/avatar.png" alt="Avatar" class="avatar">
                 </a>
 
-                <button class="float-end btn btn-dark" onclick="changeOption(event)" onmouseenter="hoverButton(event)" onmouseleave="unHoverButton(event)">Follow</button>
+                <button class="float-end btn btn-dark" onclick="changeFollowOption(event)" onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
 
                 <div class="notification-content">
                   <div class="text-dark">Red Sus</div>
@@ -121,7 +121,7 @@
                   <img src="/res/avatar.png" alt="Avatar" class="avatar">
                 </a>
 
-                <button class="float-end btn btn-dark" onclick="changeOption(event)" onmouseenter="hoverButton(event)" onmouseleave="unHoverButton(event)">Follow</button>
+                <button class="float-end btn btn-dark" onclick="changeFollowOption(event)" onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
 
                 <div class="notification-content">
                   <div class="text-dark">Red Sus</div>
@@ -137,7 +137,7 @@
                   <img src="/res/avatar.png" alt="Avatar" class="avatar">
                 </a>
 
-                <button class="float-end btn btn-dark" onclick="changeOption(event)" onmouseenter="hoverButton(event)" onmouseleave="unHoverButton(event)">Follow</button>
+                <button class="float-end btn btn-dark" onclick="changeFollowOption(event)" onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
 
                 <div class="notification-content">
                   <div class="text-dark">Red Sus</div>
@@ -153,7 +153,7 @@
                   <img src="/res/avatar.png" alt="Avatar" class="avatar">
                 </a>
 
-                <button class="float-end btn btn-dark" onclick="changeOption(event)" onmouseenter="hoverButton(event)" onmouseleave="unHoverButton(event)">Follow</button>
+                <button class="float-end btn btn-dark" onclick="changeFollowOption(event)" onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
 
                 <div class="notification-content">
                   <div class="text-dark">Red Sus</div>
@@ -195,34 +195,7 @@
       tab.removeAttribute('aria-current');
     }
   }
-
-  function changeOption(event){
-    event.preventDefault();
-
-    if (event.target.innerText === 'Follow') {
-      event.target.innerText = "Followed";
-      event.target.classList.remove('btn-dark');
-      event.target.classList.add('btn-outline-dark');
-    } else {
-      event.target.innerText = "Follow";
-      event.target.classList.remove('btn-outline-dark');
-      event.target.classList.add('btn-dark');
-    }
-  }
-
-  function hoverButton(event){
-    event.preventDefault();
-    if (event.target.innerText !== 'Follow')
-      event.target.innerText = 'Unfollow';
-  }
-
-  function unHoverButton(event){
-    event.preventDefault();
-    if (event.target.innerText !== 'Follow')
-      event.target.innerText = 'Followed';
-  }
-
-
 </script>
+<script src="/scripts/button.js"></script>
 </body>
 </html>
