@@ -88,7 +88,5 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
         `).join('');
-    } else {
-        document.getElementById("post").innerHTML = `<p>Post not found.</p>`;
     }
 });

@@ -93,9 +93,10 @@
 .post {
     background-color: white;
     border-radius: 10px;
-    width: calc(100% - 20px);
+    width: calc(100% - 12px);
     box-sizing: border-box;
-    margin: 12px auto;
+    margin-left: 12px;
+    margin-top: 20px;
 }
 
 .post-header {
@@ -139,7 +140,7 @@
     overflow: hidden;
     gap: 4px;
     padding-right: 20px;
-    max-height: 400px;
+    max-height: min(400px, 30vh);
 }
 
 .post-image {

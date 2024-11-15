@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
     document.querySelectorAll('.post-images').forEach(postImages => {
         let isDragging = false; 
         let startX;
@@ -132,13 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-    });
-    
+    });    
 });
 
 // Adjust images so that its has the same height as the max height of those images
 window.addEventListener('load', () => {
-    // Get all posts on the page
     const posts = document.querySelectorAll('.post');
 
     posts.forEach(post => {
@@ -148,8 +146,6 @@ window.addEventListener('load', () => {
         // Find the tallest image in the current post
         let maxHeight = 0;
         images.forEach(image => {
-            // Make sure the image is loaded before measuring
-
                 maxHeight = Math.max(maxHeight, image.naturalHeight);
                 
                 // After all images are loaded, set the container's height to match the tallest image
