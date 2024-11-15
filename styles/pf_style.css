@@ -25,6 +25,7 @@
 .profile-bio {
   text-align: justify;
   text-justify: inter-word;
+  margin: 1.5rem;
 }
 
 .profile-image {

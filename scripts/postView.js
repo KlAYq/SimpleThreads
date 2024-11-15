@@ -12,7 +12,7 @@ function redirectToPost(postId) {
     }
 
     // If none of the excluded classes are found, redirect to the view post page
-    window.location.href = `post-view.html?id=${postId}`;
+    window.location.href = `post/post-view.html?id=${postId}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

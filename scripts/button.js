@@ -4,8 +4,8 @@ document.querySelectorAll(".sidebar-button").forEach(button => {
     button.addEventListener('mousedown', () => {
         icon.className = icon.className.replace(/\bbi-([\w+\-]+)\b/, (match, p1) => `bi-${p1}-fill`)
         button.style.transform = "scale(0.9)"
-        
-    })  
+
+    })
 
     mouseout = () => {
         icon.className = icon.className.replace(/\bbi-([\w+\-]+)-fill\b/, (match, p1) => `bi-${p1}`)
@@ -22,7 +22,7 @@ document.querySelectorAll("#mobile-navbar div").forEach(button => {
         icon.className = icon.className.replace(/\bbi-([\w+\-]+)\b/, (match, p1) => `bi-${p1}-fill`)
         button.style.transform = "scale(0.9)"
     }
-    
+
     mouseout = () => {
         icon.className = icon.className.replace(/\bbi-([\w+\-]+)-fill\b/, (match, p1) => `bi-${p1}`)
         button.style.transform = "scale(1)"
@@ -31,3 +31,17 @@ document.querySelectorAll("#mobile-navbar div").forEach(button => {
     button.addEventListener('mouseup', mouseout)
     button.addEventListener('mouseleave', mouseout)
 })
+
+async function followToggle(){
+  let b = document.getElementById("follow-button");
+  // console.log(b);
+  if (b.innerText === "Follow"){
+    b.innerText = "Unfollow";
+    // console.log(b.innerText);
+  }
+  else {
+    b.innerText = "Follow";
+    // console.log(b.innerText);
+  }
+
+}
