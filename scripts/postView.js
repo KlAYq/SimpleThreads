@@ -6,7 +6,7 @@ function redirectToPost(postId) {
     let target = event.target;
     while (target && target !== this) {
         if (excludedClasses.some(cls => target.classList.contains(cls))) {
-            return; 
+            return;
         }
         target = target.parentElement;
     }
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if we are on a post page (assuming the URL contains 'post' or 'id' parameter)
 
     backButton.classList.remove('d-none'); // Show the back button
-    
+
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         commentsDiv.innerHTML = post.comments.map(comment => `
             <div class="commentSection">
                 <div class="comment-header">
-                    <img src="res/avatar.png" alt="Avatar" class="comment-avatar">
+                    <img src="../res/avatar.png" alt="Avatar" class="comment-avatar">
                     <div class="comment-info">
                         <span class="comment-username">${comment.user}</span>
                         <span class="comment-timestamp">${comment.timestamp}</span>
