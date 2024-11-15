@@ -17,11 +17,11 @@ function redirectToPost(postId) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const backButton = document.getElementById('backButton');
+    // const backButton = document.getElementById('backButton');
 
     // Check if we are on a post page (assuming the URL contains 'post' or 'id' parameter)
 
-    backButton.classList.remove('d-none'); // Show the back button
+    // backButton.classList.remove('d-none'); // Show the back button
 
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             username: "Username",
             timestamp: "5m ago",
             description: "This is the post description.",
-            images: ["res/temp.png", "res/temp.png"],
+            images: ["/res/temp.png", "/res/temp.png"],
             likes: 1221244,
             comments: [
                 { user: "User1", text: "a", timestamp: "23 min ago"},
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
             username: "Username",
             timestamp: "5m ago",
             description: "This is the post description.",
-            images: ["res/temp.png", "res/temp.png", "res/temp.png", "res/temp.png","res/temp.png"],
+            images: ["/res/temp.png", "/res/temp.png", "/res/temp.png", "/res/temp.png","/res/temp.png"],
             likes: 1221244,
             comments: [
                 { user: "User1", text: "12", timestamp: "23 min ago" },
