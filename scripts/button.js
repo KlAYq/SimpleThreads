@@ -55,19 +55,26 @@ function changeFollowOption(event){
     event.target.classList.add('btn-outline-dark');
   } else {
     event.target.innerText = "Follow";
-    event.target.classList.remove('btn-outline-dark');
+    event.target.classList.remove('btn-outline-danger');
     event.target.classList.add('btn-dark');
   }
 }
 
 function hoverFollowButton(event){
   event.preventDefault();
-  if (event.target.innerText !== 'Follow')
+  if (event.target.innerText !== 'Follow'){
     event.target.innerText = 'Unfollow';
+    event.target.classList.remove('btn-outline-dark');
+    event.target.classList.add('btn-outline-danger');
+  }
 }
 
 function unHoverFollowButton(event){
   event.preventDefault();
-  if (event.target.innerText !== 'Follow')
+  if (event.target.innerText !== 'Follow'){
     event.target.innerText = 'Followed';
+    event.target.classList.add('btn-outline-dark');
+    event.target.classList.remove('btn-outline-danger');
+
+  }
 }
