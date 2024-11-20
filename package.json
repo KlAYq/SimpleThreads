@@ -1,0 +1,25 @@
+{
+  "name": "simplethreads",
+  "version": "1.0.0",
+  "description": "web development group project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KlAYq/SimpleThreads.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KlAYq/SimpleThreads/issues"
+  },
+  "homepage": "https://github.com/KlAYq/SimpleThreads#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "express": "^4.21.1",
+    "express-handlebars": "^8.0.1"
+  }
+}
