@@ -14,7 +14,56 @@
         />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="/css/components.css">
-      <link rel="icon" href="/res/logo/favicon.ico">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="icon" href="/images/logo/favicon.ico">
+        <style>
+            .commentSection {
+                width: 97%;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 20px;
+                margin-top: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .comment-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 5px;
+            }
+
+            .comment-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+
+            .comment-info {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .comment-username {
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .comment-timestamp {
+                font-size: 12px;
+                color: #777;
+            }
+
+            .comment-text {
+                font-size: 14px;
+                color: #333;
+                margin-top: 5px;
+                margin-left: 50px;
+                word-wrap: break-word;
+            }
+        </style>
     </head>
 
     <body>
@@ -27,19 +76,27 @@
         </div>
         <!-- Mobile header -->
         <header class="position-fixed top-0 start-0 z-1 d-sm-none d-flex flex-column justify-content-center align-items-center w-100" style="height: 74px;" id="mobile-header">
+            <!-- Back button -->
+            <button id="backButton" class="btn btn-dark-primary rounded-circle  position-absolute" style="width: 40px; height: 40px; padding: 0; left: 19px" onclick="window.location.href = '../index.html';">
+                <i class="bi bi-arrow-left fs-4"></i>
+            </button>
+
             <div class="" style="width: 32px; height: 32px;">Logo</div>
-            <div class="btn btn-light position-absolute" style="top: 19px;right: 19px;" id="login-button">
-              <img src="/res/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
-            </div>
+
+            <a href="../auth/login.html">
+                <div class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">
+                Log in
+                </div>
+            </a>
         </header>
         <!-- sidebar desktop -->
         <aside class="d-sm-flex d-none flex-column justify-content-between align-items-center position-fixed top-0 start-0 z-1 bg" style="width: 76px; height: 100%; min-height: 480px;">
             <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
-              <img src="/res/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
+              <img src="/images/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
             </div>
             <div class="d-flex flex-column justify-content-between">
                 <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
-                    <a href="../../index.html">
+                    <a href="../index.html">
                         <i class="bi bi-house fs-4 text-dark"></i>
                     </a>
                     <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
@@ -51,19 +108,19 @@
                     <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
                 </div>
                 <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
-                    <a href="#">
-                        <i class="bi bi-plus-square-fill fs-4 text-dark"></i>
+                    <a href="create/create-post.html">
+                        <i class="bi bi-plus-square fs-4 text-dark"></i>
                     </a>
                     <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
                 </div>
                 <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
-                    <a href="../../context/notifications.html">
+                    <a href="../context/notifications.html">
                         <i class="bi bi-bell fs-4 text-dark"></i>
                     </a>
                     <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
                 </div>
                 <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
-                    <a href="../../profile/my_profile.html">
+                    <a href="../profile/my_profile.html">
                         <i class="bi bi-person fs-4 text-dark"></i>
                     </a>
                     <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
@@ -93,7 +150,7 @@
                     <!-- inner container -->
                     <div class="d-flex flex-column w-100" style="max-width: 640px;">
                         <!-- desktop header -->
-                        <div class="position-sticky top-0 z-1 d-none d-sm-flex align-items-center justify-content-center w-100 bg-light-subtle" style="min-height: 60px; box-shadow: 0 0 0 1px var(--bs-light-bg-subtle);">Create Post
+                        <div class="position-sticky top-0 z-1 d-none d-sm-flex align-items-center justify-content-center w-100 bg-light-subtle" style="min-height: 60px; box-shadow: 0 0 0 1px var(--bs-light-bg-subtle);">Home
                             <!-- left corner -->
                             <div class="position-absolute z-1 overflow-hidden" style="top: 48px; left: -12px; width: 36px; height: 36px;">
                                 <!-- inner left corner -->
@@ -108,35 +165,40 @@
                             </div>
                         </div>
                         <!-- outer feed slider -->
-                        <div class="d-flex flex-column w-100 bg-white pe-3" style="min-height: 100%;" id="outer-feed-slider">
+                        <div class="d-flex flex-column w-100 bg-white" style="min-height: 100%;" id="outer-feed-slider">
                             <!-- inner feed slider -->
                             <div class="d-flex flex-column" style="border-radius: 12px 12px 0 0;">
                                 <!-- post -->
                                 <div class="post">
                                     <div class="post-header">
-                                        <img src="/res/avatar.png" alt="Avatar" class="avatar">
+                                        <a href="/profile/profile.html">
+                                            <img src="../images/avatar.png" alt="Avatar" class="avatar">
+                                        </a>
                                         <div class="post-info">
-                                            <span class="username">Red Sus</span>
+                                            <span class="username"></span>
+                                            <span class="timestamp"></span>
                                         </div>
                                     </div>
                                     <div class="post-description">
-                                      <form action="#" id="post-form">
-                                        <label for="post-details">
-                                        </label>
-                                          <textarea id="post-details" class="bio-input form-control" maxlength="300" form="post-form" rows="10" cols="50" placeholder="Write something..." style="resize: none"></textarea>
-                                        <div class="btn rounded-3 btn-light border-1 border border-dark-subtle my-4 d-flex align-items-center justify-content-center text-center" style="height: 6rem; width: 10rem">
-                                          <i class="bi bi-plus-square-dotted m-auto" size="10"></i>
-                                        </div>
-
-                                        <div class="d-flex align-content-center justify-content-center gap-2">
-                                          <button type="submit" class="btn btn-outline-dark">Cancel</button>
-                                          <button type="submit" class="btn btn-dark">Post</button>
-
-                                        </div>
-
-
-
-                                      </form>
+                                        <!-- Placeholder for post description -->
+                                    </div>
+                                    <div class="post-images">
+                                        <!-- Placeholder for images -->
+                                    </div>
+                                    <div class="post-actions">
+                                        <span class="action like">
+                                            <i class="bi bi-heart fs-4 m-2 ms-1 like-icon"></i>
+                                            <span class="like-count">12</span>
+                                        </span>
+                                        <span class="action comment">
+                                            <i class="bi bi-chat-left fs-4 me-2 ms-1"></i>
+                                            <span class="comment-count">
+                                                <!-- Placeholder for comment count -->
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div id="post-comments">
+                                        <!-- Placeholder for comments -->
                                     </div>
                                 </div>
                             </div>
@@ -145,9 +207,10 @@
                 </div>
             </div>
         </main>
+
         <nav class="position-fixed bottom-0 start-0 end-0 z-1 d-sm-none d-flex bottom-navbar m-auto bg-light" style="height: 68px;" id="mobile-navbar">
             <div class="col h-100 d-flex align-items-center justify-content-center">
-                <a href="../../index.html">
+                <a href="../index.html">
                     <i class="bi bi-house fs-4 text-dark"></i>
                 </a>
             </div>
@@ -157,17 +220,17 @@
                 </a>
             </div>
             <div class="col h-100 d-flex align-items-center justify-content-center">
-                <a href="#">
+                <a href="create/create-post.html">
                     <i class="bi bi-pencil-square fs-4 text-dark"></i>
                 </a>
             </div>
             <div class="col h-100 d-flex align-items-center justify-content-center">
-                <a href="../../context/notifications.html">
+                <a href="../context/notifications.html">
                     <i class="bi bi-bell fs-4 text-dark"></i>
                 </a>
             </div>
             <div class="col h-100 d-flex align-items-center justify-content-center">
-                <a href="../../profile/my_profile.html">
+                <a href="../profile/my_profile.html">
                     <i class="bi bi-person fs-4 text-dark"></i>
                 </a>
             </div>
@@ -187,9 +250,9 @@
             integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
             crossorigin="anonymous"
         ></script>
-        <script src="/javascript/postView.js" ></script>
-        <script src="/javascript/button.js" ></script>
-        <script src="/javascript/imageSlide.js"></script>
+        <script src="../javascript/postView.js" ></script>
+        <script src="../javascript/button.js" ></script>
+        <script src="../javascript/imageSlide.js"></script>
     </body>
 
 </html>
