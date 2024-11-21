@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+    <head>
+      <title>Simple Threads</title>
+      <!-- Required meta tags -->
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=1, user-scalable=yes"/>
+      <!-- Bootstrap CSS v5.2.1 -->
+      <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous"
+      />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+      <link rel="stylesheet" href="css/components.css">
+      <link rel="icon" href="res/logo/favicon.ico">
+    </head>
+
+    <body>
+        <!-- The Fullscreen image background for when click into image to enlarge -->
+        <div id="fullscreen-bg" class="fullscreen-bg">
+            <div class="fullscreen-content">
+                <img id="fullscreen-image" src="" alt="Enlarged Image" class="fullscreen-image">
+                <button id="close-btn" class="close-btn">✖</button>
+            </div>
+        </div>
+        <!-- Mobile header -->
+        <header class="position-fixed top-0 start-0 z-1 d-sm-none d-flex flex-column justify-content-center align-items-center w-100" style="height: 74px;" id="mobile-header">
+            <div class="" style="width: 32px; height: 32px;">Logo</div>
+            <a href="auth/login.html">
+                <div class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">
+                Log in
+                </div>
+            </a>
+        </header>
+
+        {{!-- desktop sidebar  --}}
+        {{{desktop_sidebar}}}
+        
+        <main>
+            <a href="auth/login.html">
+              <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Log in</div>
+            </a>
+            <!-- outer-container -->
+            <div class="container-fluid d-flex align-content-center justify-content-center m-0 bg-light-subtle" style="padding: 0 20px; box-sizing: border-box;" id="outer-container">
+                <!-- transform container -->
+                <div class="d-flex min-vh-100" id="transform-container">
+                    <!-- inner container -->
+                    <div class="d-flex flex-column w-100" style="max-width: 640px;">
+                        <!-- desktop header -->
+                        <div class="position-sticky top-0 z-1 d-none d-sm-flex align-items-center justify-content-center w-100 bg-light-subtle" style="min-height: 60px; box-shadow: 0 0 0 1px var(--bs-light-bg-subtle);">Home
+                            <!-- left corner -->
+                            <div class="position-absolute z-1 overflow-hidden" style="top: 48px; left: -12px; width: 36px; height: 36px;">
+                                <!-- inner left corner -->
+                                <div class="inner-left position-absolute" style="top: 12px; left: 12px; width: 48px; height: 48px;"></div>
+                            </div>
+                            <!-- center bar -->
+                            <div class="center-bar position-absolute z-1 overflow-hidden bg-light-subtle" style="top: 48px; left: 24px; width: calc(100% - 46px); height: 12px;"></div>
+                            <!-- right corner -->
+                            <div class="position-absolute z-1 overflow-hidden" style="top: 48px; right: -12px; width: 36px; height: 36px;">
+                                <!-- inner right corner -->
+                                <div class="inner-right position-absolute" style="top: 12px; right: 12px; width: 48px; height: 48px;"></div>
+                            </div>
+                        </div>
+                        <!-- outer feed slider -->
+                        <div class="d-flex flex-column w-100 bg-white" style="min-height: 100%;" id="outer-feed-slider">
+                            <!-- inner feed slider -->
+                            <div class="d-flex flex-column" style="border-radius: 12px 12px 0 0;">
+                                {{{body}}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {{!-- mobile navbar --}}
+        {{{mobile_navbar}}}
+        <footer>
+            <!-- place footer here -->
+        </footer>
+        <!-- Bootstrap JavaScript Libraries -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"
+        ></script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"
+        ></script>
+        <script src="scripts/imageSlide.js" ></script>
+        <script src="scripts/button.js" ></script>
+        <script src="scripts/postView.js" ></script>
+    </body>
+</html>
