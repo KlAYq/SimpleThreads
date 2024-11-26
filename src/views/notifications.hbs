@@ -1,0 +1,54 @@
+<ul class="nav nav-tabs nav-fill">
+    <li class="nav-item" onclick="selectCurrentTab(event)">
+        <a class="nav-link active fw-bold" aria-current="page" href="#" id="allTab">All</a>
+    </li>
+    <li class="nav-item" onclick="selectCurrentTab(event)">
+        <a class="nav-link" href="#" id="unreadTab">Unread</a>
+    </li>
+</ul>
+<div class="tab-content p-3">
+    <hr>
+    <!--Notification Box -->
+    <div class="notification-box" onmouseenter="showNotificationOptions(event)" onmouseleave="hideNotificationOptions(event)">
+        <a href="../profile/profile.html" class="float-start">
+            <img src="/images/avatar.png" alt="Avatar" class="avatar rounded-circle">
+        </a>
+
+        <div class="notification-content">
+            <div class="text-dark">sus.red has followed you!</div>
+            <div class="text-muted">12 minutes ago</div>
+        </div>
+
+        <hr>
+    </div>
+
+    <!-- Notification Box -->
+    <div class="notification-box" onmouseenter="showNotificationOptions(event)" onmouseleave="hideNotificationOptions(event)">
+        <a href="../profile/profile.html" class="float-start">
+            <img src="/images/avatar.png" alt="Avatar" class="avatar rounded-circle">
+        </a>
+
+        <a href="../post/post-view.html" style="text-decoration: none;">
+            <div class="notification-content">
+                <div class="text-dark">sus.red has comment on your post.</div>
+                <div class="text-muted">12 minutes ago</div>
+            </div>
+        </a>
+
+        <hr>
+    </div>
+
+    <!-- Notification Box -->
+    <div class="notification-box" onmouseenter="showNotificationOptions(event)" onmouseleave="hideNotificationOptions(event)">
+        <a href="../profile/profile.html" class="float-start">
+            <img src="/images/avatar.png" alt="Avatar" class="avatar rounded-circle">
+        </a>
+
+        <div class="notification-content">
+        <div class="text-dark">sus.red has followed you!</div>
+        <div class="text-muted">12 minutes ago</div>
+        </div>
+
+        <hr>
+    </div>
+</div>

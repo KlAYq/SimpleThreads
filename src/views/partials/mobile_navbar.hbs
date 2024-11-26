@@ -1,7 +1,7 @@
 <nav class="position-fixed bottom-0 start-0 end-0 z-1 d-sm-none d-flex bottom-navbar m-auto bg-light" style="height: 68px;" id="mobile-navbar">
     <div class="col h-100 d-flex align-items-center justify-content-center">
         <a href="/home">
-            <i class="bi bi-house-fill fs-4 text-dark"></i>
+                <i class="bi {{getIcon page 'home'}} fs-4 text-dark"></i>
         </a>
     </div>
     <div class="col h-100 d-flex align-items-center justify-content-center">
@@ -10,18 +10,18 @@
         </a>
     </div>
     <div class="col h-100 d-flex align-items-center justify-content-center">
-        <a href="post/create/create-post.html">
+        <a href="/create-post">
             <i class="bi bi-pencil-square fs-4 text-dark"></i>
         </a>
     </div>
     <div class="col h-100 d-flex align-items-center justify-content-center">
-        <a href="context/notifications.html">
-            <i class="bi bi-bell fs-4 text-dark"></i>
+        <a href="/notifications">
+                <i class="bi {{getIcon page 'notifications'}} fs-4 text-dark"></i>
         </a>
     </div>
     <div class="col h-100 d-flex align-items-center justify-content-center">
-        <a href="profile/my_profile.html">
-            <i class="bi bi-person fs-4 text-dark"></i>
+        <a href="/my-profile">
+                <i class="bi {{getIcon page 'my-profile'}} fs-4 text-dark"></i>
         </a>
     </div>
 </nav>
