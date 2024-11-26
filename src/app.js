@@ -2,6 +2,7 @@ const express = require('express')
 const viewEngine = require('express-handlebars')
 const app = express()
 const port = 4000
+const { posts } = require('./public/temp/posts')
 
 app.use(express.static(__dirname + "/public"))
 
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 
 app.get("/home", (req, res) => {
     res.locals.page = "home"
+    res.locals.posts = posts
     res.render("home")
 })
 

@@ -1,4 +1,5 @@
 const postContentDiv = document.querySelector(".post");
+
 function redirectToPost(postId) {
     const excludedClasses = ['avatar', 'post-image', 'post-images', 'username', 'post-actions', 'action', 'like'];
 
