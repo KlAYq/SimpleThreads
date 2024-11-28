@@ -54,4 +54,13 @@ app.get("/my-profile", (req, res) => {
     res.render("my-profile")
 })
 
+app.get("/post_view/:id", (req, res) => {
+    let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
+    res.locals.posts = posts.filter(obj =>{
+        return obj.postId == id;
+    })
+    res.render("post_view");
+})
+
+
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))

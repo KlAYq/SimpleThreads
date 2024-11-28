@@ -7,7 +7,11 @@ const posts = [
       description: 'Might controls everything, and without power you cannot protect anything, let alone yourself.',
       imagePath: [],
       likeCount: '1,410,006',
-      commentCount: '1,262'
+      commentCount: '1,262',
+      comments: [
+          { user: "User1", text: "a", timestamp: "23 min ago"},
+          { user: "User2", text: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", timestamp: "23 min ago" }
+      ]
     },
     {
       postId: 2,
@@ -19,7 +23,11 @@ const posts = [
         'images/extras/plain_bread.jpg'
       ],
       likeCount: '334,302',
-      commentCount: '1,686'
+      commentCount: '1,686',
+      comments: [
+        { user: "User1", text: "a", timestamp: "23 min ago"},
+        { user: "User2", text: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", timestamp: "23 min ago" }
+      ],
     },
     {
       postId: 3,
@@ -35,7 +43,11 @@ const posts = [
         Imaginary technique... Purple.`,
       imagePath: [],
       likeCount: '655,088',
-      commentCount: '978'
+      commentCount: '978',
+      comments: [
+        { user: "User1", text: "a", timestamp: "23 min ago"},
+        { user: "User2", text: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", timestamp: "23 min ago" }
+      ],
     },
     {
       postId: 4,
@@ -50,7 +62,11 @@ const posts = [
         'images/extras/goku.jpg'
       ],
       likeCount: '72,107',
-      commentCount: '1,288'
+      commentCount: '1,288',
+      comments: [
+        { user: "User1", text: "a", timestamp: "23 min ago"},
+        { user: "User2", text: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", timestamp: "23 min ago" }
+      ],
     }
 ]
 
