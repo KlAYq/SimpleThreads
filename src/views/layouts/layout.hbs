@@ -30,7 +30,15 @@
 
         <!-- Mobile header -->
         <header class="position-fixed top-0 start-0 z-1 d-sm-none d-flex flex-column justify-content-center align-items-center w-100" style="height: 74px;" id="mobile-header">
-            <div class="" style="width: 32px; height: 32px;">Logo</div>
+            <!-- Back button -->
+            <button id="backButton" class="btn btn-dark-primary rounded-circle position-absolute {{getClassForPage page 'post_view'}}" style="width: 40px; height: 40px; padding: 0; left: 19px" onclick="window.location.href = '/home'">
+                <i class="bi bi-arrow-left fs-4"></i>
+            </button>
+
+            <div class="" style="width: 60px; height: 60px;">
+                <img src="/images/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
+            </div>
+
             <a href="/login">
                 <div class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">
                 Log in
@@ -38,7 +46,7 @@
             </a>
         </header>
 
-        {{!-- desktop sidebar  --}}
+        <!-- Desktop sidebar -->
         {{> desktop_sidebar}}
         
         <main>
@@ -78,12 +86,13 @@
             </div>
         </main>
 
-        {{!-- mobile navbar --}}
+        <!-- mobile navbar -->
         {{> mobile_navbar}}
 
         <footer>
             <!-- place footer here -->
         </footer>
+        
         <!-- Bootstrap JavaScript Libraries -->
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

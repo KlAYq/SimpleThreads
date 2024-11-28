@@ -14,14 +14,17 @@ app.engine(
         extname: "hbs",
         defaultLayout: "layout",
         helpers: {
-            getIcon: (page, icon) => {
-                const icons = new Map([
+            getClassForPage: (page, clss) => {
+                const classes = new Map([
+                    // Icon class
                     ["home", ["bi-house", "bi-house-fill"]],
                     ["create-post", ["bi-plus-square", "bi-plus-square-fill"]],
                     ["notifications", ["bi-bell", "bi-bell-fill"]],
-                    ["my-profile", ["bi-person", "bi-person-fill"]]
+                    ["my-profile", ["bi-person", "bi-person-fill"]],
+                    // Display class
+                    ["post_view", ["d-none", ""]]
                 ]);
-                return icons.get(icon)[icon == page ? 1 : 0]
+                return classes.get(clss)[clss == page ? 1 : 0]
             }
         }
     })
@@ -59,6 +62,7 @@ app.get("/post_view/:id", (req, res) => {
     res.locals.posts = posts.filter(obj =>{
         return obj.postId == id;
     })
+    res.locals.page = "post_view"
     res.render("post_view");
 })
 
