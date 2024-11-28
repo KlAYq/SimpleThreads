@@ -31,7 +31,18 @@
     <div id="post-comments">
         <!-- Placeholder for comments -->
         {{#each comments}}
-            {{user}}
+        <div class="commentSection">
+            <div class="comment-header">
+                <img src="/images/avatar.png" alt="Avatar" class="comment-avatar">
+                <div class="comment-info">
+                    <span class="comment-username">{{user}}</span>
+                    <span class="comment-timestamp">{{timestamp}}</span>
+                </div>
+            </div>
+            <div class="comment-text">
+                    {{text}}
+            </div>
+        </div>
         {{/each}}
     </div>
 </div>
