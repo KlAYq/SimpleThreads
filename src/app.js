@@ -131,7 +131,7 @@ app.post("/register", async (req, res) => {
 
 app.delete('/logout', (req, res) => {
   req.logOut();
-  req.redirect('/login');
+  res.redirect('/login');
 })
 
 function checkAuthenticated(req, res, next){
