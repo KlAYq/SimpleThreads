@@ -7,13 +7,16 @@ const viewEngine = require('express-handlebars')
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
-const session = require('express-session')
+// const session = require('express-session')
 const methodOverride = require('method-override')
 
 const app = express()
 const port = 4000
 const { posts } = require('./public/temp/posts')
 const initPpt = require('./passport-config')
+
+// TEMPORARY SESSION USER
+const sessionUser = "faker.t1"
 
 initPpt(passport,
   // Replace with real database
@@ -22,18 +25,18 @@ initPpt(passport,
 )
 
 // Replace with real database
-const users = [];
+// const users = [];
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({extended: false}));
-app.use(flash())
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}))
+// app.use(flash())
+// app.use(session({
+//   secret: process.env.SESSION_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+// }))
 app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.session())
 app.use(methodOverride('_method'))
 
 app.engine(
@@ -44,15 +47,12 @@ app.engine(
         extname: "hbs",
         defaultLayout: "layout",
         helpers: {
-            getClassForPage: (page, clss) => {
+            getIconClass: (page, clss) => {
                 const classes = new Map([
-                    // Icon class
                     ["home", ["bi-house", "bi-house-fill"]],
                     ["create-post", ["bi-plus-square", "bi-plus-square-fill"]],
                     ["notifications", ["bi-bell", "bi-bell-fill"]],
-                    ["my-profile", ["bi-person", "bi-person-fill"]],
-                    // Display class
-                    ["post_view", ["d-none", ""]]
+                    ["session-user", ["bi-person", "bi-person-fill"]],
                 ]);
                 return classes.get(clss)[clss == page ? 1 : 0]
             }
@@ -66,36 +66,47 @@ app.get("/", (req, res) => {
     res.redirect("/home")
 })
 
+// ADD SESSION USER TO DISPLAY SIDEBAR / NAVBAR
 app.get("/home", (req, res) => {
     res.locals.page = "home"
+    res.locals.username = sessionUser
     res.locals.posts = posts
     res.render("home")
 })
 
 app.get("/create-post", (req, res) => {
     res.locals.page = "create-post"
+    res.locals.username = sessionUser
     res.render("create-post")
 })
 
 app.get("/notifications", (req, res) => {
     res.locals.page = "notifications"
+    res.locals.username = sessionUser
     res.render("notifications")
 })
 
-app.get("/my-profile", (req, res) => {
-    res.locals.page = "my-profile"
-    res.render("my-profile")
-})
+// app.get("/my-profile", (req, res) => {
+//     res.locals.page = "my-profile"
+//     res.render("profile")
+// })
 
-app.get("/post_view/:id", (req, res) => {
-    let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
-    res.locals.posts = posts.filter(obj =>{
-        return obj.postId == id;
-    })
-    res.locals.page = "post_view"
-    res.render("post_view");
-})
+// ROUTER FOR USERNAME AND POST
+app.use("/:username", (req, res, next) => {
+  // PASS VALUE TO ROUTER
+  req.username = req.params.username
+  req.sessionUser = sessionUser
+  next()
+}, require("./routes/router"))
 
+// app.get("/post_view/:id", (req, res) => {
+//     let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
+//     res.locals.posts = posts.filter(obj =>{
+//         return obj.postId == id;
+//     })[0]
+//     res.locals.isPostView = true
+//     res.render("post_view");
+// })
 
 // Auth
 app.get("/login", (req, res) => {
@@ -111,8 +122,6 @@ app.post("/login", passport.authenticate('local', {
   failureRedirect: '/login',
   failureFlash: true
 }))
-
-
 
 app.post("/register", async (req, res) => {
   try {
@@ -149,6 +158,5 @@ function checkNotAuthenticated(req, res, next){
 
   next();
 }
-
 
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))

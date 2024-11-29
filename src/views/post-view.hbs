@@ -1,11 +1,13 @@
-{{#each posts}}
+{{#with posts}}
 <div class="post card mb-3 border-0">
     <div class="post-header card-header d-flex align-items-center bg-white border-0">
-        <a href="/profile/profile.html" class="me-3">
+        <a href="/{{username}}" class="me-3">
         <img src="/{{avatar}}" alt="Avatar" class="avatar rounded-circle">
         </a>
         <div class="post-info">
-            <div class="username fw-bold">{{username}}</div>
+            <a href="/{{username}}" class="username text-dark">
+                <div class="fw-bold">{{name}} ({{username}})</div>
+            </a>
             <div class="timestamp text-muted small">{{timestamp}}</div>
         </div>
     </div>
@@ -46,4 +48,4 @@
         {{/each}}
     </div>
 </div>
-{{/each}}
+{{/with}}

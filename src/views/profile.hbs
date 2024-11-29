@@ -1,38 +1,37 @@
+{{#with user}}
 <div class="profile">
     <div class="profile-image">
-        <img src="/images/extras/faker.png" alt="Avatar" class="avatar">
+        <img src="{{avatar}}" alt="Avatar" class="avatar">
     </div>
     <div class="profile-details">
-        <div class="profile-name">Lee Sang Hyeok</div>
-        <div class="profile-alias">faker.t1</div>
+        <div class="profile-name">{{name}}</div>
+        <div class="profile-alias">{{username}}</div>
         <div class="follower-container">
             <div class="followers">
             <a href="../context/followers.html" class="text-dark link-underline link-underline-opacity-0 d-inline">
-                <div class="fw-bold d-inline">69</div> Followers
+                <div class="fw-bold d-inline">{{followerCount}}</div> Followers
             </a>
             <a href="../context/followers.html" class="text-dark link-underline link-underline-opacity-0 d-inline mx-2  ">
-                <div class="fw-bold d-inline">420</div> Following
+                <div class="fw-bold d-inline">{{followingCount}}</div> Following
             </a>
             </div>
         </div>
     </div>
     <div class="profile-bio">
-        Unkillable Demon King. 5x World Champion.
-        <br>
-        My house is in the northeast section of Morioh, where all the villas are, and I am not married.
-        I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest.
-        I don't smoke, but I occasionally drink.
-        I'm in bed by 11 PM, and make sure I get eight hours of sleep, no matter what.
-        After having a glass of warm milk and doing about twenty minutes of stretches before going to bed, I usually have no problems sleeping until morning.
-        Just like a baby, I wake up without any fatigue or stress in the morning.
-        I was told there were no issues at my last check-up.
+        {{bio}}
     </div>
 </div>
+{{/with}}
 
-<a class="btn btn-light btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4" href="profile_edit/edit_profile.html">Edit Profile</a>
+{{#if isSessionUser}}
+    <a class="btn btn-light btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4" href="/{{user.username}}/edit">Edit Profile</a>
+{{else}}
+    <button class="btn btn-dark position-relative justify-content-center align-items-center my-1 mx-4" id="follow-button" onclick="changeFollowOption(event)" onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
+{{/if}}
+
 <hr>
 
-<div class="post">
+{{!-- <div class="post">
     <div class="post-header">
         <a href="../profile/my_profile.html">
             <img src="/images/extras/faker.png" alt="Avatar" class="avatar">
@@ -59,4 +58,4 @@
             220
         </span>
     </div>
-</div>
+</div> --}}

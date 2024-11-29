@@ -204,3 +204,11 @@
     margin-left: 50px;
     word-wrap: break-word;
 }
+
+.username {
+    text-decoration: none;
+}
+
+.username:hover {
+    text-decoration: underline;
+}

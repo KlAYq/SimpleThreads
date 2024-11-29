@@ -1,6 +1,6 @@
-const postContentDiv = document.querySelector(".post");
+// const postContentDiv = document.querySelector(".post");
 
-function redirectToPost(postId) {
+function redirectToPost(username, postId) {
     const excludedClasses = ['avatar', 'post-image', 'post-images', 'username', 'post-actions', 'action', 'like'];
     console.log('redirect started');
     // Check if the target element or any of its parents have one of the excluded classes
@@ -14,7 +14,7 @@ function redirectToPost(postId) {
     }
     console.log("none of the excluded classes are found");
     // If none of the excluded classes are found, redirect to the view post page
-    window.location.href = `/post_view/${postId}`;
+    window.location.href = `/${username}/post/${postId}`;
 }
 
 // document.addEventListener("DOMContentLoaded", () => {

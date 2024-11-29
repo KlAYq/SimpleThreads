@@ -5,7 +5,7 @@
     <div class="d-flex flex-column justify-content-between">
         <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
             <a href="/home">
-                <i class="bi {{getClassForPage page 'home'}} fs-4 text-dark"></i>
+                <i class="bi {{getIconClass page 'home'}} fs-4 text-dark"></i>
             </a>
             <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
         </div>
@@ -17,19 +17,19 @@
         </div>
         <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
             <a href="/create-post">
-                <i class="bi {{getClassForPage page 'create-post'}} fs-4 text-dark"></i>
+                <i class="bi {{getIconClass page 'create-post'}} fs-4 text-dark"></i>
             </a>
             <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
         </div>
         <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
             <a href="/notifications">
-                <i class="bi {{getClassForPage page 'notifications'}} fs-4 text-dark"></i>
+                <i class="bi {{getIconClass page 'notifications'}} fs-4 text-dark"></i>
             </a>
             <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
         </div>
         <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
-            <a href="/my-profile">
-                <i class="bi {{getClassForPage page 'my-profile'}} fs-4 text-dark"></i>
+            <a href="/{{username}}">
+                <i class="bi {{getIconClass page 'session-user'}} fs-4 text-dark"></i>
             </a>
             <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
         </div>

@@ -2,7 +2,8 @@ const posts = [
     {
       postId: 1,
       avatar: 'images/extras/vergil.png',
-      username: 'Vergil (yamato.vergil)',
+      username: 'yamato.vergil',
+      name: 'Vergil',
       timestamp: 'Just now',
       description: 'Might controls everything, and without power you cannot protect anything, let alone yourself.',
       imagePath: [],
@@ -16,7 +17,8 @@ const posts = [
     {
       postId: 2,
       avatar: 'images/extras/gordon.png',
-      username: 'Gordon Ramsay (masterchef.gordon)',
+      username: 'masterchef.gordon',
+      name: 'Gordon Ramsay',
       timestamp: '11/26/2024, 3:58:26 AM',
       description: 'My new dish! Come and have some at my restaurant!',
       imagePath: [
@@ -32,7 +34,8 @@ const posts = [
     {
       postId: 3,
       avatar: 'images/extras/gojo.jpg',
-      username: 'Satoru Gojo (thehonored.one)',
+      username: 'thehonored.one',
+      name: 'Satoru Gojo',
       timestamp: '11/26/2024, 8:39:05 AM',
       description: `Sorry, Amanai.
         I'm not even angry over you right now. I bear no grudge against anyone.
@@ -52,7 +55,8 @@ const posts = [
     {
       postId: 4,
       avatar: 'images/extras/walter.jpg',
-      username: 'Walter H.Whtie (heisen.berg)',
+      username: 'heisen.berg',
+      name: 'Walter H.Whtie',
       timestamp: '11/25/2024, 7:51:24 PM',
       description: 'how to get free vbucks fortnite 2024',
       imagePath: [
