@@ -25,6 +25,7 @@ controller.showPostDetail = (req, res) => {
         return obj.postId == id;
     })[0]
     res.locals.isPostView = true
+    res.locals.username = req.sessionUser
     res.render("post-view");
 }
 
