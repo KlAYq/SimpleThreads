@@ -18,14 +18,23 @@ const initPpt = require('./passport-config')
 // TEMPORARY SESSION USER
 const sessionUser = "faker.t1"
 
-initPpt(passport,
-  // Replace with real database
-    username => {users.find(user => user.username === username)},
-    id => {users.find(user => user.id === id)}
-)
-
 // Replace with real database
 const users = [];
+
+function getUserByUsername(uname) {
+  return users.find(user => user.username === uname);
+}
+
+function getUserById(uid){
+  return users.find(user => user.id === uid);
+}
+
+initPpt(passport,
+  // Replace with real database
+  getUserByUsername,
+  getUserById
+)
+
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({extended: false}));
@@ -109,7 +118,10 @@ app.get("/login", (req, res) => {
 //     res.render("post_view");
 // })
 
-
+// Auth
+app.get("/login", (req, res) => {
+  res.render("login");
+})
 
 app.get("/register", (req, res) => {
   res.render("auth/register", {layout: false});
@@ -126,7 +138,7 @@ app.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     users.push({
       id: Date.now().toString(),
-      name: req.body.username,
+      username: req.body.username,
       email: req.body.email,
       password: hashedPassword
     })

@@ -8,6 +8,7 @@ function initPassport(passport, getUserByUsername, getUserById){
       return done(null, false, {message: 'No user'});
     }
 
+
     try {
       if (await bcrypt.compare(password, user.password)){
         return done(null, user);
