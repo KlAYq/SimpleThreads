@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Simple Threads</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=1, user-scalable=yes"/>
+        <!-- Bootstrap CSS v5.2.1 -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="../css/components.css">
+        <link rel="stylesheet" href="../css/login_style.css">
+        <link rel="icon" href="/images/logo/favicon.ico">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    </head>
+    <body class="d-flex align-content-center justify-content-center">
+        <div
+            class="login-container container-fluid align-content-center
+            justify-content-center rounded-3 flex-column
+            justify-content-center align-items-center p-5">
+            <div class="align-items-center justify-content-center d-flex">
+                <img src="/images/logo/patch-filled-logo.png" alt="Logo" width="300" height="300"/>
+            </div>
+            <div class="fw-bolder fs-3 text-center">Login into Patch</div>
+            <form action="#" id="login-form" method="post">
+                <label for="username"></label>
+                <input type="text" name="username" id="username" placeholder="Email or Username" class="form-control">
+                <label for="password"></label>
+                <input type="password" name="password" id="password" placeholder="Password" class="form-control">
+                <hr>
+                <div class="submit-button text-center pb-4">
+                    <button type="submit" class="btn btn-dark">Login</button>
+                </div>
+                <div class="text-center link">
+                    <a href="SMS-prompt.html" class="forgot-password text-center text-dark text-muted">Forgot your password?</a>
+                    |
+                    <a href="/register" class="text-center text-dark text-muted">Create an account</a>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

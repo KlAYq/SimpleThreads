@@ -20,12 +20,12 @@ const sessionUser = "faker.t1"
 
 initPpt(passport,
   // Replace with real database
-    email => {users.find(user => user.email === email)},
+    username => {users.find(user => user.username === username)},
     id => {users.find(user => user.id === id)}
 )
 
 // Replace with real database
-// const users = [];
+const users = [];
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({extended: false}));
@@ -95,13 +95,10 @@ app.get("/notifications", (req, res) => {
 //     res.render("profile")
 // })
 
-// ROUTER FOR USERNAME AND POST
-app.use("/:username", (req, res, next) => {
-  // PASS VALUE TO ROUTER
-  req.username = req.params.username
-  req.sessionUser = sessionUser
-  next()
-}, require("./routes/router"))
+// Auth
+app.get("/login", (req, res) => {
+  res.render("auth/login", {layout: false});
+})
 
 // app.get("/post_view/:id", (req, res) => {
 //     let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
@@ -112,13 +109,10 @@ app.use("/:username", (req, res, next) => {
 //     res.render("post_view");
 // })
 
-// Auth
-app.get("/login", (req, res) => {
-  res.render("login");
-})
+
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("auth/register", {layout: false});
 })
 
 app.post("/login", passport.authenticate('local', {
@@ -132,12 +126,14 @@ app.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     users.push({
       id: Date.now().toString(),
-      name: req.body.name,
+      name: req.body.username,
       email: req.body.email,
       password: hashedPassword
     })
+    console.log(users);
     res.redirect('/login')
   } catch (e){
+    console.log(e);
     res.redirect('/register')
   }
 })
@@ -162,5 +158,14 @@ function checkNotAuthenticated(req, res, next){
 
   next();
 }
+
+// ROUTER FOR USERNAME AND POST
+app.use("/:username", (req, res, next) => {
+  // PASS VALUE TO ROUTER
+  req.username = req.params.username
+  req.sessionUser = sessionUser
+  next()
+}, require("./routes/router"))
+
 
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))
