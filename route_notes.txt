@@ -1,0 +1,16 @@
+Login: /login
+Home: /home
+Register: /register
+Reset Password: /reset-password
+Create Post: /create-post
+Notifications: /notifications
+Edit-Profile: /edit-profile
+
+User: /:username
+Post: /:post_id
+Following: /:username/following
+Followers: /:username/followers
+
+
+
+
