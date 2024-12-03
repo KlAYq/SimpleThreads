@@ -3,9 +3,11 @@ const bcrypt = require('bcrypt');
 
 function initPassport(passport, getUserByUsername, getUserById){
   const authenticateUser = async (username, password, done) => {
-    const user = getUserByUsername(username);
-    if (user == null){
-      return done(null, false, {message: 'No user'});
+    const user = await getUserByUsername(username);
+    
+    if (user == null) {
+      console.log("No user with that username")
+      return done(null, false, {message: 'No user'})
     }
 
 
@@ -14,6 +16,7 @@ function initPassport(passport, getUserByUsername, getUserById){
         return done(null, user);
       }
       else {
+        console.log("Incorrect password")
         return done(null, false, {message : 'Wrong password.'});
       }
     } catch (e) {

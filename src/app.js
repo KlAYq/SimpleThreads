@@ -15,20 +15,56 @@ const port = 4000
 const { posts } = require('./public/temp/posts')
 const initPpt = require('./passport-config')
 
+
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  host: 'localhost',
+  user: 'postgres',        
+  password: '222',
+  database: 'patch',
+  port: 5432,
+});
+// Test the connection
+pool.connect()
+  .then(client => {
+    console.log("Connected to the PostgreSQL database!");
+    client.release();
+  })
+  .catch(err => {
+    console.error('Error connecting to the database:', err.stack);
+  });
+
+// Helper functions
+function isValidUsername(username) {
+  const usernameRegex = /^[a-zA-Z0-9_]{6,}$/; // Alphanumeric and underscores, min 6 characters
+  return usernameRegex.test(username);
+}
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
+  return emailRegex.test(email);
+}
+
 // TEMPORARY SESSION USER
 const sessionUser = "faker.t1"
 
-// Replace with real database
-const users = [];
 
-function getUserByUsername(uname) {
-  return users.find(user => user.username === uname);
+async function getUserByUsername(username) {
+  const result = await pool.query('SELECT * FROM public."Users" WHERE username = $1', [username]);
+  if (result.rows.length === 0) {
+    return null; 
+  }
+  return result.rows[0];
 }
 
-function getUserById(uid){
-  return users.find(user => user.id === uid);
+async function getUserById(id) {
+  const result = await pool.query('SELECT * FROM public."Users" WHERE id = $1', [id]);
+  if (result.rows.length === 0) {
+    return null; 
+  }
+  return result.rows[0];
 }
-
 initPpt(passport,
   // Replace with real database
   getUserByUsername,
@@ -134,19 +170,47 @@ app.post("/login", passport.authenticate('local', {
 }))
 
 app.post("/register", async (req, res) => {
+  const {username, email, password, confirmPassword} = req.body;
+
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    users.push({
-      id: Date.now().toString(),
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword
-    })
-    console.log(users);
-    res.redirect('/login')
-  } catch (e){
-    console.log(e);
-    res.redirect('/register')
+    // Input validation
+    if (!isValidUsername(username)) {
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      console.log('invalid username');
+      return res.redirect('/register');
+    }
+    if (!isValidEmail(email)) {
+      console.log('invalid email');
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      return res.redirect('/register');
+    }
+    if (password !== confirmPassword) {
+      console.log('wrong confirm password');
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      return res.redirect('/register');
+    }
+    const userExists = await pool.query('SELECT * FROM public."Users" WHERE username = $1', [username]);
+    if (userExists.rows.length > 0) {
+      console.log('username already exist');
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      return res.redirect('/register');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);;
+    const result = await pool.query('SELECT * FROM public."Users"');
+
+    // Check if result.rows is defined and has a length
+    const newId = (result.rows && result.rows.length) ? result.rows.length + 1 : 1; // Default to 1 if no rows found
+    await pool.query(
+      'INSERT INTO public."Users" (id, username, password, "createdAt", "updatedAt") VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
+      [newId, username, hashedPassword]
+    );
+
+    console.log("Create account successfully");
+    res.redirect('/login'); 
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.redirect('/register');
   }
 })
 
