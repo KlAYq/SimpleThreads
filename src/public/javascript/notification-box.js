@@ -1,4 +1,4 @@
-function selectCurrentTab(event){
+function selectCurrentNotificationTab(event){
   event.preventDefault();
 
   event.target.classList.add('active');
