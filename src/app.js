@@ -195,7 +195,6 @@ app.get("/create-post", checkAuthenticated, async (req, res) => {
 
 app.post("/create-post", checkAuthenticated, async function (req, res, next)  {
   try {
-    const { description } = req.body;
     let thisUser = await req.user;
     const userId = await thisUser.id;
     const currentTime = new Date();
@@ -204,14 +203,20 @@ app.post("/create-post", checkAuthenticated, async function (req, res, next)  {
     const newPostId = result.length + 1;
 
     await upload(req, res, async function(err) {
-      let filepath = "./uploads/" + req.file.filename;
-      const resultUrl = await uploadResult(filepath, [{quality : 'auto', fetch_format: 'auto'}]);
-      fs.unlink(filepath, (e) => {
-        if (e) {
-          console.log(e);
-        }
-      })
+      let resultUrl;
+      if (await req.file != null){
+        let filepath = "./uploads/" + req.file.filename;
+        resultUrl = await uploadResult(filepath, [{quality : 'auto', fetch_format: 'auto'}]);
+        fs.unlink(filepath, (e) => {
+          if (e) {
+            console.log(e);
+          }
+        })
+      } else {
+        resultUrl = null;
+      }
 
+      const { description } = req.body;
       // Yes, this does need to be here
       const newPost = await Post.create({
         id: newPostId,
@@ -394,8 +399,17 @@ function checkNotAuthenticated(req, res, next){
 
 app.use("/search", require("./routes/searchRouter"))
 
+app.use("/edit-profile", async (req, res, next) => {next();}, require("./routes/editProfileRouter"));
+
 // ROUTER FOR USERNAME AND POST
-app.use("/:username", (req, res, next) => {req.username = req.params.username; next()}, require("./routes/userRouter"));
+app.use("/:username", async (req, res, next) => {
+  req.username = req.params.username;
+  next();
+}, require("./routes/userRouter"));
+
+
+
+
 
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))
 

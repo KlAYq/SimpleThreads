@@ -1,0 +1,32 @@
+{{#with user}}
+<form action="/edit-profile" id="profile-form" method="POST" enctype="multipart/form-data">
+  <div class="profile">
+    <div class="profile-image">
+      <label for="image-upload" class="btn btn-light rounded-3 border-1 border border-dark-subtle my-4 d-flex align-items-center justify-content-center text-center" style="height: 6rem; width: 10rem">
+        <img id="image-placeholder" src="{{profilePicture}}" alt="Choose Image" style="z-index: 10; max-width: 100%"/>
+      </label>
+      <input type="file" name="image" id="image-upload" style="display: none">
+    </div>
+
+    <div class="profile-details">
+      <label for="fullName">Profile Name</label>
+      <input type="text" placeholder="Profile Name" name="fullName" id="fullName" value="{{name}}" class="form-control name-input">
+
+      <hr>
+      <label for="username">Profile Alias (Username) </label>
+      <input type="text" placeholder="Profile Alias" name="username" id="username" value="{{username}}" class="form-control name-input">
+      <hr>
+
+      <label for="bio">Profile Bio</label>
+      <textarea name="bio" id="bio" class="bio-input form-control" maxlength="300" form="profile-form" rows="10" cols="50">{{bio}}</textarea>
+    </div>
+    <hr>
+    <div class="d-grid gap-2">
+      <button type="submit" id="profile-submit" class="btn btn-outline-dark mx-3">Submit</button>
+    </div>
+    <div class="d-grid gap-2 my-2">
+      <a href="../../auth/reset-prompt.html" id="profile-edit" class="btn btn-outline-dark mx-3">More...</a>
+    </div>
+  </div>
+</form>
+{{/with}}

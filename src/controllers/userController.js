@@ -9,18 +9,24 @@ userController.init = async (req, res, next) => {
 
 userController.showProfile = async (req, res) => {
     let getUser = req.username;
-    console.log(getUser);
+    let currentUser = await req.user;
 
     let thisUser = await User.findOne({where : {username : getUser}});
     if (thisUser){
       res.locals.user = {
-        username : thisUser.username,
-        name : "sample name"
+        username: thisUser.username,
+        name: thisUser.fullName,
+        avatar: thisUser.profilePicture || 'images/avatar.png',
+        followerCount: 12,
+        followingCount: 24,
+        bio: thisUser.description
       }
+
+      res.locals.isSessionUser = (currentUser != null) && (thisUser.username === currentUser.username);
+
       res.render("profile");
     }
     else res.send("User not found");
-
 }
 
 userController.showPostDetail = async (req, res) => {
