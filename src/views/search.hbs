@@ -1,0 +1,32 @@
+<div class="d-flex flex-row align-items-center" style="padding: 18px 24px 6px; height: fit-content;">
+    <div class="border border-dark d-flex flex-column justify-content-center w-100 bg-light-subtle" style="padding: 12px 16px; border-radius: 16px; overflow: hidden; height: 44px;">
+        <form class="d-flex flex-row align-item-center" action="/search" method="GET">
+            <i class="bi bi-search" style="padding: 0 5px;"></i>
+            <input class="w-100 border-0 bg-light-subtle" style="outline: none;" type="search" placeholder="Search" name="q">
+        </form>
+    </div>
+    {{!-- <div class="ms-2">
+        Cum
+    </div> --}}
+</div>
+
+{{#each users}}
+    <div class="post card mb-3 border-0">
+        <div class="post-header card-header d-flex align-items-center justify-content-between bg-white border-0">
+            <div class="d-flex align-items-center">
+                <a href="/{{username}}" class="me-3">
+                    <img src="/{{avatar}}" alt="Avatar" class="avatar rounded-circle">
+                </a>
+                <div class="post-info">
+                    <a href="/{{username}}" class="username text-dark">
+                        <div class="fw-bold">{{name}} ({{username}})</div>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-dark position-relative justify-content-center align-items-center my-1 mx-4" id="follow-button" onclick="changeFollowOption(event)" onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
+            </div>
+        </div>
+    </div>
+    <hr style="margin: 0;">
+{{/each}}

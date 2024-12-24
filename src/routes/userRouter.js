@@ -8,6 +8,4 @@ userRouter.get("/", showProfile)
 // SHOW POST DETAIL
 userRouter.get("/post/:id", showPostDetail)
 
-
-
 module.exports = userRouter

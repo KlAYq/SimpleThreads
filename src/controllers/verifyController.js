@@ -1,4 +1,4 @@
-const {ConfirmInstance} = require("../models");
+const { ConfirmInstance } = require("../models");
 const User = require("../models").User;
 const verifyController = {};
 

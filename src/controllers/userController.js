@@ -1,5 +1,6 @@
 const userController = {}
 const Post = require("../models").Post;
+const User = require("../models").User;
 // const { posts } = require('../public/temp/posts')
 
 userController.init = async (req, res, next) => {
