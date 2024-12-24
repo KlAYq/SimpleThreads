@@ -7,7 +7,7 @@ function redirectToPost(username, postId) {
     let target = event.target;
     while (target && target !== this) {
         if (excludedClasses.some(cls => target.classList.contains(cls))) {
-            console.log("return");  
+            console.log("return");
             return;
         }
         target = target.parentElement;
@@ -16,6 +16,21 @@ function redirectToPost(username, postId) {
     // If none of the excluded classes are found, redirect to the view post page
     window.location.href = `/${username}/post/${postId}`;
 }
+
+function displayBufferImage(event){
+  let img_upload = document.getElementById("image-upload");
+  const [file] = img_upload.files;
+  if (file){
+    let img_placeholder = document.getElementById("image-placeholder");
+    if (img_placeholder != null){
+      img_placeholder.src = URL.createObjectURL(file);
+    }
+  }
+}
+
+let upload_img_slot = document.getElementById("image-upload");
+if (upload_img_slot != null)
+  upload_img_slot.onchange = (event) => displayBufferImage(event);
 
 // document.addEventListener("DOMContentLoaded", () => {
 

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   Notification.init(
     {
       content: DataTypes.STRING,
+      isRead: DataTypes.BOOLEAN,
     },
     {
       sequelize,

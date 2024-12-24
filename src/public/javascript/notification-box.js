@@ -1,43 +1,32 @@
-function selectCurrentNotificationTab(event){
-  event.preventDefault();
+document.querySelectorAll(".notification-box").forEach((box) => {
+  box.onmouseleave = () => {
+    document.querySelectorAll(".notification-actions").forEach((button) => {button.style.setProperty("display","none");})
 
-  event.target.classList.add('active');
-  event.target.classList.add('fw-bold');
-  event.target.setAttribute('aria-current','page');
-
-  let tab = null;
-
-  if (event.target.id === 'allTab') {
-    tab = document.getElementById("unreadTab");
-
-  } else if (event.target.id === 'unreadTab') {
-    tab = document.getElementById("allTab");
   }
-
-  if (tab !== null) {
-    tab.classList.remove('active');
-    tab.classList.remove('fw-bold');
-    tab.removeAttribute('aria-current');
+  box.onmouseenter = () => {
+    document.querySelectorAll(".notification-actions").forEach((button) => {button.style.setProperty("display","block");})
   }
+})
+
+
+async function markNotificationAsSeen(){
+
 }
 
-function showNotificationOptions(event){
-  event.preventDefault();
-  let d = document.createElement('div');
-  d.classList.add('dropdown');
-  d.classList.add('float-end');
-  d.id = "notification-options";
-  d.innerHTML = `<button class="btn btn-light dropdown" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  ...
-</button>
-<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-  <a class="dropdown-item" href="#">Mark as Seen</a>
-  <a class="dropdown-item" href="#">Remove</a>
-</div>`;
-  event.target.insertBefore(d, event.target.firstElementChild);
-}
+async function removeNotification(id){
+  try {
+    const res = await fetch(`notifications/${id}`, {
+      method: "DELETE",
+    });
+    if (res.status === 200){
+      return location.reload();
+    } else {
+      const resText = await res.text();
+      throw new Error(resText);
+    }
+  } catch (e){
+    console.error(e);
+  }
 
-function hideNotificationOptions(event){
-  event.preventDefault();
-  document.getElementById("notification-options").remove();
+
 }
