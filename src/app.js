@@ -86,6 +86,9 @@ app.engine(
         partialsDir: __dirname + "/views/partials",
         extname: "hbs",
         defaultLayout: "layout",
+        runtimeOptions: {
+          allowProtoPropertiesByDefault: true
+        },
         helpers: {
             getIconClass: (page, clss) => {
                 const classes = new Map([
@@ -388,6 +391,8 @@ function checkNotAuthenticated(req, res, next){
 
   res.redirect('/');
 }
+
+app.use("/search", require("./routes/searchRouter"))
 
 // ROUTER FOR USERNAME AND POST
 app.use("/:username", (req, res, next) => {req.username = req.params.username; next()}, require("./routes/userRouter"));
