@@ -1,5 +1,6 @@
 const {upload, uploadResult} = require("../image-upload-config");
 const fs = require("fs");
+const {Op} = require("sequelize");
 const editProfileController = {}
 const User = require("../models").User;
 
@@ -32,7 +33,7 @@ editProfileController.editProfile = async (req, res) => {
     let resultUrl;
     if (await req.file != null){
       let filepath = "./uploads/" + req.file.filename;
-      resultUrl = await uploadResult(filepath, [{quality: 'auto', fetch_format: 'auto'}]);
+      resultUrl = await uploadResult(filepath, [{quality: 'auto', fetch_format: 'auto'}, {gravity: "auto", width: 400, height: 400, crop: "fill"}]);
       fs.unlink(filepath, (e) => {
         if (e) {
           console.log(e);
@@ -44,7 +45,7 @@ editProfileController.editProfile = async (req, res) => {
     try {
       const {username, fullName, bio} = req.body;
 
-      let sampleUser= await User.findOne({where: {username: username}});
+      let sampleUser= await User.findOne({where: {username: username, id:{[Op.ne] : thisUser.id}}});
 
       if (sampleUser != null)
         throw Error("Already exist username");
