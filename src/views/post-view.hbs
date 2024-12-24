@@ -17,12 +17,12 @@
     <div class="post-images d-flex overflow-hidden gap-2 pe-3">
         <!-- Images here -->
         {{#each imagePath}}
-            <img src="/{{this}}" draggable="false" alt="Image 3" class="post-image rounded">
+            <img src="{{this}}" draggable="false" alt="Image 3" class="post-image rounded">
         {{/each}}
     </div>
     <div class="post-actions card-footer d-flex bg-white border-0">
-        <span class="action like me-3 d-flex align-items-center pe-2 ps-2">
-            <i class="bi bi-heart fs-4 me-2 ms-1 like-icon"></i>
+        <span class="action like me-3 d-flex align-items-center pe-2 ps-2" data-post-id="{{postId}}">
+            <i class="bi {{#if isLiked}}bi-heart-fill{{else}}bi-heart{{/if}} fs-4 me-2 ms-1 like-icon"></i>
             <span class="like-count">{{likeCount}}</span>
         </span>
         <span class="action comment d-flex align-items-center pe-2 ps-2">
@@ -30,6 +30,13 @@
             {{commentCount}}
         </span>
     </div>
+
+    <!-- Comment input -->
+    <div class="comment-input-section mt-3 d-flex">
+        <textarea id="comment-input" class="form-control" placeholder="Add a comment..." rows="2"></textarea>
+        <button id="send-comment" class="btn btn-primary ms-2" data-post-id="{{postId}}">Send</button>
+    </div>
+
     <div id="post-comments">
         <!-- Placeholder for comments -->
         {{#each comments}}
@@ -42,10 +49,63 @@
                 </div>
             </div>
             <div class="comment-text">
-                    {{text}}
+                {{text}}
             </div>
         </div>
         {{/each}}
     </div>
 </div>
 {{/with}}
+
+<script>
+    // Handle sending comment
+    document.querySelector("#send-comment").addEventListener("click", async function(event) {
+        const commentInput = document.querySelector("#comment-input");
+        const commentText = commentInput.value.trim();
+
+        if (commentText) {
+            const postId = this.dataset.postId;
+            const response = await fetch(`/post/${postId}/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: commentText })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const commentSection = document.querySelector("#post-comments");
+                const newComment = document.createElement("div");
+                newComment.classList.add("commentSection");
+
+                newComment.innerHTML = `
+                    <div class="comment-header">
+                        <img src="/images/avatar.png" alt="Avatar" class="comment-avatar">
+                        <div class="comment-info">
+                            <span class="comment-username">${data.commentData.fullname} (${data.commentData.username})</span>
+                            <span class="comment-timestamp">${data.commentData.timestamp}</span>
+                        </div>
+                    </div>
+                    <div class="comment-text">
+                        ${data.commentData.text}
+                    </div>
+                `;
+                commentSection.appendChild(newComment);
+
+                commentInput.value = "";
+            } else {
+                alert("Failed to post comment");
+            }
+        }
+    });
+
+    // Make 'Enter' key press to also submit comment
+    document.querySelector("#comment-input").addEventListener("keypress", function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            document.querySelector("#send-comment").click();
+        }
+    });
+</script>
