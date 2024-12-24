@@ -14,7 +14,7 @@ function redirectToPost(username, postId) {
     }
     console.log("none of the excluded classes are found");
     // If none of the excluded classes are found, redirect to the view post page
-    window.location.href = `/post/${postId}`;
+    window.location.href = `/${username}/post/${postId}`;
 }
 
 function displayBufferImage(event){

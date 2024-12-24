@@ -156,25 +156,24 @@ window.addEventListener('load', () => {
 });
 
 // Function to handle liking a post
-document.querySelectorAll('.action.like').forEach(likeButton => {
-    likeButton.addEventListener('click', async function(event) {
-        event.stopPropagation();
-        const postId = this.dataset.postId;
-        const response = await fetch(`/post/${postId}/like`, { method: 'POST' });
-        if (response.redirected) {
-            window.location.href = response.url;
-            return;
-        }
-        const data = await response.json();
-        
-        this.querySelector('.like-count').textContent = data.likeCount;
-        const likeIcon = this.querySelector('.like-icon');
-        if (data.isLiked) {
-            likeIcon.classList.remove('bi-heart');
-            likeIcon.classList.add('bi-heart-fill');
-        } else {
+document.querySelectorAll('.like').forEach(likeAction => {
+    const likeIcon = likeAction.querySelector('.like-icon');
+    const likeCount = likeAction.querySelector('.like-count');
+    
+    let isLiked = false; // Track like status for each post
+    // Add event listener to each like button
+    likeAction.addEventListener('click', () => {
+        // Toggle like state
+        if (isLiked) {
             likeIcon.classList.remove('bi-heart-fill');
             likeIcon.classList.add('bi-heart');
+            likeCount.textContent = parseInt(likeCount.textContent) - 1;
+        } else {
+            likeIcon.classList.remove('bi-heart');
+            likeIcon.classList.add('bi-heart-fill');
+            likeCount.textContent = parseInt(likeCount.textContent) + 1;
         }
+
+        isLiked = !isLiked;
     });
 });
