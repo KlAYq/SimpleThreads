@@ -19,8 +19,28 @@ const { posts } = require('./public/temp/posts')
 const initPpt = require('./passport-config')
 const sendConfirmMail = require('./node-mailer-config');
 const {render} = require("express/lib/application");
-const User = require('./models').User;
+const { User, Post, Comment, Reaction } = require('./models');
 const ConfirmInstance = require('./models').ConfirmInstance;
+
+// const { Pool } = require('pg');
+//
+// const pool = new Pool({
+//   host: 'localhost',
+//   user: 'postgres',
+//   password: '123',
+//   database: 'patch',
+//   port: 5432,
+// });
+//
+// // Test the connection
+// pool.connect()
+//   .then(client => {
+//     console.log("Connected to the PostgreSQL database!");
+//     client.release();
+//   })
+//   .catch(err => {
+//     console.error('Error connecting to the database:', err.stack);
+//   });
 
 // Helper functions
 function isValidUsername(username) {
@@ -106,25 +126,115 @@ app.get("/", (req, res) => {
 })
 
 // ADD SESSION USER TO DISPLAY SIDEBAR / NAVBAR
-app.get("/home", async (req, res) => {
-    res.locals.page = "home";
-    let thisUser = await req.user;
-    if (thisUser != null){
-      res.locals.username = await thisUser.username;
-    }
-    res.locals.isLoggedIn = thisUser != null;
 
-    res.locals.posts = posts;
-    res.render("home");
-})
+// Helper function to format timestamp
+const formatTimestamp = (date) => {
+  return new Date(date).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+// Function to fetch all posts with related data(like/ comment count, fullname, username)
+async function fetchAllPosts() {
+  try {
+    const posts = await Post.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['username', 'fullName', 'profilePicture'],
+        },
+        {
+          model: Comment,
+          attributes: ['id'],
+        },
+        {
+          model: Reaction,
+          where: { type: 'LIKE' },
+          required: false,
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+
+    return posts.map(post => {
+      const postData = post.get({ plain: true });
+      return {
+        postId: postData.id,
+        username: postData.User.username,
+        name: postData.User.fullName,
+        avatar: postData.User.profilePicture || 'images/avatar.png', // replace with real avatar here
+        timestamp: formatTimestamp(postData.createdAt),
+        description: postData.description,
+        imagePath: postData.image ? [postData.image] : ["images/sample01.jpg", "images/sample01.jpg"], // replace with real images here
+        likeCount: postData.Reactions.length,
+        commentCount: postData.Comments.length,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+}
+
+app.get("/home", async (req, res) => {
+  res.locals.page = "home";
+  let thisUser = await req.user;
+  if (thisUser != null) {
+    res.locals.username = await thisUser.username;
+  }
+  res.locals.isLoggedIn = thisUser != null;
+  try {
+    const posts = await fetchAllPosts();
+    res.render("home", { posts });
+  } catch (error) {
+    console.error('Error rendering home page:', error);
+    res.status(500).send('An error occurred while loading the home page');
+  }
+});
 
 app.get("/create-post", checkAuthenticated, async (req, res) => {
-    res.locals.page = "create-post";
+  res.locals.page = "create-post";
   let thisUser = await req.user;
   if (thisUser != null)
-    res.locals.username = await thisUser.username;
-    res.render("create-post");
+    res.locals.avatar = await thisUser.profilePicture;
+  
+  if (!res.locals.avatar)
+    res.locals.avatar = 'images/temp.png'; // default avatar here
+  res.locals.name = await thisUser.fullName; 
+  res.locals.username = await thisUser.username;
+  res.render("create-post");
 })
+
+app.post("/create-post", checkAuthenticated, async (req, res) => {
+  try {
+    const { description } = req.body;
+    let thisUser = await req.user;
+    const userId = await thisUser.id;
+    // if (thisUser != null)
+    
+    const currentTime = new Date();
+    const result = await Post.findAll();
+
+    const newPostId = result.length + 1;
+    const newPost = await Post.create({
+      id: newPostId,
+      description: description,
+      createdAt: currentTime,
+      updatedAt: currentTime,
+      userId: userId
+    });
+
+    console.log('New post created:', newPost);
+    res.redirect('/home');
+  } catch (error) {
+    console.error('Error creating post:', error);
+    res.status(500).send('An error occurred while creating the post');
+  }
+});
 
 app.get("/notifications", checkAuthenticated, async (req, res) => {
     res.locals.page = "notifications";
@@ -163,9 +273,9 @@ app.get("/register", checkNotAuthenticated, async (req, res) => {
 })
 
 app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/home',
-  failureRedirect: '/login',
-  failureFlash: true
+    successRedirect: '/home',
+    failureRedirect: '/login',
+    failureFlash: true
 }))
 
 app.post("/register", checkNotAuthenticated, async (req, res) => {
@@ -251,7 +361,7 @@ function checkNotAuthenticated(req, res, next){
   if (!req.isAuthenticated()){
     return next();
   }
-
+  
   res.redirect('/');
 }
 
@@ -259,3 +369,8 @@ function checkNotAuthenticated(req, res, next){
 app.use("/:username", (req, res, next) => {req.username = req.params.username; next()}, require("./routes/userRouter"));
 
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))
+
+module.exports = {
+  checkAuthenticated,
+  checkNotAuthenticated
+}
