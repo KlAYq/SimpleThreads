@@ -11,7 +11,20 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 const nodeMailer = require('nodemailer');
 const crypto = require('crypto');
+const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const {upload, uploadResult} = require('./image-upload-config');
 
+(async function() {
+  // Configuration
+  cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+  });
+})();
 
 const app = express()
 const port = 4000
@@ -22,25 +35,6 @@ const {render} = require("express/lib/application");
 const { User, Post, Comment, Reaction } = require('./models');
 const ConfirmInstance = require('./models').ConfirmInstance;
 
-// const { Pool } = require('pg');
-//
-// const pool = new Pool({
-//   host: 'localhost',
-//   user: 'postgres',
-//   password: '123',
-//   database: 'patch',
-//   port: 5432,
-// });
-//
-// // Test the connection
-// pool.connect()
-//   .then(client => {
-//     console.log("Connected to the PostgreSQL database!");
-//     client.release();
-//   })
-//   .catch(err => {
-//     console.error('Error connecting to the database:', err.stack);
-//   });
 
 // Helper functions
 function isValidUsername(username) {
@@ -53,34 +47,22 @@ function isValidEmail(email) {
   return emailRegex.test(email);
 }
 
-// TEMPORARY SESSION USER
-// const sessionUser = "faker.t1"
+if (!fs.existsSync("./uploads")){
+  fs.mkdirSync("./uploads");
+}
 
 async function getUserByUsername(username) {
-
-  // const result = await pool.query('SELECT * FROM public."Users" WHERE username = $1', [username]);
-  // if (result.rows.length === 0) {
-  //   return null;
-  // }
-  // return result.rows[0];
   return await User.findOne({where: {username: username}});
 }
 
 async function getUserById(id) {
-  // const result = await pool.query('SELECT * FROM public."Users" WHERE id = $1', [id]);
-  // if (result.rows.length === 0) {
-  //   return null;
-  // }
-  // return result.rows[0];
   return await User.findOne({where: {id : id}});
 }
 
 initPpt(passport,
-  // Replace with real database
   getUserByUsername,
   getUserById
 )
-
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({extended: false}));
@@ -201,35 +183,46 @@ app.get("/create-post", checkAuthenticated, async (req, res) => {
   let thisUser = await req.user;
   if (thisUser != null)
     res.locals.avatar = await thisUser.profilePicture;
-  
+
   if (!res.locals.avatar)
     res.locals.avatar = 'images/temp.png'; // default avatar here
-  res.locals.name = await thisUser.fullName; 
+  res.locals.name = await thisUser.fullName;
   res.locals.username = await thisUser.username;
   res.render("create-post");
 })
 
-app.post("/create-post", checkAuthenticated, async (req, res) => {
+app.post("/create-post", checkAuthenticated, async function (req, res, next)  {
   try {
     const { description } = req.body;
     let thisUser = await req.user;
     const userId = await thisUser.id;
-    // if (thisUser != null)
-    
     const currentTime = new Date();
     const result = await Post.findAll();
 
     const newPostId = result.length + 1;
-    const newPost = await Post.create({
-      id: newPostId,
-      description: description,
-      createdAt: currentTime,
-      updatedAt: currentTime,
-      userId: userId
-    });
 
-    console.log('New post created:', newPost);
-    res.redirect('/home');
+    await upload(req, res, async function(err) {
+      let filepath = "./uploads/" + req.file.filename;
+      const resultUrl = await uploadResult(filepath, [{quality : 'auto', fetch_format: 'auto'}]);
+      fs.unlink(filepath, (e) => {
+        if (e) {
+          console.log(e);
+        }
+      })
+
+      // Yes, this does need to be here
+      const newPost = await Post.create({
+        id: newPostId,
+        description: description,
+        createdAt: currentTime,
+        updatedAt: currentTime,
+        userId: userId,
+        image: resultUrl,
+      });
+
+      console.log('New post created:', newPost);
+      res.redirect('/home');
+    })
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).send('An error occurred while creating the post');
@@ -244,24 +237,10 @@ app.get("/notifications", checkAuthenticated, async (req, res) => {
     res.render("notifications");
 })
 
-// app.get("/my-profile", (req, res) => {
-//     res.locals.page = "my-profile"
-//     res.render("profile")
-// })
-
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
   res.render("auth/login", {layout: false});
 })
-
-// app.get("/post_view/:id", (req, res) => {
-//     let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
-//     res.locals.posts = posts.filter(obj =>{
-//         return obj.postId == id;
-//     })[0]
-//     res.locals.isPostView = true
-//     res.render("post_view");
-// })
 
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
@@ -361,7 +340,7 @@ function checkNotAuthenticated(req, res, next){
   if (!req.isAuthenticated()){
     return next();
   }
-  
+
   res.redirect('/');
 }
 

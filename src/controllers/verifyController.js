@@ -20,10 +20,12 @@ verifyController.verifyUser = async (req, res) => {
       username: result.username,
       password: result.password
     })
+
+    await ConfirmInstance.destroy({where : {confirmToken: confirmation}})
   res.render('auth/return_to_login', {layout : false});
   }
   else
-    res.send("Confirmation key doesn't exist.");
+    res.render("error", {layout: false, errorText : "Link expired."});
 }
 
 module.exports = verifyController
