@@ -40,22 +40,34 @@
             <div class="" style="width: 60px; height: 60px;">
                 <img src="/images/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
             </div>
-
-            <a href="/login">
+            {{#if isLoggedIn}}
+              <form action="/logout?_method=DELETE" method="post">
+                <button type="submit" class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">Log out</button>
+              </form>
+            {{else}}
+              <a href="/login">
                 <div class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">
-                Log in
+                  Log in
                 </div>
-            </a>
+              </a>
+            {{/if}}
         </header>
 
         <!-- Desktop sidebar -->
         {{> desktop_sidebar}}
 
         <main>
-            <a href="/login">
-              <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Log in</div>
-            </a>
-            <!-- outer-container -->
+            {{#if isLoggedIn}}
+            <form action="/logout?_method=DELETE" method="post">
+              <button type="submit" class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">Log out</button>
+            </form>
+            {{else}}
+              <a href="/login">
+                <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Log in</div>
+              </a>
+            {{/if}}
+
+          <!-- outer-container -->
             <div class="container-fluid d-flex align-content-center justify-content-center m-0 bg-light-subtle" style="padding: 0 20px; box-sizing: border-box;" id="outer-container">
                 <!-- transform container -->
                 <div class="d-flex min-vh-100" id="transform-container">

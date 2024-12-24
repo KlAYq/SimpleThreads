@@ -9,32 +9,18 @@ const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
+const nodeMailer = require('nodemailer');
+const crypto = require('crypto');
+
 
 const app = express()
 const port = 4000
 const { posts } = require('./public/temp/posts')
 const initPpt = require('./passport-config')
-const User = require('../src/models').User;
-
-// const { Pool } = require('pg');
-//
-// const pool = new Pool({
-//   host: 'localhost',
-//   user: 'postgres',
-//   password: '123',
-//   database: 'patch',
-//   port: 5432,
-// });
-//
-// // Test the connection
-// pool.connect()
-//   .then(client => {
-//     console.log("Connected to the PostgreSQL database!");
-//     client.release();
-//   })
-//   .catch(err => {
-//     console.error('Error connecting to the database:', err.stack);
-//   });
+const sendConfirmMail = require('./node-mailer-config');
+const {render} = require("express/lib/application");
+const User = require('./models').User;
+const ConfirmInstance = require('./models').ConfirmInstance;
 
 // Helper functions
 function isValidUsername(username) {
@@ -123,8 +109,10 @@ app.get("/", (req, res) => {
 app.get("/home", async (req, res) => {
     res.locals.page = "home";
     let thisUser = await req.user;
-    if (thisUser != null)
+    if (thisUser != null){
       res.locals.username = await thisUser.username;
+    }
+    res.locals.isLoggedIn = thisUser != null;
 
     res.locals.posts = posts;
     res.render("home");
@@ -210,36 +198,45 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     // const result = await pool.query('SELECT * FROM public."Users"');
-    const result = await User.findAll();
 
-    console.log(result);
-    // Check if result.rows is defined and has a length
-    const newId = result.length + 1; // Default to 1 if no rows found
+    let token;
+    token = crypto.randomBytes(48).toString('hex');
 
-
-    // await pool.query(
-    //   'INSERT INTO public."Users" (id, username, password, "createdAt", "updatedAt") VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
-    //   [newId, username, hashedPassword]
-    // );
-
-    await User.create({
-      id: newId,
+    await ConfirmInstance.create({
+      confirmToken: token,
+      email: email,
       username: username,
       password: hashedPassword
     })
 
-
-    console.log("Create account successfully");
-    res.redirect('/login');
+    await sendConfirmMail(email, token);
+    // console.log("Create account successfully");
+    res.redirect('/confirm_email');
   } catch (error) {
     console.error('Error during registration:', error);
     res.redirect('/register');
   }
 })
 
-app.delete('/logout', checkAuthenticated, (req, res) => {
-  req.logOut();
-  res.redirect('/login');
+app.get("/confirm_email", (req, res)=>{
+  res.render("auth/confirm_email", {layout: false})
+})
+
+app.get("/return_to_login", (req, res)=>{
+  res.render("auth/return_to_login", {layout: false})
+})
+
+app.use('/confirmation_key/:confirmation_key', (req, res, next) => {
+  req.confirmation_key = req.params.confirmation_key;
+  next();
+}, require("./routes/verifyRouter"))
+
+app.delete('/logout', (req, res, next) => {
+  req.logOut( (error) =>{
+    if (error) { return next(error); }
+    res.redirect('/');
+  });
+  // res.redirect('/login');
 })
 
 function checkAuthenticated(req, res, next){
