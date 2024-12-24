@@ -259,6 +259,6 @@ function checkNotAuthenticated(req, res, next){
 }
 
 // ROUTER FOR USERNAME AND POST
-app.use("/:username", require("./routes/userRouter"));
+app.use("/:username", (req, res, next) => {req.username = req.params.username; next()}, require("./routes/userRouter"));
 
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))

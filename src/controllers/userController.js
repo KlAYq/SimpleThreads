@@ -24,19 +24,17 @@ userController.showProfile = async (req, res) => {
     // }
     // else
     //     res.send("User not found");
-    let getUser = await req.user;
-    if (getUser == null){
-      res.send("Error occurred");
-      return;
-    }
 
-    let thisUser = await User.findOne({where : {username : getUser.username}});
+    let getUser = req.username;
+    console.log(getUser);
+
+    let thisUser = await User.findOne({where : {username : getUser}});
     if (thisUser){
+      // res.locals.username = thisUser.username;
       res.locals.user = {
         username : thisUser.username,
-        // name:,
+        name : "sample name"
       }
-      // res.locals.username = thisUser.username;
       res.render("profile");
     }
     else res.send("User not found");
