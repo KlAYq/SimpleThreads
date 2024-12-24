@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "postgres",
-    "password": "222",
+    "password": "123",
     "database": "patch",
-    "host": "127.0.0.1",
+    "host": "localhost",
     "dialect": "postgres",
     "port": 5432
   },
