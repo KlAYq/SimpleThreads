@@ -123,7 +123,7 @@ const formatTimestamp = (date) => {
 };
 
 // Function to fetch all posts with related data(like/ comment count, fullname, username)
-async function fetchAllPosts() {
+async function fetchAllPosts(thisUser) {
   try {
     const posts = await Post.findAll({
       include: [
@@ -143,7 +143,9 @@ async function fetchAllPosts() {
       ],
       order: [['createdAt', 'DESC']],
     });
-
+    let tempUserId = null;
+    if (thisUser != null)
+      tempUserId = thisUser.id;
     return posts.map(post => {
       const postData = post.get({ plain: true });
       return {
@@ -153,9 +155,10 @@ async function fetchAllPosts() {
         avatar: postData.User.profilePicture || 'images/avatar.png', // replace with real avatar here
         timestamp: formatTimestamp(postData.createdAt),
         description: postData.description,
-        imagePath: postData.image ? [postData.image] : ["images/sample01.jpg", "images/sample01.jpg"], // replace with real images here
+        imagePath: postData.image ? [postData.image] : [], // replace with real images here
         likeCount: postData.Reactions.length,
         commentCount: postData.Comments.length,
+        isLiked: postData.Reactions.some(reaction => reaction.userId === tempUserId),
       };
     });
   } catch (error) {
@@ -172,11 +175,146 @@ app.get("/home", async (req, res) => {
   }
   res.locals.isLoggedIn = thisUser != null;
   try {
-    const posts = await fetchAllPosts();
+    const posts = await fetchAllPosts(thisUser);
     res.render("home", { posts });
   } catch (error) {
     console.error('Error rendering home page:', error);
     res.status(500).send('An error occurred while loading the home page');
+  }
+});
+
+// Fetch a single post with related data
+async function fetchPost(postId, userId) {
+  try {
+    const post = await Post.findOne({
+      where: { id: postId },
+      include: [
+        {
+          model: User,
+          attributes: ['username', 'fullName', 'profilePicture'],
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ['username', 'fullName'],
+            },
+          ],
+          order: [['createdAt', 'ASC']], // not working somehow
+        },
+        {
+          model: Reaction,
+          where: { type: 'LIKE' },
+          required: false,
+        },
+      ],
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    const postData = post.get({ plain: true });
+    return {
+      postId: postData.id,
+      username: postData.User.username,
+      name: postData.User.fullName,
+      avatar: postData.User.profilePicture || '/images/default-avatar.png',
+      timestamp: formatTimestamp(postData.createdAt),
+      description: postData.description,
+      imagePath: postData.image ? [postData.image] : [],
+      likeCount: postData.Reactions.length,
+      commentCount: postData.Comments.length,
+      isLiked: postData.Reactions.some(reaction => reaction.userId === userId),
+      comments: postData.Comments.map(comment => ({
+        user: `${comment.User.fullName} (${comment.User.username})`,
+        timestamp: formatTimestamp(comment.createdAt),
+        text: comment.content,
+      })),
+    };
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    return null;
+  }
+}
+
+app.get("/post/:id", checkAuthenticated, async (req, res) => {
+  const postId = req.params.id;
+  let thisUser = await req.user;
+  const userId = thisUser.id;
+  console.log("userId = " + userId);
+  try {
+    const post = await fetchPost(postId, userId);
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+    res.render("post-view", { posts: post });
+  } catch (error) {
+    console.error('Error rendering post view:', error);
+    res.status(500).send('An error occurred while loading the post');
+  }
+});
+
+app.post("/post/:id/like", checkAuthenticated, async (req, res) => {
+  const postId = req.params.id;
+  let thisUser = await req.user;
+  const userId = await thisUser.id;
+
+  try {
+    const existingLike = await Reaction.findOne({
+      where: { postId, userId, type: 'LIKE' }
+    });
+
+    if (existingLike) {
+      await existingLike.destroy();
+    } else {
+      await Reaction.create({ postId, userId, type: 'LIKE' });
+    }
+
+    const likeCount = await Reaction.count({
+      where: { postId, type: 'LIKE' }
+    });
+
+    res.json({ likeCount, isLiked: !existingLike });
+  } catch (error) {
+    console.error('Error handling like:', error);
+    res.status(500).json({ error: 'An error occurred while processing the like' });
+  }
+});
+
+app.use(express.json()); // for comment feature
+// Comment on a post
+app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, next) {
+  try {
+    
+    const postId = req.params.postId;
+    let thisUser = await req.user
+    const userId = thisUser.id;
+    const content = req.body.content;
+
+    const currentTime = formatTimestamp(new Date());
+    console.log("post: " + postId + ", userId: " + userId + ", content: " + content);
+    const newComment = await Comment.create({
+      content: content,
+      createdAt: currentTime,
+      updatedAt: currentTime,
+      userId: userId,
+      postId: postId
+    });
+
+    // Retrieve the comment data to send back
+    const commentData = {
+      username: thisUser.username,
+      fullname: thisUser.fullName,
+      timestamp: currentTime,
+      text: content
+    };
+
+    res.json({ success: true, commentData: commentData });
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    res.status(500).send('An error occurred while creating the comment');
   }
 });
 
@@ -393,7 +531,6 @@ function checkNotAuthenticated(req, res, next){
   if (!req.isAuthenticated()){
     return next();
   }
-
   res.redirect('/');
 }
 
