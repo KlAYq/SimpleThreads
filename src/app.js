@@ -27,12 +27,11 @@ const {upload, uploadResult} = require('./image-upload-config');
 })();
 
 const app = express()
-const port = 4000
-const { posts } = require('./public/temp/posts')
+const port = 4000;
 const initPpt = require('./passport-config')
 const sendConfirmMail = require('./node-mailer-config');
 const {render} = require("express/lib/application");
-const { User, Post, Comment, Reaction } = require('./models');
+const { User, Post, Comment, Reaction, Notification } = require('./models');
 const ConfirmInstance = require('./models').ConfirmInstance;
 
 
@@ -183,7 +182,7 @@ app.get("/create-post", checkAuthenticated, async (req, res) => {
   let thisUser = await req.user;
   if (thisUser != null)
     res.locals.avatar = await thisUser.profilePicture;
-
+  res.locals.isLoggedIn = thisUser != null;
   if (!res.locals.avatar)
     res.locals.avatar = 'images/temp.png'; // default avatar here
   res.locals.name = await thisUser.fullName;
@@ -229,12 +228,58 @@ app.post("/create-post", checkAuthenticated, async function (req, res, next)  {
   }
 });
 
+async function fetchAllNotifications(){
+  try {
+    const notifications = await Notification.findAll({
+      include : [{
+        model : User,
+        attributes : ['username', 'fullName', 'profilePicture']
+      }, {
+        model : Post,
+        attributes : ['id'],
+        required : false
+      }],
+      order: [['createdAt', 'DESC']],
+    });
+
+    return notifications.map(noti => {
+      const notiData = noti.get({plain : true});
+      return {
+        id: notiData.id,
+        avatar: notiData.User.profilePicture || 'images/avatar.png',
+        hyperlink: notiData.Post.postId || notiData.User.username,
+        content: notiData.content,
+        timestamp: notiData.createdAt,
+        isRead: notiData.isRead
+      }
+    })
+  }
+  catch (e){
+    console.error(e);
+    console.log("Error fetching notifications");
+    return [];
+  }
+}
+
 app.get("/notifications", checkAuthenticated, async (req, res) => {
     res.locals.page = "notifications";
   let thisUser = await req.user;
   if (thisUser != null)
     res.locals.username = await thisUser.username;
-    res.render("notifications");
+  res.locals.isLoggedIn = thisUser != null;
+  res.locals.notifications = await fetchAllNotifications();
+  res.render("notifications");
+})
+
+app.delete("/notifications/:id", async (req, res) => {
+  let notiId = req.params.id;
+  try {
+    await Notification.destroy({where: {id : notiId}});
+    res.redirect("/notifications");
+  } catch (e){
+    console.error(e);
+    res.status(500).send("Can't delete user.");
+  }
 })
 
 // Auth

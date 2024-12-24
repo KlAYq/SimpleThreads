@@ -1,15 +1,47 @@
-<ul class="nav nav-tabs nav-fill">
-    <li class="nav-item" onclick="selectCurrentNotificationTab(event)">
-        <a class="nav-link active fw-bold" aria-current="page" href="#" id="allTab">All</a>
-    </li>
-    <li class="nav-item" onclick="selectCurrentNotificationTab(event)">
-        <a class="nav-link" href="#" id="unreadTab">Unread</a>
-    </li>
-</ul>
+<!--<ul class="nav nav-tabs nav-fill">-->
+<!--    <li class="nav-item" onclick="selectCurrentNotificationTab(event)">-->
+<!--        <a class="nav-link active fw-bold" aria-current="page" href="#" id="allTab">All</a>-->
+<!--    </li>-->
+<!--    <li class="nav-item" onclick="selectCurrentNotificationTab(event)">-->
+<!--        <a class="nav-link" href="#" id="unreadTab">Unread</a>-->
+<!--    </li>-->
+<!--</ul>-->
 <div class="tab-content p-3">
     <hr>
     <!--Notification Box -->
-    {{> notification_box}}
-    {{> notification_box}}
-    {{> notification_box}}
+    <div class="notification-box">
+      <a href="/sus.red" class="float-start">
+        <img src="/images/avatar.png" alt="Avatar" class="avatar rounded-circle">
+      </a>
+      <div class="notification-actions float-end" style="display: none">
+        <button type="button" class="btn btn-outline-success">Seen</button>
+        <button type="button" class="btn btn-outline-danger">Delete</button>
+      </div>
+
+      <div class="notification-content">
+        <div class="text-dark">sus.red has followed you!</div>
+        <div class="text-muted">12 minutes ago</div>
+      </div>
+
+    </div>
+    <hr>
+
+    {{#each notification}}
+        <div class="notification-box">
+          <a href="/{{hyperlink}}" class="float-start">
+            <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle">
+          </a>
+
+          <div class="notification-actions float-end" style="display: none">
+            <button type="button" class="btn btn-outline-success" onclick="markNotificationAsSeen()" data-id="{{id}}">Seen</button>
+            <button type="button" class="btn btn-outline-danger" onclick="removeNotification()" data-id="{{id}}">Delete</button>
+          </div>
+
+          <div class="notification-content">
+            <div class="text-dark">{{content}}</div>
+            <div class="text-muted">{{timestamp}}</div>
+          </div>
+        </div>
+        <hr>
+    {{/each}}
 </div>

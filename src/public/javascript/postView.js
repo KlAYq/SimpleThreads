@@ -22,13 +22,15 @@ function displayBufferImage(event){
   const [file] = img_upload.files;
   if (file){
     let img_placeholder = document.getElementById("image-placeholder");
-    img_placeholder.src = URL.createObjectURL(file);
-    console.log("Replaced Image");
+    if (img_placeholder != null){
+      img_placeholder.src = URL.createObjectURL(file);
+    }
   }
 }
 
 let upload_img_slot = document.getElementById("image-upload");
-upload_img_slot.onchange = (event) => displayBufferImage(event);
+if (upload_img_slot != null)
+  upload_img_slot.onchange = (event) => displayBufferImage(event);
 
 // document.addEventListener("DOMContentLoaded", () => {
 
