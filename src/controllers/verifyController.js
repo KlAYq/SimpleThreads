@@ -22,7 +22,7 @@ verifyController.verifyUser = async (req, res) => {
     })
 
     await ConfirmInstance.destroy({where : {confirmToken: confirmation}})
-  res.render('auth/return_to_login', {layout : false});
+  res.render('auth/return_to_login', {layout : "auth.hbs"});
   }
   else
     res.render("error", {layout: false, errorText : "Link expired."});

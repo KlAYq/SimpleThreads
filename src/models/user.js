@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Follow, {foreignKey: "followingUserId", as: "Following"});
       User.hasMany(models.Follow, {foreignKey: "followedUserId", as : "Followed"});
       User.hasMany(models.Reaction, {foreignKey: "userId"});
+      User.hasMany(models.Notification, {foreignKey: "userId"});
     }
   }
 

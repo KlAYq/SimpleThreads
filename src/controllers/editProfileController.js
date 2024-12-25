@@ -8,14 +8,14 @@ editProfileController.loadData = async (req, res) => {
   const thisUser = await req.user;
 
   if (thisUser == null){
-    res.redirect("home")
+    res.redirect("/login")
     return;
   }
 
   res.locals.user = {
     username: thisUser.username,
     name: thisUser.fullName,
-    avatar: thisUser.profilePicture || 'images/avatar.png',
+    avatar: await thisUser.profilePicture,
     bio: thisUser.description
   }
   res.render("edit-profile");
@@ -30,7 +30,7 @@ editProfileController.editProfile = async (req, res) => {
   }
 
   await upload(req, res, async function(err) {
-    let resultUrl;
+    let resultUrl = thisUser.profilePicture;
     if (await req.file != null){
       let filepath = "./uploads/" + req.file.filename;
       resultUrl = await uploadResult(filepath, [{quality: 'auto', fetch_format: 'auto'}, {gravity: "auto", width: 400, height: 400, crop: "fill"}]);
@@ -40,7 +40,7 @@ editProfileController.editProfile = async (req, res) => {
         }
       })
     } else {
-      resultUrl = null;
+      resultUrl = thisUser.profilePicture;
     }
     try {
       const {username, fullName, bio} = req.body;

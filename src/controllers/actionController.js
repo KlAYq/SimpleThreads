@@ -50,7 +50,7 @@ actionController.changePasswordConfirm = async (req, res, next) => {
   }
 }
 
-actionController.resetPassword = async (req, res) => {
+actionController.resetPassword = async (req, res, next) => {
   const thisUser = await req.user;
 
   if (thisUser == null){
@@ -59,7 +59,9 @@ actionController.resetPassword = async (req, res) => {
   }
 
   let token;
-  token = crypto.randomBytes(48).toString('hex');
+  do {
+    token = crypto.randomBytes(48).toString('hex');
+  } while (await ResetInstance.findOne({where: {resetToken: token}}) != null)
 
   await ResetInstance.destroy({where:
       {userId: thisUser.id}
@@ -73,8 +75,14 @@ actionController.resetPassword = async (req, res) => {
   await sendResetMail(thisUser.email, token);
 
   let coveredEmail = thisUser.email;
+  const splitMail = coveredEmail.split("@");
+  const prefix = splitMail[0][0] + splitMail[0][1] + splitMail[0][2] +  "*".repeat(splitMail[0].length - 3);
+  coveredEmail = prefix + "@" + splitMail[1];
 
-  res.render("auth/reset_password", {layout: "auth.hbs", email: thisUser.email});
+  req.logOut( (error) =>{
+    if (error) { return next(error); }
+    res.render("auth/reset_password", {layout: "auth.hbs", email: coveredEmail});
+  });
 }
 
 module.exports = actionController;

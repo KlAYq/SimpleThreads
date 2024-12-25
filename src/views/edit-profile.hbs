@@ -2,8 +2,9 @@
 <form action="/edit-profile" id="profile-form" method="POST" enctype="multipart/form-data">
   <div class="profile">
     <div class="profile-image">
-      <label for="image-upload" class="btn btn-light rounded-3 border-1 border border-dark-subtle my-4 mx-4 d-flex align-items-center justify-content-center text-center" style="height: 6rem; width: 10rem">
-        <img id="image-placeholder" src="{{profilePicture}}" alt="Choose Image" style="z-index: 10; max-width: 100%"/>
+      <label for="image-upload" class="btn btn-light border-1 border border-dark-subtle my-4 mx-4 d-flex align-items-center justify-content-center text-center opacity-75" style="height: 10rem; width: 10rem">
+        <img id="image-placeholder" src="{{avatar}}" alt="Choose Image" style="z-index: -1; width: 100%; height: 100%; opacity: 100%"/>
+        <i class="bi bi-arrow-bar-up icon-100 position-absolute "></i>
       </label>
       <input type="file" name="image" id="image-upload" style="display: none">
     </div>
@@ -23,10 +24,10 @@
     <hr>
     <div class="d-grid gap-2">
       <button type="submit" id="profile-submit" class="btn btn-outline-dark mx-3">Submit</button>
+      <a class="btn btn-outline-dark mx-3" href="/{{username}}">Back</a>
     </div>
-    <div class="d-grid gap-2 my-2">
-      <a href="/account-setting" id="profile-edit" class="btn btn-outline-dark mx-3">Manage Passwords</a>
-    </div>
+<!--    <div class="d-grid gap-2">-->
+<!--    </div>-->
   </div>
 </form>
 {{/with}}

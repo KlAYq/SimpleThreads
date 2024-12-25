@@ -8,25 +8,10 @@
 <!--</ul>-->
 <div class="tab-content p-3">
     <hr>
-    <!--Notification Box -->
-    <div class="notification-box">
-      <a href="/sus.red" class="float-start">
-        <img src="/images/avatar.png" alt="Avatar" class="avatar rounded-circle">
-      </a>
-      <div class="notification-actions float-end" style="display: none">
-        <button type="button" class="btn btn-outline-success">Seen</button>
-        <button type="button" class="btn btn-outline-danger">Delete</button>
-      </div>
-
-      <div class="notification-content">
-        <div class="text-dark">sus.red has followed you!</div>
-        <div class="text-muted">12 minutes ago</div>
-      </div>
-
-    </div>
-    <hr>
-
     {{#each notification}}
+      {{#if isRead}}
+
+      {{else}}
         <div class="notification-box">
           <a href="/{{hyperlink}}" class="float-start">
             <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle">
@@ -43,5 +28,6 @@
           </div>
         </div>
         <hr>
+      {{/if}}
     {{/each}}
 </div>

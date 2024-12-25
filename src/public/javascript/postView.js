@@ -32,6 +32,92 @@ let upload_img_slot = document.getElementById("image-upload");
 if (upload_img_slot != null)
   upload_img_slot.onchange = (event) => displayBufferImage(event);
 
+const commentInput = document.querySelector("#comment-input");
+const charCount = document.querySelector("#char-count");
+const charWarning = document.querySelector("#char-warning");
+const sendButton = document.querySelector("#send-comment");
+const commentSection = document.querySelector("#post-comments");
+
+function updateCharCount() {
+  const count = commentInput.value.length;
+  charCount.textContent = `${count}/255`;
+  if (count > 254) {
+    if (!charCount.classList.contains("text-danger")) {
+      charCount.classList.add("text-danger", "shake");
+      setTimeout(() => charCount.classList.remove("shake"), 300); // Remove shake class after animation
+    }
+  } else {
+    charCount.classList.remove("text-danger");
+  }
+}
+
+function adjustHeight() {
+  commentInput.style.height = 'auto';
+  commentInput.style.height = (commentInput.scrollHeight) + 'px';
+}
+
+commentInput.addEventListener('input', () => {
+  updateCharCount();
+  adjustHeight();
+});
+
+sendButton.addEventListener("click", async function(event) {
+  const commentText = commentInput.value.trim();
+
+  if (commentText && commentText.length <= 255) {
+    const postId = this.dataset.postId;
+    const response = await fetch(`/post/${postId}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ content: commentText })
+    });
+
+
+    const data = await response.json();
+
+    if (data.success) {
+      const newComment = document.createElement("div");
+      newComment.classList.add("commentSection", "bg-light", "p-3", "rounded", "mb-2");
+
+      newComment.innerHTML = `
+                    <div class="comment-header d-flex align-items-center">
+                        <a href="/${data.commentData.username}" class="me-3">
+                            <img src="${data.commentData.avatar}" alt="Avatar" class="comment-avatar rounded-circle me-2" style="width: 40px; height: 40px;">
+                        </a>
+                        <div class="comment-info">
+                            <a href="/${data.commentData.username}" class="username text-dark">
+                                <span class="comment-username fw-bold">${data.commentData.fullname} (${data.commentData.username})</span>
+                            </a>
+                            <span class="comment-timestamp text-muted ms-2 small">${data.commentData.timestamp}</span>
+                        </div>
+                    </div>
+                    <div class="comment-text mt-2">
+                        ${data.commentData.text}
+                    </div>
+                `;
+      commentSection.insertBefore(newComment, commentSection.firstChild);
+
+      commentInput.value = "";
+      updateCharCount();
+      adjustHeight();
+    } else {
+      alert("Failed to post comment");
+    }
+  }
+});
+
+commentInput.addEventListener("keypress", function(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendButton.click();
+  }
+});
+
+// Initial call to set up the textarea
+adjustHeight();
+
 // document.addEventListener("DOMContentLoaded", () => {
 
 //     // const backButton = document.getElementById('backButton');

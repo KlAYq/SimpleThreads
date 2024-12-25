@@ -1,31 +1,98 @@
 <div class="fw-bolder fs-3 text-center">Manage Account</div>
-  <form action="/logout?_method=DELETE" method="post">
+
     <div class="d-grid gap-2 my-4">
-      <a class="btn btn-light" href="/account-settings/reset-password">Reset Password</a>
-      <button type="submit" class="btn btn-light">Log Out</button>
+      <button type="button" class="btn btn-light" onclick="resetModal.show()">Reset Password</button>
+      <button type="button" class="btn btn-light" onclick="logOutModal.show()">Log Out</button>
     </div>
-  </form>
 <!--  <a class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal">Log Out</a>-->
 
-<!-- Modal -->
-<div class="modal fade" id="logOutModal" tabindex="-1" role="dialog" aria-labelledby="logOutModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="logOutModalLabel">Log Out?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+        Send a request to reset your password?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary confirm-reset" data-bs-dismiss="modal">Confirm</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Log Out Modal -->
+<div class="modal fade" id="logOutModal" tabindex="-1" aria-labelledby="logOutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logOutModalLabel">Logging Out</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Log Out?
+      </div>
+      <div class="modal-footer">
         <form action="/logout?_method=DELETE" method="post">
-          <button type="submit" class="btn btn-outline-light">Confirm</button>
+          <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Confirm</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+
+
+<style>
+  .modal-backdrop {
+    z-index: -1;
+  }
+  .modal {
+    position: fixed;
+    z-index: 1050;
+  }
+
+  #username, #password {
+    z-index: -5;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const resetModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'), {
+    backdrop: 'static',
+    keyboard: false
+  });
+
+  const logOutModal = new bootstrap.Modal(document.getElementById('logOutModal'), {
+    backdrop: 'static',
+    keyboard: false
+  });
+
+
+  document.querySelectorAll(".confirm-reset").forEach(async (c) => {c.onclick = async (e) => {
+    // await fetch("/account-settings/reset-password");
+    location.href = "/account-settings/reset-password";
+  }})
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to close the modal
+    document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function(element) {
+      element.addEventListener('click', function() {
+        resetModal.hide();
+      });
+    });
+
+    // Allow clicking outside the modal to close it
+    document.getElementById('resetPasswordModal').addEventListener('click', function(event) {
+      if (event.target === this) {
+        resetModal.hide();
+      }
+    });
+  });
+</script>

@@ -275,6 +275,12 @@ app.post("/post/:id/like", checkAuthenticated, async (req, res) => {
       await existingLike.destroy();
     } else {
       await Reaction.create({ postId, userId, type: 'LIKE' });
+      await Notification.create({
+        postId: postId,
+        otherId: thisUser.id,
+        content: " has reacted on your post.",
+        isRead: false
+      })
     }
 
     const likeCount = await Reaction.count({
@@ -307,6 +313,13 @@ app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, 
       userId: userId,
       postId: postId
     });
+
+    await Notification.create({
+      postId: postId,
+      otherId: thisUser.id,
+      content: " has commented on your post.",
+      isRead: false
+    })
 
     // Retrieve the comment data to send back
     const commentData = {
@@ -380,59 +393,11 @@ app.post("/create-post", checkAuthenticated, async function (req, res, next)  {
   }
 });
 
-async function fetchAllNotifications(){
-  try {
-    const notifications = await Notification.findAll({
-      include : [{
-        model : User,
-        attributes : ['username', 'fullName', 'profilePicture']
-      }, {
-        model : Post,
-        attributes : ['id'],
-        required : false
-      }],
-      order: [['createdAt', 'DESC']],
-    });
 
-    return notifications.map(noti => {
-      const notiData = noti.get({plain : true});
-      return {
-        id: notiData.id,
-        avatar: notiData.User.profilePicture || 'images/avatar.png',
-        hyperlink: notiData.Post.postId || notiData.User.username,
-        content: notiData.content,
-        timestamp: notiData.createdAt,
-        isRead: notiData.isRead
-      }
-    })
-  }
-  catch (e){
-    console.error(e);
-    console.log("Error fetching notifications");
-    return [];
-  }
-}
 
-app.get("/notifications", checkAuthenticated, async (req, res) => {
-    res.locals.page = "notifications";
-  let thisUser = await req.user;
-  if (thisUser != null)
-    res.locals.username = await thisUser.username;
-  res.locals.isLoggedIn = thisUser != null;
-  res.locals.notifications = await fetchAllNotifications();
-  res.render("notifications");
-})
+app.use("/notifications", (req, res, next) => {next();}, require("./routes/notificationRouter"))
 
-app.delete("/notifications/:id", async (req, res) => {
-  let notiId = req.params.id;
-  try {
-    await Notification.destroy({where: {id : notiId}});
-    res.redirect("/notifications");
-  } catch (e){
-    console.error(e);
-    res.status(500).send("Can't delete user.");
-  }
-})
+
 
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
@@ -473,24 +438,36 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
     // Input validation
     if (!isValidUsername(username)) {
       // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
-      console.log('invalid username');
+      // console.log('invalid username');
+      req.flash('error', 'Username not valid');
       return res.redirect('/register');
     }
     if (!isValidEmail(email)) {
       console.log('invalid email');
       // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      req.flash('error', 'Email not valid');
       return res.redirect('/register');
     }
     if (password !== confirmPassword) {
       console.log('wrong confirm password');
       // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      req.flash('error', 'Passwords does not match');
       return res.redirect('/register');
     }
     // const userExists = await pool.query('SELECT * FROM public."Users" WHERE username = $1', [username]);
     const userExists = await User.findOne({where: {username: username}});
     if (userExists != null) {
+      console.log('Username already exist');
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      req.flash('error', 'Username already taken');
+      return res.redirect('/register');
+    }
+
+    const requestExists = await ConfirmInstance.findOne({where: {username: username}});
+    if (requestExists != null) {
       console.log('username already exist');
       // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      req.flash('error', 'Username already taken');
       return res.redirect('/register');
     }
 
@@ -498,7 +475,9 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
     // const result = await pool.query('SELECT * FROM public."Users"');
 
     let token;
-    token = crypto.randomBytes(48).toString('hex');
+    do {
+      token = crypto.randomBytes(48).toString('hex');
+    } while (await ConfirmInstance.findOne({where: {confirmToken: token}}) != null)
 
     await ConfirmInstance.create({
       confirmToken: token,
@@ -536,17 +515,26 @@ app.get("/forgot-password", checkNotAuthenticated, async (req, res) => {
 app.post("/forgot-password", async (req, res) => {
   const {username} = req.body;
 
+  if (username == null){
+    req.flash('error', "Please enter an account");
+    res.redirect("/forgot-password");
+  }
+
   const getUser = await User.findOne({where: {username: username}});
   if (getUser == null){
+    req.flash('error', "Account does not exist");
     res.redirect("/forgot-password");
   }
   else{
-    let token;
-    token = crypto.randomBytes(48).toString('hex');
 
     await ResetInstance.destroy({where:
         {userId: getUser.id}
     })
+
+    let token;
+    do {
+      token = crypto.randomBytes(48).toString('hex');
+    } while (await ResetInstance.findOne({where: {resetToken: token}}) != null)
 
     await ResetInstance.create({
       resetToken: token,
@@ -554,9 +542,14 @@ app.post("/forgot-password", async (req, res) => {
     })
 
     await sendResetMail(getUser.email, token);
-    res.render("auth/reset_password", {layout: "auth.hbs", email: getUser.email});
-  }
 
+    let coveredEmail = getUser.email;
+    const splitMail = coveredEmail.split("@");
+    const prefix = splitMail[0][0] + splitMail[0][1] + splitMail[0][2] +  "*".repeat(splitMail[0].length - 3);
+    coveredEmail = prefix + "@" + splitMail[1];
+
+    res.render("auth/reset_password", {layout: "auth.hbs", email: coveredEmail});
+  }
 
 })
 

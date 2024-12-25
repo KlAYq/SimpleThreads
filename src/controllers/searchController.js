@@ -9,7 +9,7 @@ searchController.showList = async (req, res) => {
         let limit = 20;
         let options = {
             where: { id: { [Op.ne]: currentUser.id } },
-            include: [{ 
+            include: [{
                 model: Follow,
                 as: 'Following',
                 required: false,

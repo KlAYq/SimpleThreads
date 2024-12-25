@@ -1,3 +1,4 @@
+const {Notification} = require("../models");
 const followController = {}
 const Follow = require("../models").Follow;
 
@@ -10,10 +11,17 @@ followController.followUser = async (req, res) => {
             followingUserId: currentUser.id,
             followedUserId: targetUserId
         });
+
+        await Notification.create({
+          userId: targetUserId,
+          otherId: currentUser.id,
+          content: " has followed you!",
+          isRead: false
+        })
         res.status(200).send()
     } catch (error) {
         console.log(error)
-        res.status(500).send("Can not follow user") 
+        res.status(500).send("Can not follow user")
     }
 }
 
@@ -30,7 +38,7 @@ followController.unfollowUser = async (req, res) => {
         res.status(200).send()
     } catch (error) {
         console.log(error)
-        res.status(500).send("Can not unfollow user") 
+        res.status(500).send("Can not unfollow user")
     }
 }
 

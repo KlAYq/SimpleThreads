@@ -1,50 +1,62 @@
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
 
-Table follows {
-  following_user_id varchar
-  followed_user_id varchar
+Table follow {
+  followingUserId varchar
+  followedUserId varchar
 }
 
-Table users {
-  user_id inetger [primary key]
+Table user {
+  userId integer [primary key]
+  email varchar
   username varchar
   password varchar
   fullName varchar
   profilePicture  varchar
   description varchar
+  createdAt timestamp
+  lastUpdated timestamp
 }
 
-Table posts {
-  post_id integer [primary key]
-  body text [note: 'Content of the post']
-  user_id integer
-  created_at timestamp
+Table post {
+  postId integer [primary key]
+  description text
+  userId integer
+  createdAt timestamp
+  lastUpdated timestamp
 }
 
-Table comments {
-  comment_id integer [primary key]
-  post_id integer
-  user_id integer
-  content text [note: 'Content of the post']
+Table comment {
+  commentId integer [primary key]
+  postId integer
+  userId integer
+  content text
+  createdAt timestamp
+  lastUpdated timestamp
 }
 
 Table reactions {
-  post_id integer
-  user_id integer
+  postId integer
+  userId integer
 }
 
-Ref: users.user_id < follows.followed_user_id
-Ref: users.user_id < follows.following_user_id
-Ref: users.user_id < posts.user_id
-Ref: users.user_id < comments.user_id
-Ref: users.user_id < reactions.user_id
+Table confirmInstance {
+  confirmToken varchar
+  username varchar
+  password varchar
+  email varchar
+}
 
-Ref: posts.post_id < comments.post_id
-Ref: posts.post_id < reactions.post_id
+Table resetInstance {
+  resetToken varchar
+  userId integer
+}
 
-// Ref: posts.user_id > users.id // many-to-one
+Ref: user.userId < follow.followedUserId
+Ref: user.userId < follow.followingUserId
+Ref: user.userId < post.userId
+Ref: user.userId < comment.userId
+Ref: user.userId < reactions.userId
 
-// Ref: users.id < follows.following_user_id
+Ref: post.postId < comment.postId
+Ref: post.postId < reactions.postId
 
-// Ref: users.id < follows.followed_user_id
+Ref: user.userId < resetInstance.userId
