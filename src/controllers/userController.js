@@ -13,33 +13,19 @@ userController.showProfile = async (req, res) => {
     let currentUser = await req.user;
 
     let targetUser = await User.findOne({where : {username : targetUsername}});
-    targetUser = await User.findOne({
-      where: {
-        id: targetUser.id
-      },
-      include: [{
-        model: Follow,
-        as: "Following",
-        required: false,
-        where: { followingUserId: targetUser.id },
-        attributes: ['id']
-      },
-      {
-        model: Follow,
-        as: "Followed",
-        required: false,
-        where: { followedUserId: targetUser.id },
-        attributes: ['id', 'followingUserId']
-      }]
-    })
-    
     if (targetUser) {
       let isSessionUser = (currentUser != null) && (targetUser.username === currentUser.username);
       let following = false;
+      let followers = await Follow.findAll({
+        where: { followedUserId: targetUser.id },
+        attributes: ['id', 'followingUserId']
+      })
+      let followingCount = await Follow.count({where: { followingUserId: targetUser.id }})
+      let followerCount = followers.length;
       
       if (!isSessionUser) {
         if (currentUser != null) {
-          following = targetUser.Followed.some(follow => follow.followingUserId === currentUser.id) 
+          following = followers.some(follow => follow.followingUserId === currentUser.id) 
         }
       }
       
@@ -48,8 +34,8 @@ userController.showProfile = async (req, res) => {
         username: targetUser.username,
         name: targetUser.fullName,
         avatar: targetUser.profilePicture || 'images/avatar.png',
-        followerCount: targetUser.Followed.length,
-        followingCount: targetUser.Following.length,
+        followerCount: followerCount,
+        followingCount: followingCount,
         bio: targetUser.description,
         isSessionUser: isSessionUser,
         following: following
