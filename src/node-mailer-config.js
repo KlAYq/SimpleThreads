@@ -22,13 +22,36 @@ async function sendConfirmMail(email, token){
       to : email,
       subject : "[Patch] Confirm account registration",
       text: "Confirm account registration by clicking the link below: ",
-      html: "<a href='localhost:4000/confirmation_key/"+ token + "' target='_blank'>Click here</a>" +
-        "<div>localhost:4000/confirmation_key/"+ token + "</div>"
+      html: `<a href='localhost:4000/confirmation_key/${token}' target='_blank'>Click here</a> <br>` +
+        `<button href='localhost:4000/confirmation_key/${token}'>Click here</button><br>` +
+        `<div>localhost:4000/confirmation_key/${token}</div>`
     });
   } catch (error){
     console.error(error);
   }
 }
 
-module.exports = sendConfirmMail;
+async function sendResetMail(email, token){
+  try {
+    await transporter.sendMail({
+      from : {
+        name: "Patch Login Center",
+        address: process.env.MAIL_USER
+      },
+      to : email,
+      subject : "[Patch] Reset account password",
+      text: "You can reset password via this link: ",
+      html: `<a href='localhost:4000/account-settings/change-password/${token}' target='_blank'>Click here</a> <br>` +
+        `<button href='localhost:4000/account-settings/change-password/${token}'>Click here</button><br>` +
+        `<div>localhost:4000/account-settings/change-password/${token}</div>`
+    });
+  } catch (error){
+    console.error(error);
+  }
+}
+
+
+
+
+module.exports = {sendConfirmMail, sendResetMail};
 

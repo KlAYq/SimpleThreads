@@ -41,9 +41,9 @@
                 <img src="/images/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
             </div>
             {{#if isLoggedIn}}
-              <form action="/logout?_method=DELETE" method="post">
-                <button type="submit" class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">Log out</button>
-              </form>
+              <a href="/account-settings">
+                <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Account</div>
+              </a>
             {{else}}
               <a href="/login">
                 <div class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">
@@ -58,9 +58,9 @@
 
         <main>
             {{#if isLoggedIn}}
-            <form action="/logout?_method=DELETE" method="post">
-              <button type="submit" class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">Log out</button>
-            </form>
+              <a href="/account-settings">
+                <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Account</div>
+              </a>
             {{else}}
               <a href="/login">
                 <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Log in</div>
@@ -75,7 +75,7 @@
                     <div class="d-flex flex-column w-100" style="max-width: 640px;">
                         <!-- desktop header -->
                         <div class="position-sticky top-0 z-1 d-none d-sm-flex align-items-center justify-content-center w-100 bg-light-subtle" style="min-height: 60px; box-shadow: 0 0 0 1px var(--bs-light-bg-subtle);">
-                          Home
+                          Patch - by Group 10
                             <!-- left corner -->
                             <div class="position-absolute z-1 overflow-hidden" style="top: 48px; left: -12px; width: 36px; height: 36px;">
                                 <!-- inner left corner -->

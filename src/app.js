@@ -29,9 +29,10 @@ const {upload, uploadResult} = require('./image-upload-config');
 const app = express()
 const port = 4000;
 const initPpt = require('./passport-config')
-const sendConfirmMail = require('./node-mailer-config');
+const {sendConfirmMail, sendResetMail} = require('./node-mailer-config');
 const {render} = require("express/lib/application");
-const { User, Post, Comment, Reaction, Notification } = require('./models');
+const { User, Post, Comment, Reaction, Notification, ResetInstance} = require('./models');
+const {isAuthenticated} = require("passport/lib/http/request");
 const ConfirmInstance = require('./models').ConfirmInstance;
 
 
@@ -287,7 +288,7 @@ app.use(express.json()); // for comment feature
 // Comment on a post
 app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, next) {
   try {
-    
+
     const postId = req.params.postId;
     let thisUser = await req.user
     const userId = thisUser.id;
@@ -430,7 +431,7 @@ app.delete("/notifications/:id", async (req, res) => {
 
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
-  res.render("auth/login", {layout: false});
+  res.render("auth/login", {layout: "auth.hbs"});
 })
 
 // Auth
@@ -439,7 +440,7 @@ app.get("/login", checkNotAuthenticated, async (req, res) => {
 })
 
 app.get("/register", checkNotAuthenticated, async (req, res) => {
-  res.render("auth/register", {layout: false});
+  res.render("auth/register", {layout: "auth.hbs"});
 })
 
 app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
@@ -499,17 +500,49 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
 })
 
 app.get("/confirm_email", (req, res)=>{
-  res.render("auth/confirm_email", {layout: false})
+  res.render("auth/confirm_email", {layout: "auth.hbs"})
 })
 
 app.get("/return_to_login", (req, res)=>{
-  res.render("auth/return_to_login", {layout: false})
+  res.render("auth/return_to_login", {layout: "auth.hbs"})
 })
 
 app.use('/confirmation_key/:confirmation_key', (req, res, next) => {
   req.confirmation_key = req.params.confirmation_key;
   next();
 }, require("./routes/verifyRouter"))
+
+app.get("/forgot-password", checkNotAuthenticated, async (req, res) => {
+  res.render("auth/forgot_password", {layout: "auth.hbs"})
+})
+
+app.post("/forgot-password", async (req, res) => {
+  const {username} = req.body;
+
+  const getUser = await User.findOne({where: {username: username}});
+  if (getUser == null){
+    res.redirect("/forgot-password");
+  }
+  else{
+    let token;
+    token = crypto.randomBytes(48).toString('hex');
+
+    await ResetInstance.destroy({where:
+        {userId: getUser.id}
+    })
+
+    await ResetInstance.create({
+      resetToken: token,
+      userId: getUser.id
+    })
+
+    await sendResetMail(getUser.email, token);
+    res.render("auth/reset_password", {layout: "auth.hbs", email: getUser.email});
+  }
+
+
+})
+
 
 app.delete('/logout', (req, res, next) => {
   req.logOut( (error) =>{
@@ -537,15 +570,13 @@ function checkNotAuthenticated(req, res, next){
 app.use("/search", require("./routes/searchRouter"))
 
 app.use("/edit-profile", async (req, res, next) => {next();}, require("./routes/editProfileRouter"));
+app.use("/account-settings", async (req, res, next) => {next();}, require("./routes/actionRouter"))
 
 // ROUTER FOR USERNAME AND POST
 app.use("/:username", async (req, res, next) => {
   req.username = req.params.username;
   next();
 }, require("./routes/userRouter"));
-
-
-
 
 
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))

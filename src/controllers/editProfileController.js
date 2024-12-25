@@ -8,7 +8,7 @@ editProfileController.loadData = async (req, res) => {
   const thisUser = await req.user;
 
   if (thisUser == null){
-    res.render("home")
+    res.redirect("home")
     return;
   }
 
