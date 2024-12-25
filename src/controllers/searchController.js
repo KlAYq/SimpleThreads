@@ -11,7 +11,7 @@ searchController.showList = async (req, res) => {
             where: { id: { [Op.ne]: currentUser.id } },
             include: [{ 
                 model: Follow,
-                as: 'Follows',
+                as: 'Following',
                 required: false,
                 where: {
                     followingUserId: currentUser.id,
@@ -22,14 +22,17 @@ searchController.showList = async (req, res) => {
         };
 
         if (q != null && q.trim() !== "") {
-            options.where.username = q;
+            options.where[Op.or] = {
+                username: { [Op.iLike]: `%${q.trim()}%` },
+                fullName: { [Op.iLike]: `%${q.trim()}%` }
+            }
         }
 
         let users = await User.findAll({...options, limit})
         users = users.map(user => {
             return {
                 ...user.toJSON(),
-                following: user.Follows.length > 0,
+                following: user.Following.length > 0,
               };
         })
         res.locals.users = users
