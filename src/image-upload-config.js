@@ -9,13 +9,11 @@ const storage = multer.diskStorage({
     cb(null, "uploads");
   },
   filename: function (req, file, cb) {
-    // cb(null, file.fieldname + "-" + Date.now() + ".jpg");
-    cb(null, "uploaded_image.jpg")
+    cb(null, Date.now() + "-" + file.originalname);
   }
 });
 
-// Configure Multer
-imageUploadConfig.upload = multer({
+const upload = multer({
   storage: storage,
   limits: { fileSize: maxSize },
   fileFilter: function (req, file, cb) {
@@ -29,17 +27,20 @@ imageUploadConfig.upload = multer({
 
     cb("Error: File upload only supports the following filetypes - " + filetypes);
   }
-}).single("image");
+}).array("images", 10); // Accept up to 10 images
 
-// Upload cloudinary
-imageUploadConfig.uploadResult = async (filename, transform) => {
-  const results = await cloudinary.uploader
-    .upload(filename)
-    .catch((error) => {
-      console.log(error);
+const uploadResult = async (filePaths, transform) => {
+  const uploadPromises = filePaths.map(async (filePath) => {
+    const result = await cloudinary.uploader.upload(filePath, {
+      transformation: transform,
     });
+    return cloudinary.url(result.public_id, { transformation: transform });
+  });
 
-  return cloudinary.url(results.public_id, {transformation : transform});
-}
+  return Promise.all(uploadPromises);
+};
 
-module.exports = imageUploadConfig;
+module.exports = {
+  upload,
+  uploadResult,
+};

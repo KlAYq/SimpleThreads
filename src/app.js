@@ -12,6 +12,7 @@ const methodOverride = require('method-override')
 const nodeMailer = require('nodemailer');
 const crypto = require('crypto');
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
@@ -156,7 +157,7 @@ async function fetchAllPosts(thisUser) {
         avatar: postData.User.profilePicture || 'images/avatar.png', // replace with real avatar here
         timestamp: formatTimestamp(postData.createdAt),
         description: postData.description,
-        imagePath: postData.image ? [postData.image] : [], // replace with real images here
+        imagePath: postData.image ? postData.image.split('<>') : [],
         likeCount: postData.Reactions.length,
         commentCount: postData.Comments.length,
         isLiked: postData.Reactions.some(reaction => reaction.userId === tempUserId),
@@ -226,7 +227,7 @@ async function fetchPost(postId, userId) {
       avatar: postData.User.profilePicture || '/images/default-avatar.png',
       timestamp: formatTimestamp(postData.createdAt),
       description: postData.description,
-      imagePath: postData.image ? [postData.image] : [],
+      imagePath: postData.image ? postData.image.split('<>') : [],
       likeCount: postData.Reactions.length,
       commentCount: postData.Comments.length,
       isLiked: postData.Reactions.some(reaction => reaction.userId === userId),
@@ -350,54 +351,113 @@ app.get("/create-post", checkAuthenticated, async (req, res) => {
   res.render("create-post");
 })
 
-app.post("/create-post", checkAuthenticated, async function (req, res, next)  {
+app.post("/create-post", checkAuthenticated, async function (req, res, next) {
   try {
-    let thisUser = await req.user;
-    const userId = await thisUser.id;
-    const currentTime = new Date();
-    const result = await Post.findAll();
+    await upload(req, res, async function (err) {
+      if (err) {
+        console.error("Error uploading files:", err);
+        return res.status(500).json({ success: false, message: "An error occurred while uploading images" });
+      }
 
-    const newPostId = result.length + 1;
+      let thisUser = await req.user;
+      const userId = await thisUser.id;
+      const currentTime = new Date();
+      const result = await Post.findAll();
 
-    await upload(req, res, async function(err) {
-      let resultUrl;
-      if (await req.file != null){
-        let filepath = "./uploads/" + req.file.filename;
-        resultUrl = await uploadResult(filepath, [{quality : 'auto', fetch_format: 'auto'}]);
-        fs.unlink(filepath, (e) => {
-          if (e) {
-            console.log(e);
+      const newPostId = result.length + 1;
+
+      let imageUrls = [];
+      if (req.files && req.files.length > 0) {
+        console.log("Total file num: " + req.files.length);
+        const filePaths = req.files.map((file) => file.path);
+        imageUrls = await uploadResult(filePaths, [
+          { quality: "auto", fetch_format: "auto" },
+        ]);
+
+        for (const filePath of filePaths) {
+          try {
+            await fsPromises.unlink(filePath);
+          } catch (err) {
+            console.error("Error deleting file:", err);
           }
-        })
-      } else {
-        resultUrl = null;
+        }
       }
 
       const { description } = req.body;
-      // Yes, this does need to be here
+
       const newPost = await Post.create({
         id: newPostId,
         description: description,
         createdAt: currentTime,
         updatedAt: currentTime,
         userId: userId,
-        image: resultUrl,
+        image: imageUrls.join("<>"), // Join image URLs with '<>' separator
       });
 
-      console.log('New post created:', newPost);
-      res.redirect('/home');
-    })
+      console.log("New post created:", newPost);
+      res.json({ success: true, message: "Post created successfully" });
+    });
   } catch (error) {
-    console.error('Error creating post:', error);
-    res.status(500).send('An error occurred while creating the post');
+    console.error("Error creating post:", error);
+    res.status(500).json({ success: false, message: "An error occurred while creating the post" });
   }
 });
 
-
-
 app.use("/notifications", (req, res, next) => {next();}, require("./routes/notificationRouter"))
 
+async function fetchAllNotifications(){
+  try {
+    const notifications = await Notification.findAll({
+      include : [{
+        model : User,
+        attributes : ['username', 'fullName', 'profilePicture']
+      }, {
+        model : Post,
+        attributes : ['id'],
+        required : false
+      }],
+      order: [['createdAt', 'DESC']],
+    });
 
+    return notifications.map(noti => {
+      const notiData = noti.get({plain : true});
+      return {
+        id: notiData.id,
+        avatar: notiData.User.profilePicture || 'images/avatar.png',
+        hyperlink: notiData.Post.postId || notiData.User.username,
+        content: notiData.content,
+        timestamp: notiData.createdAt,
+        isRead: notiData.isRead
+      }
+    })
+  }
+  catch (e){
+    console.error(e);
+    console.log("Error fetching notifications");
+    return [];
+  }
+}
+
+app.get("/notifications", checkAuthenticated, async (req, res) => {
+    res.locals.page = "notifications";
+  let thisUser = await req.user;
+  if (thisUser != null)
+    res.locals.username = await thisUser.username;
+  res.locals.isLoggedIn = thisUser != null;
+  res.locals.notifications = await fetchAllNotifications();
+  res.render("notifications");
+})
+
+app.delete("/notifications/:id", async (req, res) => {
+  let notiId = req.params.id;
+  try {
+    await Notification.destroy({where: {id : notiId}});
+    res.redirect("/notifications");
+  } catch (e){
+    console.error(e);
+    res.status(500).send("Can't delete user.");
+  }
+})
 
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
