@@ -18,12 +18,10 @@ document.querySelectorAll(".sidebar-button").forEach(button => {
 document.querySelectorAll("#mobile-navbar div").forEach(button => {
     var icon = button.querySelector("i")
     button.onmousedown = () => {
-        // icon.className = icon.className.replace(/\bbi-([\w+\-]+)\b/, (match, p1) => `bi-${p1}-fill`)
         button.style.transform = "scale(0.9)"
     }
 
     mouseout = () => {
-        // icon.className = icon.className.replace(/\bbi-([\w+\-]+)-fill\b/, (match, p1) => `bi-${p1}`)
         button.style.transform = "scale(1)"
     }
 
@@ -42,21 +40,19 @@ async function followToggle(){
     b.innerText = "Follow";
     // console.log(b.innerText);
   }
-
 }
 
-
 function changeFollowOption(event){
-  event.preventDefault();
-
   if (event.target.innerText === 'Follow') {
-    event.target.innerText = "Followed";
+    event.target.innerText = "Following";
     event.target.classList.remove('btn-dark');
     event.target.classList.add('btn-outline-dark');
+    event.target.setAttribute('data-action', 'unfollow')
   } else {
     event.target.innerText = "Follow";
     event.target.classList.remove('btn-outline-danger');
     event.target.classList.add('btn-dark');
+    event.target.setAttribute('data-action', 'follow')
   }
 }
 
@@ -72,9 +68,33 @@ function hoverFollowButton(event){
 function unHoverFollowButton(event){
   event.preventDefault();
   if (event.target.innerText !== 'Follow'){
-    event.target.innerText = 'Followed';
+    event.target.innerText = 'Following';
     event.target.classList.add('btn-outline-dark');
     event.target.classList.remove('btn-outline-danger');
-
   }
 }
+
+document.querySelectorAll('#follow-button').forEach(button => {
+  const id = button.dataset.id;
+  const username = button.dataset.username;
+  
+  button.addEventListener('click', async function handleFollow(event) {
+    try {
+      const action = button.dataset.action;
+      const res = await fetch(`/${username}/${action}/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (res.status == 200) {
+        changeFollowOption(event)
+        return;
+      }
+      const resText = await res.text();
+      throw new Error(resText);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
