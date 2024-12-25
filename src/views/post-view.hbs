@@ -15,9 +15,8 @@
         {{description}}
     </div>
     <div class="post-images d-flex overflow-hidden gap-2 pe-3">
-        <!-- Images here -->
         {{#each imagePath}}
-            <img src="{{this}}" draggable="false" alt="Image 3" class="post-image rounded">
+            <img src="{{this}}" draggable="false" alt="Image" class="post-image rounded">
         {{/each}}
     </div>
     <div class="post-actions card-footer d-flex bg-white border-0">
@@ -32,23 +31,30 @@
     </div>
 
     <!-- Comment input -->
-    <div class="comment-input-section mt-3 d-flex">
-        <textarea id="comment-input" class="form-control" placeholder="Add a comment..." rows="2"></textarea>
-        <button id="send-comment" class="btn btn-primary ms-2" data-post-id="{{postId}}">Send</button>
+    <div class="comment-input-section mt-3 p-3 bg-light rounded d-flex align-items-center position-relative">
+        <textarea id="comment-input" class="form-control me-2" placeholder="Add a comment..." rows="1" maxlength="255"></textarea>
+        <button id="send-comment" class="btn btn-primary ms-2 mt-3 rounded-circle" data-post-id="{{postId}}" style="width: 38px; height: 38px;">
+            <i class="bi bi-send-fill"></i>
+        </button>
+        <small id="char-count" class="text-muted position-absolute bottom-0 end-0 me-2 mb-1">0/255</small>
     </div>
+    <small id="char-warning" class="text-danger mt-1" style="display: none;">Comment is too long!</small>
 
-    <div id="post-comments">
-        <!-- Placeholder for comments -->
+    <div id="post-comments" class="mt-3">
         {{#each comments}}
-        <div class="commentSection">
-            <div class="comment-header">
-                <img src="/images/avatar.png" alt="Avatar" class="comment-avatar">
+        <div class="commentSection bg-light p-3 rounded mb-2">
+            <div class="comment-header d-flex align-items-center">
+                <a href="/{{username}}" class="me-3">
+                    <img src="{{avatar}}" alt="Avatar" class="comment-avatar rounded-circle me-2" style="width: 40px; height: 40px;">
+                </a>
                 <div class="comment-info">
-                    <span class="comment-username">{{user}}</span>
-                    <span class="comment-timestamp">{{timestamp}}</span>
+                    <a href="/{{username}}" class="username text-dark">
+                        <span class="comment-username fw-bold">{{fullname}} ({{username}})</span>
+                    </a>
+                    <span class="comment-timestamp text-muted ms-2 small">{{timestamp}}</span>
                 </div>
             </div>
-            <div class="comment-text">
+            <div class="comment-text mt-2">
                 {{text}}
             </div>
         </div>
@@ -57,15 +63,74 @@
 </div>
 {{/with}}
 
+<style>
+    .comment-input-section textarea {
+        resize: none;
+        overflow: hidden;
+        min-height: 38px;
+    }
 
+    .comment-avatar {
+        object-fit: cover;
+    }
+
+    #send-comment {
+        position: relative;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-2px); }
+        50% { transform: translateX(2px); }
+        75% { transform: translateX(-2px); }
+        100% { transform: translateX(0); }
+    }
+
+    .shake {
+        animation: shake 0.3s ease-in-out;
+    }
+
+    .text-danger {
+        color: red !important;
+    }
+</style>
 
 <script>
-    // Handle sending comment
-    document.querySelector("#send-comment").addEventListener("click", async function(event) {
-        const commentInput = document.querySelector("#comment-input");
+    const commentInput = document.querySelector("#comment-input");
+    const charCount = document.querySelector("#char-count");
+    const charWarning = document.querySelector("#char-warning");
+    const sendButton = document.querySelector("#send-comment");
+    const commentSection = document.querySelector("#post-comments");
+
+    function updateCharCount() {
+        const count = commentInput.value.length;
+        charCount.textContent = `${count}/255`;
+        if (count > 254) {
+        if (!charCount.classList.contains("text-danger")) {
+            charCount.classList.add("text-danger", "shake");
+            setTimeout(() => charCount.classList.remove("shake"), 300); // Remove shake class after animation
+        }
+    } else {
+        charCount.classList.remove("text-danger");
+    }
+    }
+
+    function adjustHeight() {
+        commentInput.style.height = 'auto';
+        commentInput.style.height = (commentInput.scrollHeight) + 'px';
+    }
+
+    commentInput.addEventListener('input', () => {
+        updateCharCount();
+        adjustHeight();
+    });
+
+    sendButton.addEventListener("click", async function(event) {
         const commentText = commentInput.value.trim();
 
-        if (commentText) {
+        if (commentText && commentText.length <= 255) {
             const postId = this.dataset.postId;
             const response = await fetch(`/post/${postId}/comment`, {
                 method: 'POST',
@@ -78,36 +143,43 @@
             const data = await response.json();
 
             if (data.success) {
-                const commentSection = document.querySelector("#post-comments");
                 const newComment = document.createElement("div");
-                newComment.classList.add("commentSection");
+                newComment.classList.add("commentSection", "bg-light", "p-3", "rounded", "mb-2");
 
                 newComment.innerHTML = `
-                    <div class="comment-header">
-                        <img src="/images/avatar.png" alt="Avatar" class="comment-avatar">
+                    <div class="comment-header d-flex align-items-center">
+                        <a href="/${data.commentData.username}" class="me-3">
+                            <img src="${data.commentData.avatar}" alt="Avatar" class="comment-avatar rounded-circle me-2" style="width: 40px; height: 40px;">
+                        </a>
                         <div class="comment-info">
-                            <span class="comment-username">${data.commentData.fullname} (${data.commentData.username})</span>
-                            <span class="comment-timestamp">${data.commentData.timestamp}</span>
+                            <a href="/${data.commentData.username}" class="username text-dark">
+                                <span class="comment-username fw-bold">${data.commentData.fullname} (${data.commentData.username})</span>
+                            </a>
+                            <span class="comment-timestamp text-muted ms-2 small">${data.commentData.timestamp}</span>
                         </div>
                     </div>
-                    <div class="comment-text">
+                    <div class="comment-text mt-2">
                         ${data.commentData.text}
                     </div>
                 `;
-                commentSection.appendChild(newComment);
+                commentSection.insertBefore(newComment, commentSection.firstChild);
 
                 commentInput.value = "";
+                updateCharCount();
+                adjustHeight();
             } else {
                 alert("Failed to post comment");
             }
         }
     });
 
-    // Make 'Enter' key press to also submit comment
-    document.querySelector("#comment-input").addEventListener("keypress", function(event) {
-        if (event.key === 'Enter') {
+    commentInput.addEventListener("keypress", function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            document.querySelector("#send-comment").click();
+            sendButton.click();
         }
     });
+
+    // Initial call to set up the textarea
+    adjustHeight();
 </script>

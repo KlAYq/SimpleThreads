@@ -199,10 +199,9 @@ async function fetchPost(postId, userId) {
           include: [
             {
               model: User,
-              attributes: ['username', 'fullName'],
+              attributes: ['username', 'fullName', 'profilePicture'],
             },
           ],
-          order: [['createdAt', 'ASC']], // not working somehow
         },
         {
           model: Reaction,
@@ -210,6 +209,9 @@ async function fetchPost(postId, userId) {
           required: false,
         },
       ],
+      order: [
+        [Comment, 'createdAt', 'DESC']
+      ]
     });
 
     if (!post) {
@@ -229,7 +231,9 @@ async function fetchPost(postId, userId) {
       commentCount: postData.Comments.length,
       isLiked: postData.Reactions.some(reaction => reaction.userId === userId),
       comments: postData.Comments.map(comment => ({
-        user: `${comment.User.fullName} (${comment.User.username})`,
+        avatar: comment.User.profilePicture,
+        username: comment.User.username,
+        fullname: comment.User.fullName,
         timestamp: formatTimestamp(comment.createdAt),
         text: comment.content,
       })),
@@ -308,6 +312,7 @@ app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, 
     const commentData = {
       username: thisUser.username,
       fullname: thisUser.fullName,
+      avatar: thisUser.profilePicture,
       timestamp: currentTime,
       text: content
     };
