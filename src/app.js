@@ -448,11 +448,23 @@ app.get("/register", checkNotAuthenticated, async (req, res) => {
   res.render("auth/register", {layout: "auth.hbs"});
 })
 
-app.post("/login", checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/login',
-    failureFlash: true
-}))
+app.post("/login", checkNotAuthenticated, (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash('error', 'Incorrect username or password');
+      return res.redirect('/login');
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect('/home');
+    });
+  })(req, res, next);
+});
 
 app.post("/register", checkNotAuthenticated, async (req, res) => {
   const {username, email, password, confirmPassword} = req.body;
