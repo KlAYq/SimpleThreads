@@ -1,6 +1,7 @@
+const { where } = require("sequelize");
+
 const userController = {}
-const Post = require("../models").Post;
-const User = require("../models").User;
+const {User, Post, Follow} = require("../models");
 // const { posts } = require('../public/temp/posts')
 
 userController.init = async (req, res, next) => {
@@ -8,22 +9,55 @@ userController.init = async (req, res, next) => {
 }
 
 userController.showProfile = async (req, res) => {
-    let getUser = req.username;
+    let targetUsername = req.username;
     let currentUser = await req.user;
 
-    let thisUser = await User.findOne({where : {username : getUser}});
-    if (thisUser){
+    let targetUser = await User.findOne({where : {username : targetUsername}});
+    targetUser = await User.findOne({
+      where: {
+        id: targetUser.id
+      },
+      include: [{
+        model: Follow,
+        as: "Following",
+        required: false,
+        where: { followingUserId: targetUser.id },
+        attributes: ['id']
+      },
+      {
+        model: Follow,
+        as: "Followed",
+        required: false,
+        where: { followedUserId: targetUser.id },
+        attributes: ['id', 'followingUserId']
+      }]
+    })
+    
+    if (targetUser) {
+      let isSessionUser = (currentUser != null) && (targetUser.username === currentUser.username);
+      let following = false;
+      
+      if (!isSessionUser) {
+        if (currentUser != null) {
+          following = targetUser.Followed.some(follow => follow.followingUserId === currentUser.id) 
+        }
+      }
+      
       res.locals.user = {
-        username: thisUser.username,
-        name: thisUser.fullName,
-        avatar: thisUser.profilePicture || 'images/avatar.png',
-        followerCount: 12,
-        followingCount: 24,
-        bio: thisUser.description
+        id: targetUser.id,
+        username: targetUser.username,
+        name: targetUser.fullName,
+        avatar: targetUser.profilePicture || 'images/avatar.png',
+        followerCount: targetUser.Followed.length,
+        followingCount: targetUser.Following.length,
+        bio: targetUser.description,
+        isSessionUser: isSessionUser,
+        following: following
       }
 
-      res.locals.isSessionUser = (currentUser != null) && (thisUser.username === currentUser.username);
-
+      // res.locals.username = targetUsername;
+      // res.locals.isSessionUser = isSessionUser;
+      // res.locals.following = following;
       res.render("profile");
     }
     else res.send("User not found");

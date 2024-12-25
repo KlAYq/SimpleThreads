@@ -16,7 +16,9 @@ searchController.showList = async (req, res) => {
                 where: {
                     followingUserId: currentUser.id,
                 },
-            }]
+                attributes: ['id']
+            }],
+            attributes: ['id', 'username', 'fullName', 'profilePicture', 'description']
         };
 
         if (q != null && q.trim() !== "") {

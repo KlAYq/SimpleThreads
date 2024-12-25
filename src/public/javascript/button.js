@@ -58,7 +58,7 @@ function changeFollowOption(event){
 
 function hoverFollowButton(event){
   event.preventDefault();
-  if (event.target.innerText !== 'Follow'){
+  if (event.target.innerText === 'Following'){
     event.target.innerText = 'Unfollow';
     event.target.classList.remove('btn-outline-dark');
     event.target.classList.add('btn-outline-danger');
@@ -67,7 +67,7 @@ function hoverFollowButton(event){
 
 function unHoverFollowButton(event){
   event.preventDefault();
-  if (event.target.innerText !== 'Follow'){
+  if (event.target.innerText === 'Unfollow'){
     event.target.innerText = 'Following';
     event.target.classList.add('btn-outline-dark');
     event.target.classList.remove('btn-outline-danger');
@@ -77,7 +77,7 @@ function unHoverFollowButton(event){
 document.querySelectorAll('#follow-button').forEach(button => {
   const id = button.dataset.id;
   const username = button.dataset.username;
-  
+
   button.addEventListener('click', async function handleFollow(event) {
     try {
       const action = button.dataset.action;

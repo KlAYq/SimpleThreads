@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.Post, {foreignKey: "userId"});
       User.hasMany(models.Comment, {foreignKey: "userId"});
-      User.hasMany(models.Follow, {foreignKey: "followingUserId"});
-      User.hasMany(models.Follow, {foreignKey: "followedUserId"});
+      User.hasMany(models.Follow, {foreignKey: "followingUserId", as: "Following"});
+      User.hasMany(models.Follow, {foreignKey: "followedUserId", as : "Followed"});
       User.hasMany(models.Reaction, {foreignKey: "userId"});
     }
   }
