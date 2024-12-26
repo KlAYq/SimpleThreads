@@ -2,7 +2,7 @@
 <div class="post card mb-3 border-0">
     <div class="post-header card-header d-flex align-items-center bg-white border-0">
         <a href="/{{username}}" class="me-3">
-        <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle">
+        <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle" style="width: 40px; height: 40px;">
         </a>
         <div class="post-info">
             <a href="/{{username}}" class="username text-dark">
@@ -21,11 +21,11 @@
     </div>
     <div class="post-actions card-footer d-flex bg-white border-0">
         <span class="action like me-3 d-flex align-items-center pe-2 ps-2" data-post-id="{{postId}}">
-            <i class="bi {{#if isLiked}}bi-heart-fill{{else}}bi-heart{{/if}} fs-4 me-2 ms-1 like-icon"></i>
+            <i class="bi {{#if isLiked}}bi-heart-fill{{else}}bi-heart{{/if}} fs-6 me-2 ms-1 like-icon"></i>
             <span class="like-count">{{likeCount}}</span>
         </span>
         <span class="action comment d-flex align-items-center pe-2 ps-2">
-            <i class="bi bi-chat-left fs-4 me-2 ms-1"></i>
+            <i class="bi bi-chat-left fs-6 me-2 ms-1"></i>
             {{commentCount}}
         </span>
     </div>
@@ -42,19 +42,19 @@
 
     <div id="post-comments" class="mt-3">
         {{#each comments}}
-        <div class="commentSection bg-light p-3 rounded mb-2">
-            <div class="comment-header d-flex align-items-center">
-                <a href="/{{username}}" class="me-3">
-                    <img src="{{avatar}}" alt="Avatar" class="comment-avatar rounded-circle me-2" style="width: 40px; height: 40px;">
+        <div class="commentSection p-3 mb-2">
+            <div class="comment-header d-flex align-items-center mb-1">
+                <a href="/{{username}}" class="me-2">
+                    <img src="{{avatar}}" alt="Avatar" class="comment-avatar rounded-circle" style="width: 40px; height: 40px;">
                 </a>
                 <div class="comment-info">
                     <a href="/{{username}}" class="username text-dark">
                         <span class="comment-username fw-bold">{{fullname}} ({{username}})</span>
                     </a>
-                    <span class="comment-timestamp text-muted ms-2 small">{{timestamp}}</span>
+                    <span class="comment-timestamp text-muted small">{{timestamp}}</span>
                 </div>
             </div>
-            <div class="comment-text mt-2">
+            <div class="comment-text">
                 {{text}}
             </div>
         </div>
@@ -78,6 +78,10 @@
         position: relative;
         right: 10px;
         bottom: 10px;
+    }
+
+    .comment-text {
+        margin-left: 3.65rem;
     }
 
     @keyframes shake {

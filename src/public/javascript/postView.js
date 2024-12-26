@@ -56,12 +56,10 @@ function adjustHeight() {
   commentInput.style.height = (commentInput.scrollHeight) + 'px';
 }
 
-if (commentInput != null){
-  commentInput.addEventListener('input', () => {
-    updateCharCount();
-    adjustHeight();
-  });
-}
+commentInput.addEventListener('input', () => {
+  updateCharCount();
+  adjustHeight();
+});
 
 sendButton.addEventListener("click", async function(event) {
   const commentText = commentInput.value.trim();
@@ -81,21 +79,21 @@ sendButton.addEventListener("click", async function(event) {
 
     if (data.success) {
       const newComment = document.createElement("div");
-      newComment.classList.add("commentSection", "bg-light", "p-3", "rounded", "mb-2");
+      newComment.classList.add("commentSection", "p-3", "mb-2");
 
       newComment.innerHTML = `
-                    <div class="comment-header d-flex align-items-center">
-                        <a href="/${data.commentData.username}" class="me-3">
-                            <img src="${data.commentData.avatar}" alt="Avatar" class="comment-avatar rounded-circle me-2" style="width: 40px; height: 40px;">
+                    <div class="comment-header d-flex align-items-center mb-1">
+                        <a href="/${data.commentData.username}" class="me-2">
+                            <img src="${data.commentData.avatar}" alt="Avatar" class="comment-avatar rounded-circle" style="width: 40px; height: 40px;">
                         </a>
                         <div class="comment-info">
                             <a href="/${data.commentData.username}" class="username text-dark">
                                 <span class="comment-username fw-bold">${data.commentData.fullname} (${data.commentData.username})</span>
                             </a>
-                            <span class="comment-timestamp text-muted ms-2 small">${data.commentData.timestamp}</span>
+                            <span class="comment-timestamp text-muted small"> ${data.commentData.timestamp}</span>
                         </div>
                     </div>
-                    <div class="comment-text mt-2">
+                    <div class="comment-text">
                         ${data.commentData.text}
                     </div>
                 `;

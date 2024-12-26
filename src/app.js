@@ -120,13 +120,39 @@ app.get("/", (req, res) => {
 
 // Helper function to format timestamp
 const formatTimestamp = (date) => {
-  return new Date(date).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const now = new Date();
+  const postDate = new Date(date);
+  const diffInMs = now - postDate;
+
+  // Time difference in minutes and hours
+  const diffMinutes = Math.floor(diffInMs / 60000);
+  const diffHours = Math.floor(diffMinutes / 60);
+
+  if (diffMinutes < 60) {
+      // If within the same hour, display as minutes
+      return `${diffMinutes}m`;
+  } else if (diffHours < 24 && postDate.getDate() === now.getDate()) {
+      // If within the same day, display as hours and minutes
+      const remainingMinutes = diffMinutes % 60;
+      return `${diffHours}h${remainingMinutes}m`;
+  } else if (postDate.getMonth() === now.getMonth() && postDate.getFullYear() === now.getFullYear()) {
+      // If within the same month, display as HH:mm, dd/MM
+      return postDate.toLocaleString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          day: '2-digit',
+          month: '2-digit',
+      });
+  } else {
+      // Default display as HH:mm, dd/MM/YYYY
+      return postDate.toLocaleString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+      });
+  }
 };
 
 // Function to fetch all posts with related data(like/ comment count, fullname, username)
@@ -318,7 +344,8 @@ app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, 
     const userId = thisUser.id;
     const content = req.body.content;
 
-    const currentTime = formatTimestamp(new Date());
+    const currentTime = new Date();
+    const currentTimeFormated = formatTimestamp(currentTime);
     console.log("post: " + postId + ", userId: " + userId + ", content: " + content);
     const newComment = await Comment.create({
       content: content,
@@ -345,7 +372,7 @@ app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, 
       username: thisUser.username,
       fullname: thisUser.fullName,
       avatar: thisUser.profilePicture,
-      timestamp: currentTime,
+      timestamp: currentTimeFormated,
       text: content
     };
 
