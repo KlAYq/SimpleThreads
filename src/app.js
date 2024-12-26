@@ -14,6 +14,7 @@ const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const {upload, uploadResult} = require('./image-upload-config');
+const { Op, Sequelize } = require('sequelize');
 
 (async function() {
   // Configuration
@@ -29,7 +30,7 @@ const port = 4000;
 const initPpt = require('./passport-config')
 const {sendConfirmMail, sendResetMail} = require('./node-mailer-config');
 const {render} = require("express/lib/application");
-const { User, Post, Comment, Reaction, Notification, ResetInstance, ConfirmInstance} = require('./models');
+const { User, Post, Comment, Reaction, Notification, ResetInstance, ConfirmInstance, Follow} = require('./models');
 // const {isAuthenticated} = require("passport/lib/http/request");
 
 
@@ -161,7 +162,18 @@ const formatTimestamp = (date) => {
 // Function to fetch all posts with related data(like/ comment count, fullname, username)
 async function fetchAllPosts(thisUser) {
   try {
-    const posts = await Post.findAll({
+    // get followed user id to prioritize display posts from them first
+    let followedUserIds = [];
+    if (thisUser) {
+      const followedUsers = await Follow.findAll({
+        attributes: ['followedUserId'],
+        where: { followingUserId: thisUser.id },
+      });
+      followedUserIds = followedUsers.map(follow => follow.followedUserId);
+    }
+
+    // Normal query posts, ordered by time created desc
+    let queryOptions = {
       include: [
         {
           model: User,
@@ -178,23 +190,29 @@ async function fetchAllPosts(thisUser) {
         },
       ],
       order: [['createdAt', 'DESC']],
-    });
-    let tempUserId = null;
-    if (thisUser != null)
-      tempUserId = thisUser.id;
+    };
+    // if the user is as least following someone, sort by posts from them first, then sort by time.  
+    if (followedUserIds.length > 0) {
+      queryOptions.order = [
+        [Sequelize.literal(`CASE WHEN "Post"."userId" IN (${followedUserIds.join(',')}) THEN 0 ELSE 1 END`), 'ASC'],
+        ['createdAt', 'DESC']
+      ];
+    }
+    const posts = await Post.findAll(queryOptions);
+
     return posts.map(post => {
       const postData = post.get({ plain: true });
       return {
         postId: postData.id,
         username: postData.User.username,
         name: postData.User.fullName,
-        avatar: postData.User.profilePicture || 'images/avatar.png', // replace with real avatar here
+        avatar: postData.User.profilePicture || 'images/avatar.png',
         timestamp: formatTimestamp(postData.createdAt),
         description: postData.description,
         imagePath: postData.image ? postData.image.split('<>') : [],
         likeCount: postData.Reactions.length,
         commentCount: postData.Comments.length,
-        isLiked: postData.Reactions.some(reaction => reaction.userId === tempUserId),
+        isLiked: thisUser ? postData.Reactions.some(reaction => reaction.userId === thisUser.id) : false,
       };
     });
   } catch (error) {
