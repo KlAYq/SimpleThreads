@@ -8,24 +8,42 @@
 <!--</ul>-->
 <div class="tab-content p-3">
     <hr>
-    {{#each notification}}
+    {{#each notifications}}
       {{#if isRead}}
-
-      {{else}}
-        <div class="notification-box">
-          <a href="/{{hyperlink}}" class="float-start">
-            <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle">
-          </a>
+        <div class="notification-box noti-id-{{id}}">
+          <div class="float-start">
+            <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle me-5">
+          </div>
 
           <div class="notification-actions float-end" style="display: none">
-            <button type="button" class="btn btn-outline-success" onclick="markNotificationAsSeen()" data-id="{{id}}">Seen</button>
-            <button type="button" class="btn btn-outline-danger" onclick="removeNotification()" data-id="{{id}}">Delete</button>
+            <button type="button" class="btn btn-outline-danger" onclick="removeNotification(this)" data-id="{{id}}">Delete</button>
           </div>
 
-          <div class="notification-content">
-            <div class="text-dark">{{content}}</div>
-            <div class="text-muted">{{timestamp}}</div>
+          <a href="/{{hyperlink}}" class="text-muted text-decoration-none">
+            <div class="notification-content">
+              <div class="text-dark">{{content}}</div>
+              <div class="text-muted">{{timestamp}}</div>
+            </div>
+          </a>
+        </div>
+        <hr>
+      {{else}}
+        <div class="notification-box noti-id-{{id}}">
+          <div class="float-start">
+            <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle me-5">
           </div>
+
+          <div class="notification-actions float-end" style="display: none">
+            <button type="button" class="btn btn-outline-success" onclick="markNotificationAsSeen(this)" data-id="{{id}}">Seen</button>
+            <button type="button" class="btn btn-outline-danger" onclick="removeNotification(this)" data-id="{{id}}">Delete</button>
+          </div>
+
+          <a href="/{{hyperlink}}" class="text-muted text-decoration-none">
+            <div class="notification-content">
+              <div class="text-dark" style="font-weight: bolder">{{content}}</div>
+              <div class="text-muted" style="font-weight: bolder">{{timestamp}}</div>
+            </div>
+          </a>
         </div>
         <hr>
       {{/if}}

@@ -56,10 +56,12 @@ function adjustHeight() {
   commentInput.style.height = (commentInput.scrollHeight) + 'px';
 }
 
-commentInput.addEventListener('input', () => {
-  updateCharCount();
-  adjustHeight();
-});
+if (commentInput != null){
+  commentInput.addEventListener('input', () => {
+    updateCharCount();
+    adjustHeight();
+  });
+}
 
 sendButton.addEventListener("click", async function(event) {
   const commentText = commentInput.value.trim();

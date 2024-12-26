@@ -9,14 +9,11 @@ document.querySelectorAll(".notification-box").forEach((box) => {
 })
 
 
-async function markNotificationAsSeen(){
-
-}
-
-async function removeNotification(id){
+async function markNotificationAsSeen(btn){
+  const id = btn.dataset.id;
   try {
     const res = await fetch(`notifications/${id}`, {
-      method: "DELETE",
+      method: "POST",
     });
     if (res.status === 200){
       return location.reload();
@@ -27,6 +24,24 @@ async function removeNotification(id){
   } catch (e){
     console.error(e);
   }
+}
 
+async function removeNotification(btn){
+  const id = btn.dataset.id;
+  try {
+    const res = await fetch(`notifications/${id}`, {
+      method: "DELETE",
+    });
 
+    location.reload();
+
+    if (res.status === 200){
+
+    } else {
+      const resText = await res.text();
+      throw new Error(resText);
+    }
+  } catch (e){
+    console.error(e);
+  }
 }

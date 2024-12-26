@@ -8,7 +8,6 @@ verifyController.verifyUser = async (req, res) => {
   let result = await ConfirmInstance.findOne({where : {confirmToken: confirmation}});
 
   if (result != null){
-    console.log("hello" + result);
     const userResult = await User.findAll();
 
     // Check if result.rows is defined and has a length
@@ -18,7 +17,9 @@ verifyController.verifyUser = async (req, res) => {
       id: newId,
       email: result.email,
       username: result.username,
-      password: result.password
+      password: result.password,
+      profilePicture: "https://res.cloudinary.com/dg2mnbjbc/image/upload/v1735137493/ebxsypux55w41iqgiqwt.png",
+      fullName: "",
     })
 
     await ConfirmInstance.destroy({where : {confirmToken: confirmation}})

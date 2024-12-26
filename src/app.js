@@ -32,9 +32,8 @@ const port = 4000;
 const initPpt = require('./passport-config')
 const {sendConfirmMail, sendResetMail} = require('./node-mailer-config');
 const {render} = require("express/lib/application");
-const { User, Post, Comment, Reaction, Notification, ResetInstance} = require('./models');
-const {isAuthenticated} = require("passport/lib/http/request");
-const ConfirmInstance = require('./models').ConfirmInstance;
+const { User, Post, Comment, Reaction, Notification, ResetInstance, ConfirmInstance} = require('./models');
+// const {isAuthenticated} = require("passport/lib/http/request");
 
 
 // Helper functions
@@ -60,9 +59,15 @@ async function getUserById(id) {
   return await User.findOne({where: {id : id}});
 }
 
+async function getUserByEmail(email) {
+  return await User.findOne({where: {email: email}});
+}
+
+
 initPpt(passport,
   getUserByUsername,
-  getUserById
+  getUserById,
+  getUserByEmail
 )
 
 app.use(express.static(__dirname + "/public"));
@@ -203,6 +208,7 @@ async function fetchPost(postId, userId) {
               attributes: ['username', 'fullName', 'profilePicture'],
             },
           ],
+          required: false,
         },
         {
           model: Reaction,
@@ -220,11 +226,12 @@ async function fetchPost(postId, userId) {
     }
 
     const postData = post.get({ plain: true });
+
     return {
       postId: postData.id,
       username: postData.User.username,
       name: postData.User.fullName,
-      avatar: postData.User.profilePicture || '/images/default-avatar.png',
+      avatar: postData.User.profilePicture || 'https://res.cloudinary.com/dg2mnbjbc/image/upload/v1735137493/ebxsypux55w41iqgiqwt.png',
       timestamp: formatTimestamp(postData.createdAt),
       description: postData.description,
       imagePath: postData.image ? postData.image.split('<>') : [],
@@ -232,7 +239,7 @@ async function fetchPost(postId, userId) {
       commentCount: postData.Comments.length,
       isLiked: postData.Reactions.some(reaction => reaction.userId === userId),
       comments: postData.Comments.map(comment => ({
-        avatar: comment.User.profilePicture,
+        avatar: comment.User.profilePicture || 'https://res.cloudinary.com/dg2mnbjbc/image/upload/v1735137493/ebxsypux55w41iqgiqwt.png',
         username: comment.User.username,
         fullname: comment.User.fullName,
         timestamp: formatTimestamp(comment.createdAt),
@@ -249,7 +256,8 @@ app.get("/post/:id", checkAuthenticated, async (req, res) => {
   const postId = req.params.id;
   let thisUser = await req.user;
   const userId = thisUser.id;
-  console.log("userId = " + userId);
+  res.locals.isLoggedIn = true;
+
   try {
     const post = await fetchPost(postId, userId);
     if (!post) {
@@ -276,12 +284,17 @@ app.post("/post/:id/like", checkAuthenticated, async (req, res) => {
       await existingLike.destroy();
     } else {
       await Reaction.create({ postId, userId, type: 'LIKE' });
-      await Notification.create({
-        postId: postId,
-        otherId: thisUser.id,
-        content: " has reacted on your post.",
-        isRead: false
-      })
+
+      const thisPost = await Post.findOne({where: {id: postId}});
+      if (userId !== thisPost.userId){
+        await Notification.create({
+          postId: postId,
+          otherId: userId,
+          userId: thisPost.userId,
+          content: " has reacted on your post.",
+          isRead: false
+        })
+      }
     }
 
     const likeCount = await Reaction.count({
@@ -315,12 +328,17 @@ app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, 
       postId: postId
     });
 
-    await Notification.create({
-      postId: postId,
-      otherId: thisUser.id,
-      content: " has commented on your post.",
-      isRead: false
-    })
+    const thisPost = await Post.findOne({where: {id: postId}});
+    if (userId !== thisPost.userId){
+      await Notification.create({
+        postId: postId,
+        otherId: userId,
+        userId: thisPost.userId,
+        content: " has commented on your post.",
+        isRead: false
+      })
+    }
+
 
     // Retrieve the comment data to send back
     const commentData = {
@@ -344,8 +362,7 @@ app.get("/create-post", checkAuthenticated, async (req, res) => {
   if (thisUser != null)
     res.locals.avatar = await thisUser.profilePicture;
   res.locals.isLoggedIn = thisUser != null;
-  if (!res.locals.avatar)
-    res.locals.avatar = 'images/temp.png'; // default avatar here
+
   res.locals.name = await thisUser.fullName;
   res.locals.username = await thisUser.username;
   res.render("create-post");
@@ -403,70 +420,15 @@ app.post("/create-post", checkAuthenticated, async function (req, res, next) {
   }
 });
 
+
+
 app.use("/notifications", (req, res, next) => {next();}, require("./routes/notificationRouter"))
 
-async function fetchAllNotifications(){
-  try {
-    const notifications = await Notification.findAll({
-      include : [{
-        model : User,
-        attributes : ['username', 'fullName', 'profilePicture']
-      }, {
-        model : Post,
-        attributes : ['id'],
-        required : false
-      }],
-      order: [['createdAt', 'DESC']],
-    });
 
-    return notifications.map(noti => {
-      const notiData = noti.get({plain : true});
-      return {
-        id: notiData.id,
-        avatar: notiData.User.profilePicture || 'images/avatar.png',
-        hyperlink: notiData.Post.postId || notiData.User.username,
-        content: notiData.content,
-        timestamp: notiData.createdAt,
-        isRead: notiData.isRead
-      }
-    })
-  }
-  catch (e){
-    console.error(e);
-    console.log("Error fetching notifications");
-    return [];
-  }
-}
-
-app.get("/notifications", checkAuthenticated, async (req, res) => {
-    res.locals.page = "notifications";
-  let thisUser = await req.user;
-  if (thisUser != null)
-    res.locals.username = await thisUser.username;
-  res.locals.isLoggedIn = thisUser != null;
-  res.locals.notifications = await fetchAllNotifications();
-  res.render("notifications");
-})
-
-app.delete("/notifications/:id", async (req, res) => {
-  let notiId = req.params.id;
-  try {
-    await Notification.destroy({where: {id : notiId}});
-    res.redirect("/notifications");
-  } catch (e){
-    console.error(e);
-    res.status(500).send("Can't delete user.");
-  }
-})
 
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
   res.render("auth/login", {layout: "auth.hbs"});
-})
-
-// Auth
-app.get("/login", checkNotAuthenticated, async (req, res) => {
-  res.render("login");
 })
 
 app.get("/register", checkNotAuthenticated, async (req, res) => {
@@ -479,7 +441,7 @@ app.post("/login", checkNotAuthenticated, (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      req.flash('error', 'Incorrect username or password');
+      req.flash('error', 'Incorrect login data');
       return res.redirect('/login');
     }
     req.logIn(user, (err) => {
@@ -523,11 +485,28 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
       return res.redirect('/register');
     }
 
-    const requestExists = await ConfirmInstance.findOne({where: {username: username}});
-    if (requestExists != null) {
+    const emailExists = await User.findOne({where: {email: email}});
+    if (emailExists != null) {
+      console.log('Email already exist');
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      req.flash('error', 'An account already using this email');
+      return res.redirect('/register');
+    }
+
+
+    const requestExistsUsername = await ConfirmInstance.findOne({where: {username: username}});
+    if (requestExistsUsername != null) {
       console.log('username already exist');
       // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
       req.flash('error', 'Username already taken');
+      return res.redirect('/register');
+    }
+
+    const requestExistsEmail = await ConfirmInstance.findOne({where: {email: email}});
+    if (requestExistsEmail != null) {
+      console.log('email already exist');
+      // res.render('/register', { message: 'An error occurred, please try again.', type: 'error' });
+      req.flash('error', 'An account already using this email');
       return res.redirect('/register');
     }
 

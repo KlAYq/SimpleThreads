@@ -1,30 +1,52 @@
 const notificationController = {};
 const {User, Post, Notification} = require("../models");
 
+const formatTimestamp = (date) => {
+  return new Date(date).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 async function fetchAllNotifications(userId){
   try {
     const notifications = await Notification.findAll({
       include : [{
         model : User,
         as: "owner",
-        attributes : ['username', 'fullName', 'profilePicture'],
+        attributes : ['id'],
+        where: {id: userId}
       }, {
         model : Post,
         attributes : ['id'],
         required : false
+      } , {
+        model : User,
+        as: "other",
+        attributes : ['username', 'fullName', 'profilePicture'],
       }],
       order: [['createdAt', 'DESC']],
-      where: {id: userId}
     });
 
     return notifications.map(noti => {
       const notiData = noti.get({plain : true});
+      let link;
+      if (notiData.Post == null)
+        link = notiData.other.username;
+      else
+        link = "post/" + notiData.Post.id;
+
+      const message = notiData.other.username + notiData.content;
+
       return {
         id: notiData.id,
-        avatar: notiData.User.profilePicture || 'images/avatar.png',
-        hyperlink: notiData.Post.postId || notiData.User.username,
-        content: notiData.content,
-        timestamp: notiData.createdAt,
+        avatar: notiData.other.profilePicture,
+        hyperlink: link,
+        content: message,
+        timestamp: formatTimestamp(notiData.createdAt),
         isRead: notiData.isRead
       }
     })
@@ -44,7 +66,8 @@ notificationController.loadData = async (req, res) => {
     return res.redirect("/login");
 
   res.locals.isLoggedIn = true;
-  res.locals.notifications = [];
+  res.locals.notifications = await fetchAllNotifications(thisUser.id);
+  // console.log(res.locals.notifications);
   res.render("notifications");
 }
 
@@ -69,62 +92,5 @@ notificationController.seenNotification = async (req, res) => {
     res.status(500).send("Can't seen notification.");
   }
 }
-
-// notificationController.commentNotification = async (req, res) => {
-//   let thisUser = await req.user;
-//   if (thisUser == null)
-//     return res.status(500).send("Error on notifying");
-//
-//   try {
-//     const {postId} = req.params;
-//     await Notification.create({
-//       postId: postId,
-//       otherId: thisUser.id,
-//       content: " has commented on your post.",
-//       isRead: false
-//     })
-//   } catch (e){
-//     console.error(e);
-//     res.status(500).send("Error on notifying");
-//   }
-// }
-//
-// notificationController.reactNotification = async (req, res) => {
-//   let thisUser = await req.user;
-//   if (thisUser == null)
-//     return res.status(500).send("Error on notifying");
-//
-//   try {
-//     const {postId} = req.params;
-//     await Notification.create({
-//       postId: postId,
-//       otherId: thisUser.id,
-//       content: " has reacted on your post.",
-//       isRead: false
-//     })
-//   } catch (e){
-//     console.error(e);
-//     res.status(500).send("Error on notifying");
-//   }
-// }
-//
-// notificationController.followNotification = async (req, res) => {
-//   let thisUser = await req.user;
-//   if (thisUser == null)
-//     return res.status(500).send("Error on notifying");
-//
-//   try {
-//     const {otherId} = req.params;
-//     await Notification.create({
-//       userId: otherId,
-//       otherId: thisUser.id,
-//       content: " has followed you!",
-//       isRead: false
-//     })
-//   } catch (e){
-//     console.error(e);
-//     res.status(500).send("Error on notifying");
-//   }
-// }
 
 module.exports = notificationController;
