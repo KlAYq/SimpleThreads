@@ -191,7 +191,7 @@ async function fetchAllPosts(thisUser) {
       ],
       order: [['createdAt', 'DESC']],
     };
-    // if the user is as least following someone, sort by posts from them first, then sort by time.  
+    // if the user is as least following someone, sort by posts from them first, then sort by time.
     if (followedUserIds.length > 0) {
       queryOptions.order = [
         [Sequelize.literal(`CASE WHEN "Post"."userId" IN (${followedUserIds.join(',')}) THEN 0 ELSE 1 END`), 'ASC'],
@@ -675,8 +675,11 @@ app.use("/:username", async (req, res, next) => {
   next();
 }, require("./routes/userRouter"));
 
-
 app.listen(port, () => console.log(`Simple Threads starting.... port: ${port}`))
+
+app.get('*', function(req, res){
+  res.render("error", {layout: false, errorText: "Page not found."});
+});
 
 module.exports = {
   checkAuthenticated,

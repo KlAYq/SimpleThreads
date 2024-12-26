@@ -10,7 +10,7 @@ Table user {
   username varchar
   password varchar
   fullName varchar
-  profilePicture  varchar
+  profilePicture varchar
   description varchar
   createdAt timestamp
   lastUpdated timestamp
@@ -19,6 +19,7 @@ Table user {
 Table post {
   postId integer [primary key]
   description text
+  image text
   userId integer
   createdAt timestamp
   lastUpdated timestamp
@@ -36,6 +37,7 @@ Table comment {
 Table reactions {
   postId integer
   userId integer
+  type varchar
 }
 
 Table confirmInstance {
@@ -43,11 +45,23 @@ Table confirmInstance {
   username varchar
   password varchar
   email varchar
+  createdAt timestamp
 }
 
 Table resetInstance {
   resetToken varchar
   userId integer
+  createdAt timestamp
+}
+
+Table notification {
+  userId integer
+  postId integer
+  otherId integer
+  content varchar
+  isRead bool
+  createdAt timestamp
+  lastUpdated timestamp
 }
 
 Ref: user.userId < follow.followedUserId
@@ -55,6 +69,9 @@ Ref: user.userId < follow.followingUserId
 Ref: user.userId < post.userId
 Ref: user.userId < comment.userId
 Ref: user.userId < reactions.userId
+Ref: user.userId < notification.userId
+Ref: user.userId < notification.otherId
+
 
 Ref: post.postId < comment.postId
 Ref: post.postId < reactions.postId
