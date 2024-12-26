@@ -210,3 +210,11 @@
 .username:hover {
     text-decoration: underline;
 }
+
+#nav-followers-tab:hover {
+    background-color: rgba(248, 249, 250, 1); 
+  }
+  
+#nav-following-tab:hover {
+    background-color: rgba(248, 249, 250, 1);
+  }

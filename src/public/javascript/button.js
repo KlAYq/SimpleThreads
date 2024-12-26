@@ -78,7 +78,7 @@ document.querySelectorAll('#follow-button').forEach(button => {
   const id = button.dataset.id;
   const username = button.dataset.username;
 
-  button.addEventListener('click', async function handleFollow(event) {
+  button.addEventListener('click', async (event) => {
     try {
       const action = button.dataset.action;
       const res = await fetch(`/${username}/${action}/${id}`, {
@@ -98,3 +98,25 @@ document.querySelectorAll('#follow-button').forEach(button => {
     }
   });
 });
+
+function updateIndicatorPosition() {
+  const tabButtons = document.querySelectorAll('.nav-link');
+
+  tabButtons.forEach(button => {
+    const indicator = button.querySelector('#tab-select-indicator');
+    if (indicator) indicator.style.display = 'none';
+  });
+
+  const activeTab = document.querySelector('.nav-link.active');
+
+  const activeIndicator = activeTab.querySelector('#tab-select-indicator');
+  if (activeIndicator) {
+    activeIndicator.style.display = 'block';
+  }
+}
+
+document.getElementById('nav-tab').addEventListener('shown.bs.tab', function (event) {
+  updateIndicatorPosition();
+});
+
+window.addEventListener('load', updateIndicatorPosition);

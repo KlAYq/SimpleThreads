@@ -24,10 +24,10 @@ userController.showProfile = async (req, res) => {
       let isSessionUser = (currentUser != null) && (targetUser.username === currentUser.username);
       let following = false;
       let followers = await Follow.findAll({
-        where: { followedUserId: targetUser.id },
+        where: {followedUserId: targetUser.id},
         attributes: ['id', 'followingUserId']
       })
-      let followingCount = await Follow.count({where: { followingUserId: targetUser.id }})
+      let followingCount = await Follow.count({where: {followingUserId: targetUser.id}})
       let followerCount = followers.length;
 
       if (!isSessionUser) {

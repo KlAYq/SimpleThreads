@@ -9,7 +9,7 @@ searchController.showList = async (req, res) => {
     let limit = 20;
     
     let options = {
-        where: { id: { [Op.ne]: null } },
+        where: {id: {[Op.ne]: null}},
         include: [],
         attributes: ['id', 'username', 'fullName', 'profilePicture', 'description']
     };
@@ -20,9 +20,7 @@ searchController.showList = async (req, res) => {
             model: Follow,
             as: 'Followed',
             required: false,
-            where: {
-                followingUserId: currentUser ? currentUser.id : null,
-            },
+            where: {followingUserId: currentUser.id},
             attributes: ['id']
         })
     }
@@ -43,7 +41,7 @@ searchController.showList = async (req, res) => {
         };
     })
     res.locals.users = users;
-    res.locals.isLoggedIn = currentUser != null;
+    res.locals.isLoggedIn = isLoggedIn;
     res.render("search")
 }
 
