@@ -48,9 +48,6 @@ userController.showProfile = async (req, res) => {
         following: following
       }
 
-      // res.locals.username = targetUsername;
-      // res.locals.isSessionUser = isSessionUser;
-      // res.locals.following = following;
       res.render("profile");
     }
     // else res.send("User not found");

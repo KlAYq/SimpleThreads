@@ -37,11 +37,11 @@
         <main>
             {{#if isLoggedIn}}
               <a href="/account-settings">
-                <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Account</div>
+                <div class="btn btn-dark position-fixed d-none d-sm-block z-3" style="top: 24px; right: 24px;">Account</div>
               </a>
             {{else}}
               <a href="/login">
-                <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Log in</div>
+                <div class="btn btn-dark position-fixed d-none d-sm-block z-3" style="top: 24px; right: 24px;">Log in</div>
               </a>
             {{/if}}
 
@@ -52,21 +52,7 @@
                     <!-- inner container -->
                     <div class="d-flex flex-column w-100" style="max-width: 640px;">
                         <!-- desktop header -->
-                        <div class="position-sticky top-0 z-1 d-none d-sm-flex align-items-center justify-content-center w-100 bg-light-subtle" style="min-height: 60px; box-shadow: 0 0 0 1px var(--bs-light-bg-subtle);">
-                          Patch - by Group 10
-                            <!-- left corner -->
-                            <div class="position-absolute z-1 overflow-hidden" style="top: 48px; left: -12px; width: 36px; height: 36px;">
-                                <!-- inner left corner -->
-                                <div class="inner-left position-absolute" style="top: 12px; left: 12px; width: 48px; height: 48px;"></div>
-                            </div>
-                            <!-- center bar -->
-                            <div class="center-bar position-absolute z-1 overflow-hidden bg-light-subtle" style="top: 48px; left: 24px; width: calc(100% - 46px); height: 12px;"></div>
-                            <!-- right corner -->
-                            <div class="position-absolute z-1 overflow-hidden" style="top: 48px; right: -12px; width: 36px; height: 36px;">
-                                <!-- inner right corner -->
-                                <div class="inner-right position-absolute" style="top: 12px; right: 12px; width: 48px; height: 48px;"></div>
-                            </div>
-                        </div>
+                        {{> desktop_header}}
                         <!-- outer feed slider -->
                         <div class="d-flex flex-column w-100 bg-white" style="min-height: 100%;" id="outer-feed-slider">
                             <!-- inner feed slider -->

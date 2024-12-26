@@ -108,7 +108,6 @@ function updateIndicatorPosition() {
   });
 
   const activeTab = document.querySelector('.nav-link.active');
-
   const activeIndicator = activeTab.querySelector('#tab-select-indicator');
   if (activeIndicator) {
     activeIndicator.style.display = 'block';
