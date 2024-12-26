@@ -1,4 +1,4 @@
-const {upload, uploadResult} = require("../image-upload-config");
+const {upload, uploadResult} = require("../single-image-upload-config");
 const fs = require("fs");
 const {Op} = require("sequelize");
 const editProfileController = {}
