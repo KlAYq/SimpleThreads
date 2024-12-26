@@ -12,6 +12,8 @@ editProfileController.loadData = async (req, res) => {
     return;
   }
 
+  res.locals.isLoggedIn = true;
+
   res.locals.user = {
     username: thisUser.username,
     name: thisUser.fullName,

@@ -1,12 +1,12 @@
-document.querySelectorAll(".notification-box").forEach((box) => {
-  box.onmouseleave = () => {
-    document.querySelectorAll(".notification-actions").forEach((button) => {button.style.setProperty("display","none");})
+function optionsOn(box){
+  let boxId = box.dataset.id;
+  document.querySelectorAll(`.box-id-${boxId}`).forEach((button) => {button.style.setProperty("display","block");});
+}
 
-  }
-  box.onmouseenter = () => {
-    document.querySelectorAll(".notification-actions").forEach((button) => {button.style.setProperty("display","block");})
-  }
-})
+function optionsOff(box){
+  let boxId = box.dataset.id;
+  document.querySelectorAll(`.box-id-${boxId}`).forEach((button) => {button.style.setProperty("display","none");});
+}
 
 
 async function markNotificationAsSeen(btn){
@@ -26,10 +26,26 @@ async function markNotificationAsSeen(btn){
   }
 }
 
+async function markAllNotificationsAsSeen(){
+  try {
+    const res = await fetch("notifications/seen/all", {
+      method: "POST",
+    });
+    if (res.status === 200){
+      return location.reload();
+    } else {
+      const resText = await res.text();
+      throw new Error(resText);
+    }
+  } catch (e){
+    console.error(e);
+  }
+}
+
 async function removeNotification(btn){
   const id = btn.dataset.id;
   try {
-    const res = await fetch(`notifications/${id}`, {
+    const res = await fetch("notifications/${id}", {
       method: "DELETE",
     });
 
@@ -45,3 +61,46 @@ async function removeNotification(btn){
     console.error(e);
   }
 }
+
+
+async function removeSeenNotifications(){
+  try {
+    const res = await fetch("notifications/remove/seen", {
+      method: "DELETE",
+    });
+
+    location.reload();
+
+    if (res.status === 200){
+
+    } else {
+      const resText = await res.text();
+      throw new Error(resText);
+    }
+  } catch (e){
+    console.error(e);
+  }
+}
+
+async function removeAllNotifications(){
+  try {
+    const res = await fetch(`notifications/remove/all`, {
+      method: "DELETE",
+    });
+
+    location.reload();
+
+    if (res.status === 200){
+
+    } else {
+      const resText = await res.text();
+      throw new Error(resText);
+    }
+  } catch (e){
+    console.error(e);
+  }
+}
+
+
+
+

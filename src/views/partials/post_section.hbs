@@ -24,10 +24,12 @@
             <i class="bi {{#if isLiked}}bi-heart-fill{{else}}bi-heart{{/if}} fs-6 me-2 ms-1 like-icon"></i>
             <span class="like-count">{{likeCount}}</span>
         </span>
-        <span class="action comment d-flex align-items-center pe-2 ps-2">
-            <i class="bi bi-chat-left fs-6 me-2 ms-1"></i>
-            {{commentCount}}
-        </span>
+        <a href="/post/{{postId}}" class="text-decoration-none text-dark">
+          <span class="action comment d-flex align-items-center pe-2 ps-2">
+              <i class="bi bi-chat-left fs-6 me-2 ms-1"></i>
+              {{commentCount}}
+          </span>
+        </a>
     </div>
 </div>
 {{#unless @last}}

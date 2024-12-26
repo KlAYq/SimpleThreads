@@ -24,15 +24,17 @@
 
 
 {{#if isSessionUser}}
-    <a class="btn btn-light btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4" 
+    <a class="btn btn-light btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4"
     href="/edit-profile">Edit Profile</a>
+    <a class="btn btn-light btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4"
+       href="/account-settings">Account Settings</a>
 {{else}}
     {{#if following}}
-        <button class="btn btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4" id="follow-button" 
+        <button class="btn btn-outline-dark position-relative justify-content-center align-items-center my-1 mx-4" id="follow-button"
         data-username="{{username}}" data-action="unfollow" data-id="{{id}}"
         onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Following</button>
     {{else}}
-        <button class="btn btn-dark position-relative justify-content-center align-items-center my-1 mx-4" id="follow-button" 
+        <button class="btn btn-dark position-relative justify-content-center align-items-center my-1 mx-4" id="follow-button"
         data-username="{{username}}" data-action="follow" data-id="{{id}}"
         onmouseenter="hoverFollowButton(event)" onmouseleave="unHoverFollowButton(event)">Follow</button>
     {{/if}}

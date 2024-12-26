@@ -12,6 +12,13 @@ userController.showProfile = async (req, res) => {
     let targetUsername = req.username;
     let currentUser = await req.user;
 
+    if (currentUser == null){
+      console.log("not logged in");
+      res.redirect("/login");
+    }
+
+    res.locals.isLoggedIn = true;
+
     let targetUser = await User.findOne({where : {username : targetUsername}});
     if (targetUser) {
       let isSessionUser = (currentUser != null) && (targetUser.username === currentUser.username);
@@ -22,13 +29,13 @@ userController.showProfile = async (req, res) => {
       })
       let followingCount = await Follow.count({where: { followingUserId: targetUser.id }})
       let followerCount = followers.length;
-      
+
       if (!isSessionUser) {
         if (currentUser != null) {
-          following = followers.some(follow => follow.followingUserId === currentUser.id) 
+          following = followers.some(follow => follow.followingUserId === currentUser.id)
         }
       }
-      
+
       res.locals.user = {
         id: targetUser.id,
         username: targetUser.username,
@@ -46,7 +53,7 @@ userController.showProfile = async (req, res) => {
       // res.locals.following = following;
       res.render("profile");
     }
-    else res.send("User not found");
+    // else res.send("User not found");
 }
 
 userController.showPostDetail = async (req, res) => {

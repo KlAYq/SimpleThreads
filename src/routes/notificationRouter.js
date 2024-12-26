@@ -1,12 +1,14 @@
 const notificationRouter = require("express").Router();
-const {loadData, removeNotification, seenNotification, commentNotification, reactNotification, followNotification} = require("../controllers/notificationController")
+const {loadData, removeNotification, seenNotification, doRemoveSeenNotification, doRemoveAllNotification, seenAllNotification} = require("../controllers/notificationController")
 
 notificationRouter.get("/", loadData);
-notificationRouter.delete("/:id", removeNotification);
 notificationRouter.post("/:id", seenNotification);
-// notificationRouter.post("/comment/:postId", commentNotification);
-// notificationRouter.post("/react/:postId", reactNotification);
-// notificationRouter.post("/follow/:otherId", followNotification);
+notificationRouter.post("/seen/all", seenAllNotification);
+
+notificationRouter.delete("/:id", removeNotification);
+notificationRouter.delete("/remove/seen", doRemoveSeenNotification);
+notificationRouter.delete("/remove/all", doRemoveAllNotification);
+
 
 
 module.exports = notificationRouter;

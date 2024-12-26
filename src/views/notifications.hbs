@@ -7,45 +7,51 @@
 <!--    </li>-->
 <!--</ul>-->
 <div class="tab-content p-3">
-    <hr>
-    {{#each notifications}}
-      {{#if isRead}}
-        <div class="notification-box noti-id-{{id}}">
-          <div class="float-start">
-            <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle me-5">
-          </div>
+  <div class="justify-content-around text-center position-relative m-3">
+    <button type="button" class="btn btn-outline-success" onclick="markAllNotificationsAsSeen()">Seen All</button>
+    <button type="button" class="btn btn-outline-warning" onclick="removeSeenNotifications()">Remove Seen</button>
+    <button type="button" class="btn btn-outline-danger" onclick="removeAllNotifications()">Remove All</button>
+  </div>
 
-          <div class="notification-actions float-end" style="display: none">
-            <button type="button" class="btn btn-outline-danger" onclick="removeNotification(this)" data-id="{{id}}">Delete</button>
-          </div>
-
-          <a href="/{{hyperlink}}" class="text-muted text-decoration-none">
-            <div class="notification-content">
-              <div class="text-dark">{{content}}</div>
-              <div class="text-muted">{{timestamp}}</div>
+  <hr>
+  {{#each notifications}}
+        {{#if isRead}}
+          <div class="notification-box noti-id-{{id}}" data-id="{{id}}" onmouseleave="optionsOff(this)" onmouseenter="optionsOn(this)">
+            <div class="float-start">
+              <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle me-5">
             </div>
-          </a>
-        </div>
-        <hr>
-      {{else}}
-        <div class="notification-box noti-id-{{id}}">
-          <div class="float-start">
-            <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle me-5">
-          </div>
 
-          <div class="notification-actions float-end" style="display: none">
-            <button type="button" class="btn btn-outline-success" onclick="markNotificationAsSeen(this)" data-id="{{id}}">Seen</button>
-            <button type="button" class="btn btn-outline-danger" onclick="removeNotification(this)" data-id="{{id}}">Delete</button>
-          </div>
-
-          <a href="/{{hyperlink}}" class="text-muted text-decoration-none">
-            <div class="notification-content">
-              <div class="text-dark" style="font-weight: bolder">{{content}}</div>
-              <div class="text-muted" style="font-weight: bolder">{{timestamp}}</div>
+            <div class="notification-actions float-end box-id-{{id}}" style="display: none">
+              <button type="button" class="btn btn-outline-danger" onclick="removeNotification(this)" data-id="{{id}}">Remove</button>
             </div>
-          </a>
-        </div>
-        <hr>
-      {{/if}}
-    {{/each}}
+
+            <a href="/{{hyperlink}}" class="text-muted text-decoration-none">
+              <div class="notification-content">
+                <div class="text-dark">{{content}}</div>
+                <div class="text-muted">{{timestamp}}</div>
+              </div>
+            </a>
+          </div>
+          <hr>
+        {{else}}
+          <div class="notification-box noti-id-{{id}}" data-id="{{id}}" onmouseleave="optionsOff(this)" onmouseenter="optionsOn(this)">
+            <div class="float-start">
+              <img src="{{avatar}}" alt="Avatar" class="avatar rounded-circle me-5">
+            </div>
+
+            <div class="notification-actions float-end box-id-{{id}}" style="display: none">
+              <button type="button" class="btn btn-outline-success" onclick="markNotificationAsSeen(this)" data-id="{{id}}">Seen</button>
+              <button type="button" class="btn btn-outline-danger" onclick="removeNotification(this)" data-id="{{id}}">Remove</button>
+            </div>
+
+            <a href="/{{hyperlink}}" class="text-muted text-decoration-none">
+              <div class="notification-content">
+                <div class="text-dark" style="font-weight: bolder">{{content}}</div>
+                <div class="text-muted" style="font-weight: bolder">{{timestamp}}</div>
+              </div>
+            </a>
+          </div>
+          <hr>
+        {{/if}}
+      {{/each}}
 </div>

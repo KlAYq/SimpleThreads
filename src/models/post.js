@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   Post.init(
     {
       description: DataTypes.STRING,
-      image: DataTypes.STRING
+      image: DataTypes.TEXT
     },
     {
       sequelize,

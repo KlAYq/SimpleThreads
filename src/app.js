@@ -1,7 +1,4 @@
-if (process.env.NODE_ENV !== 'production'){
-  require('dotenv').config();
-}
-
+require('dotenv').config({path: __dirname + "/../.env"});
 const express = require('express')
 const viewEngine = require('express-handlebars')
 const bcrypt = require('bcrypt')
@@ -105,6 +102,12 @@ app.engine(
                     ["session-user", ["bi-person", "bi-person-fill"]],
                 ]);
                 return classes.get(clss)[clss == page ? 1 : 0]
+            },
+            ifCond: (listSample, options) => {
+              if ((listSample == null) || (listSample.length === 0))
+                options.inverse(this);
+              else
+                options.fn(this);
             }
         }
     })
@@ -209,7 +212,7 @@ app.get("/home", async (req, res) => {
   res.locals.isLoggedIn = thisUser != null;
   try {
     const posts = await fetchAllPosts(thisUser);
-    res.render("home", { posts });
+    res.render("home", {posts});
   } catch (error) {
     console.error('Error rendering home page:', error);
     res.status(500).send('An error occurred while loading the home page');

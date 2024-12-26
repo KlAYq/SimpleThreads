@@ -52,8 +52,10 @@ function updateCharCount() {
 }
 
 function adjustHeight() {
-  commentInput.style.height = 'auto';
-  commentInput.style.height = (commentInput.scrollHeight) + 'px';
+  if (commentInput != null){
+    commentInput.style.height = 'auto';
+    commentInput.style.height = (commentInput.scrollHeight) + 'px';
+  }
 }
 
 commentInput.addEventListener('input', () => {
@@ -61,21 +63,22 @@ commentInput.addEventListener('input', () => {
   adjustHeight();
 });
 
-sendButton.addEventListener("click", async function(event) {
-  const commentText = commentInput.value.trim();
+if (sendButton != null)
+  sendButton.addEventListener("click", async function(event) {
+    const commentText = commentInput.value.trim();
 
-  if (commentText && commentText.length <= 255) {
-    const postId = this.dataset.postId;
-    const response = await fetch(`/post/${postId}/comment`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ content: commentText })
-    });
+    if (commentText && commentText.length <= 255) {
+      const postId = this.dataset.postId;
+      const response = await fetch(`/post/${postId}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content: commentText })
+      });
 
 
-    const data = await response.json();
+      const data = await response.json();
 
     if (data.success) {
       const newComment = document.createElement("div");
@@ -99,21 +102,22 @@ sendButton.addEventListener("click", async function(event) {
                 `;
       commentSection.insertBefore(newComment, commentSection.firstChild);
 
-      commentInput.value = "";
-      updateCharCount();
-      adjustHeight();
-    } else {
-      alert("Failed to post comment");
+        commentInput.value = "";
+        updateCharCount();
+        adjustHeight();
+      } else {
+        alert("Failed to post comment");
+      }
     }
-  }
-});
+  });
 
-commentInput.addEventListener("keypress", function(event) {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    sendButton.click();
-  }
-});
+if (commentInput != null)
+  commentInput.addEventListener("keypress", function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendButton.click();
+    }
+  });
 
 // Initial call to set up the textarea
 adjustHeight();

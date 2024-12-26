@@ -28,9 +28,15 @@
             <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
         </div>
         <div class="sidebar-button position-relative d-flex justify-content-center align-items-center">
+          {{#if isLoggedIn}}
             <a href="/{{username}}">
                 <i class="bi {{getIconClass page 'session-user'}} fs-4 text-dark"></i>
             </a>
+          {{else}}
+            <a href="/login">
+              <i class="bi {{getIconClass page 'session-user'}} fs-4 text-dark"></i>
+            </a>
+          {{/if}}
             <div class="sidebar-button-glow position-absolute w-100 z-n1"></div>
         </div>
     </div>

@@ -25,6 +25,12 @@ actionController.changePassword = async (req, res) => {
     return;
   }
 
+  let confirmDate = getResetRequest.createdAt;
+  if (Date.now() - confirmDate >= 1000 * 60 * 2){
+    await ResetInstance.destroy({where: {resetToken : reset_token}});
+    return res.render("error", {layout: false, errorText : "Link expired."});
+  }
+
   res.render("auth/change_password", {layout: false});
 }
 
@@ -32,14 +38,18 @@ actionController.changePasswordConfirm = async (req, res, next) => {
   const reset_token = req.params.reset_token;
   const {password, confirmPassword} = req.body;
 
+  const getResetRequest = await ResetInstance.findOne({where: {resetToken: reset_token}});
+
+  if (getResetRequest == null){
+    res.render("error", {layout: false, errorText : "Invalid link."});
+  }
+
   if (password !== confirmPassword){
     console.error("New passwords does not match.");
     res.redirect(`/account-settings/change-password/${reset_token}`);
   }
   else {
     const newHashedPassword = await bcrypt.hash(password, 10);
-    const getResetRequest = await ResetInstance.findOne({where: {resetToken: reset_token}});
-
     await User.update({password: newHashedPassword},{where: {id : getResetRequest.userId}});
     await ResetInstance.destroy({where: {resetToken : reset_token}});
 

@@ -75,7 +75,34 @@ notificationController.removeNotification = async (req, res) => {
   let notiId = req.params.id;
   try {
     await Notification.destroy({where: {id : notiId}});
-    res.redirect("/notifications");
+    res.send("Notification deleted");
+    // res.redirect("/notifications");
+  } catch (e){
+    console.error(e);
+    res.status(500).send("Can't delete notification.");
+  }
+}
+
+notificationController.doRemoveSeenNotification = async (req, res) => {
+  const thisUser = await req.user;
+
+  try {
+    await Notification.destroy({where: {userId : thisUser.id, isRead : true}});
+    res.send("Notification deleted");
+    // res.redirect("/notifications");
+  } catch (e){
+    console.error(e);
+    res.status(500).send("Can't delete notification.");
+  }
+}
+
+notificationController.doRemoveAllNotification = async (req, res) => {
+  const thisUser = await req.user;
+
+  try {
+    await Notification.destroy({where: {userId : thisUser.id}});
+    res.send("Notification deleted");
+    // res.redirect("/notifications");
   } catch (e){
     console.error(e);
     res.status(500).send("Can't delete notification.");
@@ -86,7 +113,19 @@ notificationController.seenNotification = async (req, res) => {
   let notiId = req.params.id;
   try {
     await Notification.update({isRead: true}, {where: {id : notiId}});
-    res.redirect("/notifications");
+    res.send("Notification updated");
+  } catch (e){
+    console.error(e);
+    res.status(500).send("Can't seen notification.");
+  }
+}
+
+notificationController.seenAllNotification = async (req, res) => {
+  const thisUser = await req.user;
+
+  try {
+    await Notification.update({isRead: true}, {where: {userId : thisUser.id}});
+    res.send("Notification updated");
   } catch (e){
     console.error(e);
     res.status(500).send("Can't seen notification.");

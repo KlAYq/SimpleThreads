@@ -1,4 +1,4 @@
-<nav class="position-fixed bottom-0 start-0 end-0 z-1 d-sm-none d-flex bottom-navbar m-auto bg-light" style="height: 68px;" id="mobile-navbar">    
+<nav class="position-fixed bottom-0 start-0 end-0 z-1 d-sm-none d-flex bottom-navbar m-auto bg-light" style="height: 68px;" id="mobile-navbar">
     <div class="col h-100 d-flex align-items-center justify-content-center">
         <a href="/home">
                 <i class="bi {{getIconClass page 'home'}} fs-4 text-dark"></i>
@@ -19,9 +19,17 @@
                 <i class="bi {{getIconClass page 'notifications'}} fs-4 text-dark"></i>
         </a>
     </div>
+  {{#if isLoggedIn}}
     <div class="col h-100 d-flex align-items-center justify-content-center">
         <a href="/{{username}}">
                 <i class="bi {{getIconClass page 'session-user'}} fs-4 text-dark"></i>
         </a>
     </div>
+  {{else}}
+    <div class="col h-100 d-flex align-items-center justify-content-center">
+      <a href="/login">
+        <i class="bi {{getIconClass page 'session-user'}} fs-4 text-dark"></i>
+      </a>
+    </div>
+  {{/if}}
 </nav>
