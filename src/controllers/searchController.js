@@ -18,7 +18,7 @@ searchController.showList = async (req, res) => {
         options.where.id[Op.ne] = currentUser.id;
         options.include.push({ 
             model: Follow,
-            as: 'Following',
+            as: 'Followed',
             required: false,
             where: {
                 followingUserId: currentUser ? currentUser.id : null,
@@ -38,7 +38,7 @@ searchController.showList = async (req, res) => {
     users = users.map(user => {
         return {
             ...user.toJSON(),
-            following: isLoggedIn ? user.Following.length > 0 : false,
+            following: isLoggedIn ? user.Followed.length > 0 : false,
             followable: isLoggedIn
         };
     })

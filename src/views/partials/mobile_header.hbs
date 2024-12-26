@@ -1,0 +1,23 @@
+<header class="position-fixed top-0 start-0 z-1 d-sm-none d-flex flex-column justify-content-center align-items-center w-100" style="height: 74px;" id="mobile-header">
+    <!-- Back button -->
+    {{#if isPostView}}
+    <button id="backButton" class="btn btn-dark-primary rounded-circle position-absolute" style="width: 40px; height: 40px; padding: 0; left: 19px" onclick="window.location.href = '/home'">
+        <i class="bi bi-arrow-left fs-4"></i>
+    </button>
+    {{/if}}
+
+    <div class="" style="width: 60px; height: 60px;">
+        <img src="/images/logo/patch-filled-logo.png" alt="Logo" width="60" height="60"/>
+    </div>
+    {{#if isLoggedIn}}
+        <a href="/account-settings">
+        <div class="btn btn-light position-fixed d-none d-sm-block" style="top: 24px; right: 24px;">Account</div>
+        </a>
+    {{else}}
+        <a href="/login">
+        <div class="btn btn-light position-fixed" style="top: 19px;right: 19px;" id="login-button">
+            Log in
+        </div>
+        </a>
+    {{/if}}
+</header>
