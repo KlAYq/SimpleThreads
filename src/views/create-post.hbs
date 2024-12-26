@@ -33,43 +33,55 @@
 </div>
 
 <script>
+let selectedFiles = []; // To keep track of all selected file
+
 // display to be uploaded images
 document.getElementById('image-upload').addEventListener('change', function(event) {
     const previewContainer = document.getElementById('image-preview-container');
+    const newFiles = Array.from(event.target.files);
     
-    for (let i = 0; i < event.target.files.length; i++) {
-        const file = event.target.files[i];
+    newFiles.forEach(file => {
+        selectedFiles.push(file);
         const reader = new FileReader();
 
         reader.onload = function(e) {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'position-relative';
+
             const img = document.createElement('img');
             img.src = e.target.result;
             img.alt = 'Image preview';
             img.style.width = '100px';
             img.style.height = '100px';
             img.style.objectFit = 'cover';
-            previewContainer.appendChild(img);
-        }
-        
+
+            const removeBtn = document.createElement('button');
+            removeBtn.innerHTML = '&times;';
+            removeBtn.className = 'position-absolute top-0 end-0 btn btn-danger btn-sm';
+            removeBtn.onclick = function() {
+                selectedFiles = selectedFiles.filter(f => f !== file);
+                previewContainer.removeChild(imgContainer);
+            };
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removeBtn);
+            previewContainer.appendChild(imgContainer);
+        }  
         reader.readAsDataURL(file);
-        console.log("Added file: " + reader);
-    }
-    // event.target.value = '';
+    });
+
+    // Clear the file input to allow selecting the same file again
+    event.target.value = '';
 });
 
 document.getElementById('post-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const formData = new FormData(this);
-    const fileInput = document.getElementById('image-upload');
     
-    // Remove any existing file data
-    formData.delete('images');
-    
-    // Append each file individually
-    for (let i = 0; i < fileInput.files.length; i++) {
-        formData.append('images', fileInput.files[i]);
-    }
+    selectedFiles.forEach(file => {
+        formData.append('images', file);
+    });
 
     fetch('/create-post', {
         method: 'POST',
