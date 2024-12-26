@@ -32,8 +32,10 @@ followController.unfollowUser = async (req, res) => {
 
     try {
         let follow = await Follow.findOne({
-            followingUserId: currentUser.id,
-            followedUserId: targetUserId
+            where: {
+                followingUserId: currentUser.id,
+                followedUserId: targetUserId
+            }
         });
         await follow.destroy();
         res.status(200).send()
