@@ -14,6 +14,7 @@ const transporter = nodeMailer.createTransport({
 
 async function sendConfirmMail(email, token){
   try {
+    let link = `https://simplethreads-group10-hxra.onrender.com/confirmation_key/${token}`
     await transporter.sendMail({
       from : {
         name: "Patch Login Center",
@@ -22,9 +23,9 @@ async function sendConfirmMail(email, token){
       to : email,
       subject : "[Patch] Confirm account registration",
       text: "Confirm account registration by clicking the link below: ",
-      html: `<a href='localhost:4000/confirmation_key/${token}' target='_blank'>Click here</a> <br>` +
-        `<button href='localhost:4000/confirmation_key/${token}'>Click here</button><br>` +
-        `<div>localhost:4000/confirmation_key/${token}</div>`
+      html: `<a href='${link}' target='_blank'>Click here</a> <br>` +
+        `<button href='${link}'>Click here</button><br>` +
+        `<div>${link}</div>`
     });
   } catch (error){
     console.error(error);
@@ -33,6 +34,7 @@ async function sendConfirmMail(email, token){
 
 async function sendResetMail(email, token){
   try {
+    let link = `https://simplethreads-group10-hxra.onrender.com/account-settings/change-password/${token}`
     await transporter.sendMail({
       from : {
         name: "Patch Login Center",
@@ -41,9 +43,9 @@ async function sendResetMail(email, token){
       to : email,
       subject : "[Patch] Reset account password",
       text: "You can reset password via this link: ",
-      html: `<a href='localhost:4000/account-settings/change-password/${token}' target='_blank'>Click here</a> <br>` +
-        `<button href='localhost:4000/account-settings/change-password/${token}'>Click here</button><br>` +
-        `<div>localhost:4000/account-settings/change-password/${token}</div>`
+      html: `<a href='${link}' target='_blank'>Click here</a> <br>` +
+        `<button href='${link}'>Click here</button><br>` +
+        `<div>${link}</div>`
     });
   } catch (error){
     console.error(error);
