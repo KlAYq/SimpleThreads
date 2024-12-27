@@ -10,13 +10,13 @@
 {{#each users}}
     <div class="post card mb-3 border-0">
         <div class="post-header card-header d-flex align-items-start justify-content-between bg-white border-0">
-            <div class="d-flex align-items-start">
+            <div class="d-flex align-items-start" style="max-width: 65%;">
                 <a href="/{{username}}" class="me-3">
                     <img src="{{profilePicture}}" alt="Avatar" class="avatar rounded-circle" style="width: 40px; height: 40px;">
                 </a>
-                <div class="post-info">
+                <div class="post-info w-100">
                     <a href="/{{username}}" class="username text-dark">
-                        <div class="fw-bold">{{fullName}} ({{username}})</div>
+                        <div class="fw-bold" style="max-width: calc(100% - 40px); white-space: break-word;">{{fullName}} ({{username}})</div>
                     </a>
                     <div style="max-height: 48px; overflow: hidden; text-overflow: ellipsis; line-height: 24px; white-space: normal;">{{description}}</div>
                 </div>
