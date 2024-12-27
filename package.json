@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build" : "npm install && cd src && node db",
     "start": "cd src && nodemon app.js"
   },
   "repository": {
