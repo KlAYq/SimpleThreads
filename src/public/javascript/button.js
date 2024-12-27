@@ -92,7 +92,12 @@ document.querySelectorAll('#follow-button').forEach(button => {
         return;
       }
       const resText = await res.text();
-      throw new Error(resText);
+      if (resText === "Interaction lag") {
+        location.reload();
+        return;
+      }
+      else
+        throw new Error(resText);
     } catch (error) {
       console.error(error);
     }

@@ -8,6 +8,18 @@ followController.followUser = async (req, res) => {
     const targetUserId = req.params.id;
 
     try {
+        let existingFollow = await Follow.findOne({
+            where: {
+                followingUserId: currentUser.id,
+                followedUserId: targetUserId
+            }
+        })
+
+        if (existingFollow) {
+            res.status(400).send("Interaction lag")
+            return;
+        }
+
         await Follow.create({
             followingUserId: currentUser.id,
             followedUserId: targetUserId
@@ -37,6 +49,12 @@ followController.unfollowUser = async (req, res) => {
                 followedUserId: targetUserId
             }
         });
+
+        if (!follow) {
+            res.status(400).send("Interaction lag")
+            return;
+        }
+
         await follow.destroy();
         res.status(200).send()
     } catch (error) {
