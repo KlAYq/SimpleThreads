@@ -1,5 +1,8 @@
+
+
 function optionsOn(box){
   let boxId = box.dataset.id;
+  document.querySelectorAll(".notification-actions").forEach((button) => {button.style.setProperty("display","none");});
   document.querySelectorAll(`.box-id-${boxId}`).forEach((button) => {button.style.setProperty("display","block");});
 }
 
@@ -12,7 +15,7 @@ function optionsOff(box){
 async function markNotificationAsSeen(btn){
   const id = btn.dataset.id;
   try {
-    const res = await fetch(`notifications/${id}`, {
+    const res = await fetch(`notifications/seen/${id}`, {
       method: "POST",
     });
     if (res.status === 200){
@@ -21,6 +24,29 @@ async function markNotificationAsSeen(btn){
       const resText = await res.text();
       throw new Error(resText);
     }
+  } catch (e){
+    console.error(e);
+  }
+}
+
+async function goToNotification(btn){
+  const id = btn.dataset.id;
+  const href = btn.dataset.href;
+
+  try {
+    const res = await fetch(`notifications/${id}`, {
+      method: "POST"
+    });
+
+    if (res.status === 200){
+      return location.replace(href);
+    } else {
+      const resText = await res.text();
+      throw new Error(resText);
+    }
+
+
+
   } catch (e){
     console.error(e);
   }
@@ -45,7 +71,7 @@ async function markAllNotificationsAsSeen(){
 async function removeNotification(btn){
   const id = btn.dataset.id;
   try {
-    const res = await fetch("notifications/${id}", {
+    const res = await fetch(`notifications/${id}`, {
       method: "DELETE",
     });
 
