@@ -460,7 +460,7 @@ app.post("/create-post", checkAuthenticated, async function (req, res, next) {
       });
 
       console.log("New post created:", newPost);
-      res.json({ success: true, message: "Post created successfully" });
+      res.json({ success: true, message: "Post created successfully", postId: newPostId});
     });
   } catch (error) {
     console.error("Error creating post:", error);
@@ -683,5 +683,6 @@ app.get('*', function(req, res){
 
 module.exports = {
   checkAuthenticated,
-  checkNotAuthenticated
+  checkNotAuthenticated,
+  formatTimestamp
 }

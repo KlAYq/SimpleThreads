@@ -30,7 +30,7 @@
             </div>
         </form>
     </div>
-</div>
+</div> 
 
 <script>
 let selectedFiles = []; // To keep track of all selected file
@@ -90,7 +90,7 @@ document.getElementById('post-form').addEventListener('submit', function(event) 
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            window.location.href = '/home';
+            window.location.href = `/post/${data.postId}`;
         } else {
             alert('Error creating post: ' + data.message);
         }
