@@ -120,6 +120,20 @@ notificationController.seenNotification = async (req, res) => {
   }
 }
 
+notificationController.goToNotification = async (req, res) => {
+  let notiId = req.params.id;
+  let href = req.body.href;
+
+  try {
+    await Notification.update({isRead: true}, {where: {id : notiId}});
+    res.send("Notification updated");
+  } catch (e){
+    console.error(e);
+    res.status(500).send("Can't seen notification.");
+  }
+}
+
+
 notificationController.seenAllNotification = async (req, res) => {
   const thisUser = await req.user;
 
