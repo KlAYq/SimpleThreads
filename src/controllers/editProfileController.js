@@ -50,7 +50,7 @@ editProfileController.editProfile = async (req, res) => {
 
       let sampleUser= await User.findOne({where: {username: username, id:{[Op.ne] : thisUser.id}}});
 
-      if (sampleUser != null || !isValidUsername(sampleUser))
+      if (sampleUser != null || !isValidUsername(username))
         throw Error("Invalid username!");
 
       User.update({

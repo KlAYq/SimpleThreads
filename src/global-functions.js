@@ -87,7 +87,7 @@ globalFunctions.fetchAllPosts = async (thisUser) => {
         username: postData.User.username,
         name: postData.User.fullName,
         avatar: postData.User.profilePicture || 'images/avatar.png',
-        timestamp: formatTimestamp(postData.createdAt),
+        timestamp: globalFunctions.formatTimestamp(postData.createdAt),
         description: postData.description,
         imagePath: postData.image ? postData.image.split('<>') : [],
         likeCount: postData.Reactions.length,
