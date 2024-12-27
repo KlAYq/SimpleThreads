@@ -3,6 +3,7 @@ const fs = require("fs");
 const {Op} = require("sequelize");
 const editProfileController = {}
 const User = require("../models").User;
+const {isValidUsername} = require("../global-functions");
 
 editProfileController.loadData = async (req, res) => {
   const thisUser = await req.user;
@@ -49,8 +50,8 @@ editProfileController.editProfile = async (req, res) => {
 
       let sampleUser= await User.findOne({where: {username: username, id:{[Op.ne] : thisUser.id}}});
 
-      if (sampleUser != null)
-        throw Error("Already exist username");
+      if (sampleUser != null || !isValidUsername(sampleUser))
+        throw Error("Invalid username!");
 
       User.update({
         username : username,

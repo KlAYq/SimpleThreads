@@ -1,7 +1,7 @@
 const { where } = require("sequelize");
 const userController = {}
 const {User, Post, Follow, Comment, Reaction} = require("../models");
-// const { posts } = require('../public/temp/posts')
+const {formatTimestamp} = require("../global-functions");
 
 userController.init = async (req, res, next) => {
   next();
@@ -105,42 +105,5 @@ userController.showPostDetail = async (req, res) => {
     // res.locals.username = req.sessionUser;
     res.render("post-view");
 }
-
-// Helper function to format timestamp
-const formatTimestamp = (date) => {
-  const now = new Date();
-  const postDate = new Date(date);
-  const diffInMs = now - postDate;
-
-  // Time difference in minutes and hours
-  const diffMinutes = Math.floor(diffInMs / 60000);
-  const diffHours = Math.floor(diffMinutes / 60);
-
-  if (diffMinutes < 60) {
-      // If within the same hour, display as minutes
-      return `${diffMinutes}m`;
-  } else if (diffHours < 24 && postDate.getDate() === now.getDate()) {
-      // If within the same day, display as hours and minutes
-      const remainingMinutes = diffMinutes % 60;
-      return `${diffHours}h${remainingMinutes}m`;
-  } else if (postDate.getMonth() === now.getMonth() && postDate.getFullYear() === now.getFullYear()) {
-      // If within the same month, display as HH:mm, dd/MM
-      return postDate.toLocaleString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          day: '2-digit',
-          month: '2-digit',
-      });
-  } else {
-      // Default display as HH:mm, dd/MM/YYYY
-      return postDate.toLocaleString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-      });
-  }
-};
 
 module.exports = userController

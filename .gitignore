@@ -3,3 +3,7 @@ node_modules/
 src/config/config.js
 src/temp
 src/.env
+src/config/config.json
+src/.sequelizerc
+src/config/config.js
+src/models/index.js

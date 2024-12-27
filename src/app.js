@@ -15,6 +15,14 @@ const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const {upload, uploadResult} = require('./image-upload-config');
 const { Op, Sequelize } = require('sequelize');
+const {
+  fetchAllPosts,
+  formatTimestamp,
+  getUserByEmail,
+  getUserById, getUserByUsername,
+  checkAuthenticated, checkNotAuthenticated,
+  isValidEmail, isValidUsername
+} = require('./global-functions');
 
 (async function() {
   // Configuration
@@ -31,36 +39,11 @@ const initPpt = require('./passport-config')
 const {sendConfirmMail, sendResetMail} = require('./node-mailer-config');
 const {render} = require("express/lib/application");
 const { User, Post, Comment, Reaction, Notification, ResetInstance, ConfirmInstance, Follow} = require('./models');
-// const {isAuthenticated} = require("passport/lib/http/request");
 
-
-// Helper functions
-function isValidUsername(username) {
-  const usernameRegex = /^[a-zA-Z0-9_]{6,}$/; // Alphanumeric and underscores, min 6 characters
-  return usernameRegex.test(username);
-}
-
-function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
-  return emailRegex.test(email);
-}
 
 if (!fs.existsSync("./uploads")){
   fs.mkdirSync("./uploads");
 }
-
-async function getUserByUsername(username) {
-  return await User.findOne({where: {username: username}});
-}
-
-async function getUserById(id) {
-  return await User.findOne({where: {id : id}});
-}
-
-async function getUserByEmail(email) {
-  return await User.findOne({where: {email: email}});
-}
-
 
 initPpt(passport,
   getUserByUsername,
@@ -68,6 +51,7 @@ initPpt(passport,
   getUserByEmail
 )
 
+app.use(express.json()); // for comment feature
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({extended: false}));
 app.use(flash())
@@ -120,107 +104,6 @@ app.get("/", (req, res) => {
     res.redirect("/home");
 })
 
-// ADD SESSION USER TO DISPLAY SIDEBAR / NAVBAR
-
-// Helper function to format timestamp
-const formatTimestamp = (date) => {
-  const now = new Date();
-  const postDate = new Date(date);
-  const diffInMs = now - postDate;
-
-  // Time difference in minutes and hours
-  const diffMinutes = Math.floor(diffInMs / 60000);
-  const diffHours = Math.floor(diffMinutes / 60);
-
-  if (diffMinutes < 60) {
-      // If within the same hour, display as minutes
-      return `${diffMinutes}m`;
-  } else if (diffHours < 24 && postDate.getDate() === now.getDate()) {
-      // If within the same day, display as hours and minutes
-      const remainingMinutes = diffMinutes % 60;
-      return `${diffHours}h${remainingMinutes}m`;
-  } else if (postDate.getMonth() === now.getMonth() && postDate.getFullYear() === now.getFullYear()) {
-      // If within the same month, display as HH:mm, dd/MM
-      return postDate.toLocaleString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          day: '2-digit',
-          month: '2-digit',
-      });
-  } else {
-      // Default display as HH:mm, dd/MM/YYYY
-      return postDate.toLocaleString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-      });
-  }
-};
-
-// Function to fetch all posts with related data(like/ comment count, fullname, username)
-async function fetchAllPosts(thisUser) {
-  try {
-    // get followed user id to prioritize display posts from them first
-    let followedUserIds = [];
-    if (thisUser) {
-      const followedUsers = await Follow.findAll({
-        attributes: ['followedUserId'],
-        where: { followingUserId: thisUser.id },
-      });
-      followedUserIds = followedUsers.map(follow => follow.followedUserId);
-    }
-
-    // Normal query posts, ordered by time created desc
-    let queryOptions = {
-      include: [
-        {
-          model: User,
-          attributes: ['username', 'fullName', 'profilePicture'],
-        },
-        {
-          model: Comment,
-          attributes: ['id'],
-        },
-        {
-          model: Reaction,
-          where: { type: 'LIKE' },
-          required: false,
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    };
-    // if the user is as least following someone, sort by posts from them first, then sort by time.
-    if (followedUserIds.length > 0) {
-      queryOptions.order = [
-        [Sequelize.literal(`CASE WHEN "Post"."userId" IN (${followedUserIds.join(',')}) THEN 0 ELSE 1 END`), 'ASC'],
-        ['createdAt', 'DESC']
-      ];
-    }
-    const posts = await Post.findAll(queryOptions);
-
-    return posts.map(post => {
-      const postData = post.get({ plain: true });
-      return {
-        postId: postData.id,
-        username: postData.User.username,
-        name: postData.User.fullName,
-        avatar: postData.User.profilePicture || 'images/avatar.png',
-        timestamp: formatTimestamp(postData.createdAt),
-        description: postData.description,
-        imagePath: postData.image ? postData.image.split('<>') : [],
-        likeCount: postData.Reactions.length,
-        commentCount: postData.Comments.length,
-        isLiked: thisUser ? postData.Reactions.some(reaction => reaction.userId === thisUser.id) : false,
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    return [];
-  }
-}
-
 app.get("/home", async (req, res) => {
   res.locals.page = "home";
   let thisUser = await req.user;
@@ -234,173 +117,6 @@ app.get("/home", async (req, res) => {
   } catch (error) {
     console.error('Error rendering home page:', error);
     res.status(500).send('An error occurred while loading the home page');
-  }
-});
-
-// Fetch a single post with related data
-async function fetchPost(postId, userId) {
-  try {
-    const post = await Post.findOne({
-      where: { id: postId },
-      include: [
-        {
-          model: User,
-          attributes: ['username', 'fullName', 'profilePicture'],
-        },
-        {
-          model: Comment,
-          include: [
-            {
-              model: User,
-              attributes: ['username', 'fullName', 'profilePicture'],
-            },
-          ],
-          required: false,
-        },
-        {
-          model: Reaction,
-          where: { type: 'LIKE' },
-          required: false,
-        },
-      ],
-      order: [
-        [Comment, 'createdAt', 'DESC']
-      ]
-    });
-
-    if (!post) {
-      return null;
-    }
-
-    const postData = post.get({ plain: true });
-
-    return {
-      postId: postData.id,
-      username: postData.User.username,
-      name: postData.User.fullName,
-      avatar: postData.User.profilePicture || 'https://res.cloudinary.com/dg2mnbjbc/image/upload/v1735137493/ebxsypux55w41iqgiqwt.png',
-      timestamp: formatTimestamp(postData.createdAt),
-      description: postData.description,
-      imagePath: postData.image ? postData.image.split('<>') : [],
-      likeCount: postData.Reactions.length,
-      commentCount: postData.Comments.length,
-      isLiked: postData.Reactions.some(reaction => reaction.userId === userId),
-      comments: postData.Comments.map(comment => ({
-        avatar: comment.User.profilePicture || 'https://res.cloudinary.com/dg2mnbjbc/image/upload/v1735137493/ebxsypux55w41iqgiqwt.png',
-        username: comment.User.username,
-        fullname: comment.User.fullName,
-        timestamp: formatTimestamp(comment.createdAt),
-        text: comment.content,
-      })),
-    };
-  } catch (error) {
-    console.error('Error fetching post:', error);
-    return null;
-  }
-}
-
-app.get("/post/:id", checkAuthenticated, async (req, res) => {
-  const postId = req.params.id;
-  let thisUser = await req.user;
-  const userId = thisUser.id;
-  res.locals.isLoggedIn = true;
-
-  try {
-    const post = await fetchPost(postId, userId);
-    if (!post) {
-      return res.status(404).send('Post not found');
-    }
-    res.render("post-view", { posts: post });
-  } catch (error) {
-    console.error('Error rendering post view:', error);
-    res.status(500).send('An error occurred while loading the post');
-  }
-});
-
-app.post("/post/:id/like", checkAuthenticated, async (req, res) => {
-  const postId = req.params.id;
-  let thisUser = await req.user;
-  const userId = await thisUser.id;
-
-  try {
-    const existingLike = await Reaction.findOne({
-      where: { postId, userId, type: 'LIKE' }
-    });
-
-    if (existingLike) {
-      await existingLike.destroy();
-    } else {
-      await Reaction.create({ postId, userId, type: 'LIKE' });
-
-      const thisPost = await Post.findOne({where: {id: postId}});
-      if (userId !== thisPost.userId){
-        await Notification.create({
-          postId: postId,
-          otherId: userId,
-          userId: thisPost.userId,
-          content: " has reacted on your post.",
-          isRead: false
-        })
-      }
-    }
-
-    const likeCount = await Reaction.count({
-      where: { postId, type: 'LIKE' }
-    });
-
-    res.json({ likeCount, isLiked: !existingLike });
-  } catch (error) {
-    console.error('Error handling like:', error);
-    res.status(500).json({ error: 'An error occurred while processing the like' });
-  }
-});
-
-app.use(express.json()); // for comment feature
-// Comment on a post
-app.post("/post/:postId/comment", checkAuthenticated, async function (req, res, next) {
-  try {
-
-    const postId = req.params.postId;
-    let thisUser = await req.user
-    const userId = thisUser.id;
-    const content = req.body.content;
-
-    const currentTime = new Date();
-    const currentTimeFormated = formatTimestamp(currentTime);
-    console.log("post: " + postId + ", userId: " + userId + ", content: " + content);
-    const newComment = await Comment.create({
-      content: content,
-      createdAt: currentTime,
-      updatedAt: currentTime,
-      userId: userId,
-      postId: postId
-    });
-
-    const thisPost = await Post.findOne({where: {id: postId}});
-    if (userId !== thisPost.userId){
-      await Notification.create({
-        postId: postId,
-        otherId: userId,
-        userId: thisPost.userId,
-        content: " has commented on your post.",
-        isRead: false
-      })
-    }
-
-
-    // Retrieve the comment data to send back
-    const commentData = {
-      username: thisUser.username,
-      fullname: thisUser.fullName,
-      avatar: thisUser.profilePicture,
-      timestamp: currentTimeFormated,
-      text: content
-    };
-
-    res.json({ success: true, commentData: commentData });
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    res.status(500).send('An error occurred while creating the comment');
   }
 });
 
@@ -468,11 +184,7 @@ app.post("/create-post", checkAuthenticated, async function (req, res, next) {
   }
 });
 
-
-
 app.use("/notifications", (req, res, next) => {next();}, require("./routes/notificationRouter"))
-
-
 
 // Auth
 app.get("/login", checkNotAuthenticated, async (req, res) => {
@@ -541,7 +253,6 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
       return res.redirect('/register');
     }
 
-
     const requestExistsUsername = await ConfirmInstance.findOne({where: {username: username}});
     if (requestExistsUsername != null) {
       console.log('username already exist');
@@ -607,7 +318,7 @@ app.post("/forgot-password", async (req, res) => {
     res.redirect("/forgot-password");
   }
 
-  const getUser = await User.findOne({where: {username: username}});
+  const getUser = await User.findOne({where: {[Op.or] : [{username: username}, {email: username}]}});
   if (getUser == null){
     req.flash('error', "Account does not exist");
     res.redirect("/forgot-password");
@@ -637,7 +348,6 @@ app.post("/forgot-password", async (req, res) => {
 
     res.render("auth/reset_password", {layout: "auth.hbs", email: coveredEmail});
   }
-
 })
 
 
@@ -649,25 +359,10 @@ app.delete('/logout', (req, res, next) => {
   // res.redirect('/login');
 })
 
-function checkAuthenticated(req, res, next){
-  if (req.isAuthenticated()){
-    return next();
-  }
-
-  res.redirect('/login');
-}
-
-function checkNotAuthenticated(req, res, next){
-  if (!req.isAuthenticated()){
-    return next();
-  }
-  res.redirect('/');
-}
-
 app.use("/search", require("./routes/searchRouter"))
-
-app.use("/edit-profile", async (req, res, next) => {next();}, require("./routes/editProfileRouter"));
-app.use("/account-settings", async (req, res, next) => {next();}, require("./routes/actionRouter"))
+app.use("/post", checkAuthenticated, require("./routes/postRouter"))
+app.use("/edit-profile", checkAuthenticated, require("./routes/editProfileRouter"));
+app.use("/account-settings", checkAuthenticated, require("./routes/actionRouter"))
 
 // ROUTER FOR USERNAME AND POST
 app.use("/:username", async (req, res, next) => {
